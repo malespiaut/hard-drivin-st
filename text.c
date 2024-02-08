@@ -2,9 +2,9 @@
 
 #include "proto.h"
 
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
 
 /*
 
@@ -253,8 +253,8 @@ TypeValue(int x, int y, long value, int color)
 }
 */
 
-  void
-  PrintScore(void)
+void
+PrintScore(void)
 {
   extern int ScoreY, ScoreX, DigitLength;
   extern long Score;

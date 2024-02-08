@@ -212,9 +212,9 @@ SetVehicle(s_vehicle* vh)
   }
   */
 
-    /* LAST SUBPOSITION ON THIS SEGMENT ? */
+  /* LAST SUBPOSITION ON THIS SEGMENT ? */
 
-    vh->position += vh->speed;
+  vh->position += vh->speed;
 
   if (vh->position >= MaxRoadPos)
   {

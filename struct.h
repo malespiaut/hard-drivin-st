@@ -416,14 +416,14 @@ typedef struct
 
 s_control; /* CONTROL POINTS */
 
-typedef         /* struct
-        
-                {	int	width;		// Width in pixels.
-  int height;   // Height in lines.
+typedef /* struct
+
+        {	int	width;		// Width in pixels.
+int height;   // Height in lines.
 int words;      // Width in words.
 int hotX, hotY; // Sweet spot.
 int size;       // BLOCK: size in words.
-                //  SHAPE: bitplane size.
+        //  SHAPE: bitplane size.
 int far* data;  // Pointer to data.
 }
 */

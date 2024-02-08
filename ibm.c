@@ -1,13 +1,13 @@
-#include <stdlib.h>
 #include <stdio.h>
-//#include <alloc.h>
-//#include <conio.h>
+#include <stdlib.h>
+// #include <alloc.h>
+// #include <conio.h>
 #include <fcntl.h>
-//#include <bios.h>
-//#include <dos.h>
-//#include <io.h>
-#include <sys/stat.h>
+// #include <bios.h>
+// #include <dos.h>
+// #include <io.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #include "proto.h"
 

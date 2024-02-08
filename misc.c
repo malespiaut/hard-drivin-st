@@ -2,9 +2,9 @@
 
 #include "proto.h"
 
-#include <string.h>
-#include <stdio.h>
 #include <ctype.h>
+#include <stdio.h>
+#include <string.h>
 
 /*
 ----------------------------------------------------------------------

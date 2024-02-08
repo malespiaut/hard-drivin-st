@@ -1,8 +1,8 @@
 
 
 #include "proto.h"
-#include <stdio.h>
 #include <dos.h>
+#include <stdio.h>
 
 /*
 

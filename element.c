@@ -1,7 +1,7 @@
 
 
-#include <stdio.h>
 #include "proto.h"
+#include <stdio.h>
 
 /*
 
