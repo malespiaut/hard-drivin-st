@@ -150,7 +150,7 @@ ScaleLogo(int factor)
 static void
 DrawBackground(int time)
 {
-  extern void far *Buffer2, far *MapScreen;
+  extern void *Buffer2, *MapScreen;
   extern int ScreenX, OrgY, LogoY, HardLogo[];
   register int y, dy;
 
@@ -254,7 +254,7 @@ TitleScreen(void)
 void
 ShowTitle(void)
 {
-  extern void far *MapScreen, far *ScreenBuffer, far *Buffer2;
+  extern void *MapScreen, *ScreenBuffer, *Buffer2;
   extern char TimeFlag;
   extern int ScreenX, ScreenY, OrgY, MaxY;
   extern long Time, Score;
@@ -379,7 +379,7 @@ ShowFlags(void)
 void
 ShowRestOfLap(void)
 {
-  extern void far *MapScreen, far *ScreenBuffer, far *Buffer2;
+  extern void *MapScreen, *ScreenBuffer, *Buffer2;
   extern char TimeFlag, OnTrack;
   extern int NumOfT1controls, NumOfT2controls;
   extern int ScreenX, ScreenY, OrgY, MaxY;
@@ -491,7 +491,7 @@ DrawArrowAndBox(void)
 static void
 Choose(void)
 {
-  extern void far* SelectScreen;
+  extern void* SelectScreen;
   extern char TimeFlag, GameMode, ExitWait;
   extern long Time;
   extern s_car car;
@@ -562,7 +562,7 @@ Choose(void)
 void
 ChooseTransmission(void)
 {
-  extern void far *SelectScreen, far *ScreenBuffer, far *Buffer2;
+  extern void *SelectScreen, *ScreenBuffer, *Buffer2;
   extern char DemoMode;
   extern int ScreenX, ScreenY, OrgY, MaxY;
   int height;
@@ -842,7 +842,7 @@ SetOptions(void)
 {
   extern char TimeFlag, GameMode, SloMoFlag;
   extern int ScreenX, ScreenY;
-  extern void far *Buffer2, far *ScreenBuffer;
+  extern void *Buffer2, *ScreenBuffer;
   char end;
 
   if (!GameMode || SloMoFlag)

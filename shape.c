@@ -30,7 +30,7 @@
 */
 
 static void
-Shift(int far* source, int far* dest, int shift, s_BitImage* shape)
+Shift(int* source, int* dest, int shift, s_BitImage* shape)
 {
   register int x, y;
   register unsigned long chunk;
@@ -51,7 +51,7 @@ Shift(int far* source, int far* dest, int shift, s_BitImage* shape)
 }
 
 void
-PreShift(s_BitImage* shape, int far* buf, int far* dest)
+PreShift(s_BitImage* shape, int* buf, int* dest)
 {
   register int i, length;
 
@@ -206,10 +206,10 @@ DrawBitBlock(register int x, int y, s_BitImage* shape)
 void
 DrawShape(int x, int y, s_BitImage* shape)
 {
-  extern void far* Buffer2;
+  extern void* Buffer2;
   extern int MinY, MaxY, MinX, MaxX, OrgX, OrgY;
   register int shift, h, words, height, offset, size;
-  register int far* mask;
+  register int* mask;
 
   x -= shape->hotX;
   y -= shape->hotY;

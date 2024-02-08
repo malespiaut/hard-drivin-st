@@ -71,7 +71,7 @@ Sqrt(ulong n)
 }
 
 void
-CompNormal(int far* p1, int far* p2, int far* p3, int far* normal)
+CompNormal(int* p1, int* p2, int* p3, int* normal)
 {
   long x2, y2, z2, x3, y3, z3;
   long nx, ny, nz;
@@ -104,7 +104,7 @@ CompNormal(int far* p1, int far* p2, int far* p3, int far* normal)
 int
 CompRadius(s_object* obj)
 {
-  register int i, far *p;
+  register int i, *p;
   register long quad, h;
 
   quad = 0;
@@ -127,7 +127,7 @@ CompVertices(s_object* obj)
   extern int yawSIN, yawCOS, pitchSIN, pitchCOS, rollSIN, rollCOS;
   extern int* VertIndex;
   extern s_car car;
-  register int i, h, sin, cos, far *s, *d;
+  register int i, h, sin, cos, *s, *d;
   int count;
 
   s = obj->model;
@@ -142,7 +142,7 @@ CompVertices(s_object* obj)
 
       sin = sinus(obj->roll);
       cos = cosinus(obj->roll);
-      RotXY(count, cos, sin, (int far*)d, s);
+      RotXY(count, cos, sin, (int*)d, s);
       s = d = obj->vert;
     }
 
@@ -151,7 +151,7 @@ CompVertices(s_object* obj)
 
       sin = sinus(obj->pitch);
       cos = cosinus(obj->pitch);
-      RotYZ(count, cos, sin, (int far*)d, s);
+      RotYZ(count, cos, sin, (int*)d, s);
       s = d = obj->vert;
     }
 
@@ -160,7 +160,7 @@ CompVertices(s_object* obj)
 
       sin = sinus(obj->yaw);
       cos = cosinus(obj->yaw);
-      RotXZ(count, cos, sin, (int far*)d, s);
+      RotXZ(count, cos, sin, (int*)d, s);
       s = d = obj->vert;
     }
   }
@@ -555,7 +555,7 @@ ClipCoordinates(s_object* obj)
   extern char CollisionFlag;
   extern int* CoorIndex;
   extern s_car car;
-  register uchar far* p;
+  register uchar* p;
   register int j, i, h, z, *d, *s, *coor;
   uchar edges, normal, NoSign, visible;
   int minZ, maxZ;

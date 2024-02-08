@@ -292,9 +292,9 @@ typedef struct so
   uchar collision; /* TRUE, if viewpoint inside the object */
   uchar color;     /* individual color, used for cars */
   uchar clip3D;    /* TRUE, part of the object is behind viewpoint. */
-  void far (*DisplayProc)(struct so* obj);
-  int far *model, *vert, *koor; /* pointer to source model, rotated/translated model, and screen coordinates. */
-  uchar far* faces;             /* pointer to polygon description list. */
+  void (*DisplayProc)(struct so* obj);
+  int *model, *vert, *koor; /* pointer to source model, rotated/translated model, and screen coordinates. */
+  uchar* faces;             /* pointer to polygon description list. */
 }
 
 s_object;
@@ -424,11 +424,11 @@ int words;      // Width in words.
 int hotX, hotY; // Sweet spot.
 int size;       // BLOCK: size in words.
         //  SHAPE: bitplane size.
-int far* data;  // Pointer to data.
+int * data;  // Pointer to data.
 }
 */
 
-  void far* s_BitImage;
+  void* s_BitImage;
 
 typedef struct
 

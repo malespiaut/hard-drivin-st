@@ -29,18 +29,18 @@
 
 void /* SYSTEM VARIABLES. */
 
-  far *ScreenBuffer, /* Pointer to   visible Screen Buffer.			*/
-  far *Buffer2,      /* Pointer to invisible Screen Buffer.			*/
+  *ScreenBuffer, /* Pointer to   visible Screen Buffer.			*/
+  *Buffer2,      /* Pointer to invisible Screen Buffer.			*/
 
   /* HARD DRIVIN' VARIABLES. */
 
-  far *AuxScreen,    /* Pointer to the auxiliary screen.			*/
-  far *MapScreen,    /* Pointer to the map window.				*/
-  far *AuxBuffer,    /* Pointer to a auxiliary buffer.			*/
-  far *Marcus,       /* Pointer to 32k aux buffer.				*/
-  far *Tim,          /* Pointer to 32k aux buffer.				*/
-  far *SoundModule,  /* Pointer to sound routines.				*/
-  far *SelectScreen; /* Pointer to the select window.			*/
+  *AuxScreen,    /* Pointer to the auxiliary screen.			*/
+  *MapScreen,    /* Pointer to the map window.				*/
+  *AuxBuffer,    /* Pointer to a auxiliary buffer.			*/
+  *Marcus,       /* Pointer to 32k aux buffer.				*/
+  *Tim,          /* Pointer to 32k aux buffer.				*/
+  *SoundModule,  /* Pointer to sound routines.				*/
+  *SelectScreen; /* Pointer to the select window.			*/
 
 char MapName[20], /* Various picture names.				*/
   SelectName[20],
@@ -193,7 +193,7 @@ int /* VARIABLES DEPENDING ON SCREEN RESOLUTION. */
 
   *VertIndex,                         /* Pointer to the rest of the vertex[] buffer.		*/
   *CoorIndex,                         /* Pointer to the rest of the coordinate[] buffer.	*/
-  far *ObjDataBase,                   /* Pointer to object data base.				*/
+  *ObjDataBase,                       /* Pointer to object data base.				*/
   *Barriers,                          /* Pointer to barrier coordinates.			*/
   objTable[ObjTypes],                 /* Offset table to object data base.			*/
   coordinate[3 * MaxKoor],            /* Buffer for 3D coordinates				*/
@@ -242,10 +242,10 @@ s_car car; /* Player's car data.					*/
 
 s_score HiScoreList[10]; /* HiScore list.					*/
 
-s_frame far *RedPointer, /* Pointer used to record red car's movement.		*/
-  far *BluePointer,      /* Pointer used to record blue car's movement.		*/
-  far *OldChampLap,      /* Array holds Phanton Photon's lap.			*/
-  far *NewChampLap;      /* Array holds the challenger's lap.			*/
+s_frame *RedPointer, /* Pointer used to record red car's movement.		*/
+  *BluePointer,      /* Pointer used to record blue car's movement.		*/
+  *OldChampLap,      /* Array holds Phanton Photon's lap.			*/
+  *NewChampLap;      /* Array holds the challenger's lap.			*/
 
 s_playback SlowMotion[MaxFrame], /* Array for last MaxFrame frames. (Slow Motion).	*/
   *FramePos;                     /* Pointer to current frame in slow motion array.	*/
@@ -794,7 +794,7 @@ GameRun(void)
 static void
 ChampPlayBack(void)
 {
-  s_frame far *redpos, far *bluepos;
+  s_frame *redpos, *bluepos;
   s_object* winner;
   int yaw, dx, dz, distance, lastdistance;
 
@@ -1223,7 +1223,7 @@ ChampionChipLap(void)
 
   if (NewPhantomPhoton)
   {
-    s_frame far *fr1, far *fr2;
+    s_frame *fr1, *fr2;
 
     PhantomLane ^= 1;
 

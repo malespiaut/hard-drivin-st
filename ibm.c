@@ -111,7 +111,7 @@ int latch0,           /* Joystick buttons: J0: bits 0,1  J1: bits 2,3 */
   latch4;             /* Joystick 1:  Y-axis */
 int PlaneSize;        /* Size of a bitplane to move. */
 int ibutton;          /* Used to hold button flags. */
-int far* PokePitch;   /* Pointer to pitch variable. */
+int* PokePitch;       /* Pointer to pitch variable. */
 
 /*		FUNCTIONS :
                 ===========
@@ -426,7 +426,7 @@ GetBuffer(long size)
 }
 
 void
-CopySmallScreen(int y1, int y2, void far* source, void far* dest)
+CopySmallScreen(int y1, int y2, void* source, void* dest)
 {
   PlaneSize = WindowY * 40;
 
@@ -502,7 +502,7 @@ DOS_create(char* name)
 }
 
 static void
-DOS_read(int handle, void far* addr, uint size)
+DOS_read(int handle, void* addr, uint size)
 {
   union REGS regs;
   struct SREGS sregs;
@@ -517,7 +517,7 @@ DOS_read(int handle, void far* addr, uint size)
 }
 
 static void
-DOS_write(int handle, void far* addr, uint size)
+DOS_write(int handle, void* addr, uint size)
 {
   union REGS regs;
   struct SREGS sregs;
@@ -543,7 +543,7 @@ DOS_close(int handle)
 }
 
 int
-FileRead(char* name, void far* addr)
+FileRead(char* name, void* addr)
 {
   int handle;
   long size;
@@ -576,7 +576,7 @@ FileRead(char* name, void far* addr)
 }
 
 int
-FixedRead(char* name, void far* addr, long size)
+FixedRead(char* name, void* addr, long size)
 {
   extern int _fmode;
   int handle;
@@ -605,7 +605,7 @@ FixedRead(char* name, void far* addr, long size)
 }
 
 void
-FileWrite(char* name, void far* addr, long size)
+FileWrite(char* name, void* addr, long size)
 {
   extern int _fmode;
   int handle;
@@ -624,15 +624,15 @@ FileWrite(char* name, void far* addr, long size)
 int
 ReadBlockFile(s_BitImage* bi, char* name)
 {
-  extern void far* AuxBuffer;
-  register int far *p, ok;
+  extern void* AuxBuffer;
+  register int *p, ok;
   int width, height, words, size;
 
   ok = FileRead(name, AuxBuffer);
 
   if (ok)
   {
-    p = (int far*)AuxBuffer;
+    p = (int*)AuxBuffer;
     width = *p++;
     height = *p++;
     p += 10;
@@ -649,7 +649,7 @@ ReadBlockFile(s_BitImage* bi, char* name)
 int
 ReadShapeFile(s_BitImage* shape, char* FileName)
 {
-  int far* buffer;
+  int* buffer;
   long size;
 
   size = FileLength(FileName);
@@ -692,10 +692,10 @@ BlankScreen(void)
   WideBox(-67, 67);
 }
 
-void far*
+void*
 GetPieceOfChunk(long amount)
 {
-  void far* save;
+  void* save;
   uint segment, offset;
 
   amount += 16;
@@ -716,18 +716,18 @@ GetPieceOfChunk(long amount)
   else
   {
     SystemExit("Allocated memory not sufficient !");
-    return ((void far*)0);
+    return ((void*)0);
   }
 }
 
 static void
 Allocate(void)
 {
-  extern void far *AuxScreen, far *SoundModule;
-  extern void far *MapScreen, far *SelectScreen, far *AuxBuffer;
-  extern int far *BitMask, far *PolyLeft, far *PolyRight, far *ObjDataBase;
-  extern void far *Marcus, far *Tim;
-  extern s_frame far *OldChampLap, far *NewChampLap;
+  extern void *AuxScreen, *SoundModule;
+  extern void *MapScreen, *SelectScreen, *AuxBuffer;
+  extern int *BitMask, *PolyLeft, *PolyRight, *ObjDataBase;
+  extern void *Marcus, *Tim;
+  extern s_frame *OldChampLap, *NewChampLap;
 
   chunk = chunk1 = GetBuffer(BigChunk);
 
@@ -750,7 +750,7 @@ static void
 FreeMemory(void)
 {
   if (chunk)
-    farfree((void far*)chunk);
+    farfree((void*)chunk);
 }
 
 static void
@@ -922,7 +922,7 @@ SystemInit(void)
     MouseDriverFlag = FALSE;
   else
   {
-    if (!(*(long far*)mouse))
+    if (!(*(long*)mouse))
       MouseDriverFlag = FALSE;
   }
 

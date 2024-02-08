@@ -454,16 +454,16 @@ ReadGameFile(void)
 {
   extern char PhantomLane, DirtyFlag;
   extern int BestLength;
-  extern void far* AuxBuffer;
+  extern void* AuxBuffer;
   extern long BestLapTime;
   extern s_score HiScoreList[10];
-  extern s_frame far* OldChampLap;
+  extern s_frame* OldChampLap;
   extern char BestTime[10], BestName[30];
   long DefaultBestTime;
 
 #define size ((int)(sizeof(HiScoreList) + sizeof(BestName) + sizeof(BestTime) + MaxSample * sizeof(s_frame) + sizeof(int) + sizeof(long)))
 
-  register char far* p;
+  register char* p;
   register int i;
 
   DirtyFlag = !FileRead(ScoreName, AuxBuffer);
@@ -520,12 +520,12 @@ void
 SaveGameFile(void)
 {
   extern char PhantomLane;
-  extern void far* AuxBuffer;
+  extern void* AuxBuffer;
   extern s_score HiScoreList[10];
-  extern s_frame far* OldChampLap;
+  extern s_frame* OldChampLap;
   extern long BestLapTime;
   extern char BestTime[10], BestName[30];
-  register char far* p;
+  register char* p;
 
   p = AuxBuffer;
 
@@ -575,7 +575,7 @@ ReadTrackFile(void)
   extern s_control *T1ContPoints, *T2ContPoints;
   int ok, *p;
 
-  ok = FileRead(TrackName, (void far*)TrackData);
+  ok = FileRead(TrackName, (void*)TrackData);
 
   if (ok)
   {
@@ -634,10 +634,10 @@ ReadAllFiles(void)
 {
   extern char MapName[], SelectName[], LoadName[], PanelName[];
   extern char TuneSpeed;
-  extern void far *Buffer2, far *ScreenBuffer, far *AuxScreen;
-  extern void far *MapScreen, far *SelectScreen, far *Tim;
-  extern void far* SoundModule;
-  extern int far *ObjDataBase, ScreenX, ScreenY, button;
+  extern void *Buffer2, *ScreenBuffer, *AuxScreen;
+  extern void *MapScreen, *SelectScreen, *Tim;
+  extern void* SoundModule;
+  extern int *ObjDataBase, ScreenX, ScreenY, button;
   int filesOK;
 
   filesOK = TRUE;
@@ -978,8 +978,8 @@ RecordRedCar(void)
 {
   extern char RedSample, StartFlag;
   extern s_car car;
-  extern s_frame far *RedPointer, far *NewChampLap;
-  register s_frame far* fr;
+  extern s_frame *RedPointer, *NewChampLap;
+  register s_frame* fr;
 
   if (!StartFlag)
     return;
@@ -1008,9 +1008,9 @@ ReadRedCar(void)
 {
   extern char RedSample, StartFlag, TimeOutFlag;
   extern s_object* RedCar;
-  extern s_frame far *RedPointer, far *NewChampLap;
+  extern s_frame *RedPointer, *NewChampLap;
   register s_object* rc;
-  register s_frame far *f1, far *f2;
+  register s_frame *f1, *f2;
   int yaw;
   ulong h1, h2;
 
@@ -1058,9 +1058,9 @@ ReadBlueCar(void)
   extern char LapFinished;
   extern int FinishX, FinishY, FinishZ;
   extern s_object* BlueCar;
-  extern s_frame far *BluePointer, far *OldChampLap;
+  extern s_frame *BluePointer, *OldChampLap;
   register s_object* bc;
-  register s_frame far *f1, far *f2;
+  register s_frame *f1, *f2;
   int yaw;
   ulong h1, h2;
 
@@ -1205,8 +1205,8 @@ SetCar(int segment, int lane, int row, int side)
 uchar
 SetObjClass(s_object* obj)
 {
-  extern int far* ObjDataBase;
-  register int vectors, h, far *p;
+  extern int* ObjDataBase;
+  register int vectors, h, *p;
   uchar class;
 
   h = ObjDataBase[obj->type];
@@ -1225,7 +1225,7 @@ SetObjClass(s_object* obj)
     obj->model = ++p;
 
     vectors = obj->vertices + obj->normals;
-    obj->faces = (uchar far*)&p[vectors + vectors + vectors];
+    obj->faces = (uchar*)&p[vectors + vectors + vectors];
 
     if (class && !obj->class)
       obj->class = class;

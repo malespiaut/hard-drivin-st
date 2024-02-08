@@ -176,7 +176,7 @@ static void near
 ClearCockpit(void)
 {
   extern char LapMode, QualifyFlag, DemoMode;
-  extern void far *Buffer2, far *ScreenBuffer, far *AuxScreen;
+  extern void *Buffer2, *ScreenBuffer, *AuxScreen;
   extern s_block ScoreRect, TimeRect, MessageRect[], AmpRect;
   extern s_block TmpRect, MidRect, OilRect, GasRect;
   extern s_block WarnRect, OK_Rect[], AutoRect, ManualRect;
@@ -220,7 +220,7 @@ void
 PrintCockpit(void)
 {
   extern char SloMoFlag, DemoMode;
-  extern void far *Buffer2, far *AuxScreen;
+  extern void *Buffer2, *AuxScreen;
   extern int MinY, MaxY, OrgY;
   extern int MinY1, MaxY1, OrgY1;
   extern int MinY2, MaxY2, OrgY2;
@@ -365,7 +365,7 @@ void
 PrintLoop(s_object* obj)
 {
   extern int PolyVertex[];
-  register uchar far *p, i, j, norm;
+  register uchar *p, i, j, norm;
   register long *k, *pv, *q;
   uchar stripes[20], *ps, FullDetails;
   int para[2];
@@ -517,7 +517,7 @@ void
 PrintSign(s_object* obj)
 {
   extern int PolyVertex[];
-  register uchar far *p, i, j, h;
+  register uchar *p, i, j, h;
   register long *pv, *k;
   int para[2];
 
@@ -580,7 +580,7 @@ void
 PrintBridge(s_object* obj)
 {
   extern int PolyVertex[];
-  register uchar far *p, i, j, h;
+  register uchar *p, i, j, h;
   register long *pv, *k;
   int para[2];
 
@@ -644,7 +644,7 @@ void
 PrintCar(s_object* obj)
 {
   extern int PolyVertex[];
-  register uchar far *p, i, j, h;
+  register uchar *p, i, j, h;
   register long *pv, *k;
   char PhantomPhoton;
   int para[2];
@@ -732,7 +732,7 @@ void
 PrintUnderpass(s_object* obj)
 {
   extern int PolyVertex[];
-  register uchar far *p, i, j, h;
+  register uchar *p, i, j, h;
   register long *pv, *k;
   int para[2];
 
@@ -783,7 +783,7 @@ void
 PrintObject(s_object* obj)
 {
   extern int PolyVertex[];
-  register uchar far *p, i, j, h;
+  register uchar *p, i, j, h;
   register long *pv, *k;
   int para[2];
 

@@ -183,7 +183,7 @@ InitObjects(void)
     *RedCar, *BlueCar;
   register int i, j, max;
   register s_object *obj, *obj2;
-  int n, far *s, sin, cos;
+  int n, *s, sin, cos;
 
   /* INITIALIZE FIELDS. */
 
@@ -358,11 +358,11 @@ InitPhantomPhoton(void)
   extern char BlueSample, DirtyFlag, PhantomLane;
   extern int StartSegment;
   extern s_track* track1;
-  extern s_frame far* OldChampLap;
+  extern s_frame* OldChampLap;
   s_vehicle phantom;
   s_object dummy;
   register uchar sample;
-  register s_frame far *fr, far *end;
+  register s_frame *fr, *end;
 
   if (!DirtyFlag)
     /* PHANTOM PHOTON IS ALREADY READ FROM DISK. */
