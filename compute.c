@@ -50,7 +50,6 @@ static void near CompFields(void);
 
 uint
 Sqrt(ulong n)
-
 {
   ulong s1, s2, s3;
 
@@ -73,7 +72,6 @@ Sqrt(ulong n)
 
 void
 CompNormal(int far* p1, int far* p2, int far* p3, int far* normal)
-
 {
   long x2, y2, z2, x3, y3, z3;
   long nx, ny, nz;
@@ -105,7 +103,6 @@ CompNormal(int far* p1, int far* p2, int far* p3, int far* normal)
 
 int
 CompRadius(s_object* obj)
-
 {
   register int i, far *p;
   register long quad, h;
@@ -126,7 +123,6 @@ CompRadius(s_object* obj)
 
 void
 CompVertices(s_object* obj)
-
 {
   extern int yawSIN, yawCOS, pitchSIN, pitchCOS, rollSIN, rollCOS;
   extern int* VertIndex;
@@ -251,7 +247,6 @@ CompVertices(s_object* obj)
 
 static void near
 CompCoordinates(s_object* obj)
-
 {
   extern int* CoorIndex;
 
@@ -263,7 +258,6 @@ static uchar near
 ClipProjectPoly(uchar n,
                 uchar visible,
                 s_object* obj)
-
 {
   extern char ExtendedClip, CheckOffRoad, OnObject;
   extern char CollisionFlag;
@@ -557,7 +551,6 @@ ClipProjectPoly(uchar n,
 
 static void near
 ClipCoordinates(s_object* obj)
-
 {
   extern char CollisionFlag;
   extern int* CoorIndex;
@@ -654,7 +647,6 @@ ClipStreet(int* vert,   /* pointer to 3D coordinates */
            int* coor,   /* pointer to 2D coordinates */
            int distance /* distance of midpoint */
 )
-
 {
   extern char CheckOffRoad, ExtendedClip;
   extern s_car car;
@@ -933,7 +925,6 @@ ClipStreet(int* vert,   /* pointer to 3D coordinates */
 
 static void near
 MakeStreetElements(void)
-
 {
   extern uchar VisiStr1, VisiStr2, VisiLns1, VisiLns2;
   extern int *Flags1, *Flags2;
@@ -1122,7 +1113,6 @@ MakeStreetElements(void)
 
 static void near
 StreetProject(void)
-
 {
   extern uchar VisiStr1, VisiStr2, VisiLns1, VisiLns2;
   extern int *Flags1, *Flags2;
@@ -1215,7 +1205,6 @@ StreetProject(void)
 
 static void near
 CompTrack(void)
-
 { /* GENERATE STREET ELEMENT VERTICES. */
 
   MakeStreetElements();
@@ -1227,7 +1216,6 @@ CompTrack(void)
 
 static void near
 CompFields(void)
-
 {
   extern int NumOfFields;
   extern s_object* field;
@@ -1253,7 +1241,6 @@ CompFields(void)
 
 void
 CompAllObjects(void)
-
 {
   extern char CheckOffRoad, CollisionFlag, OnObject;
   extern char SloMoFlag;

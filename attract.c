@@ -115,7 +115,6 @@ static int StartY, /* Text start line.		*/
 
 void
 ScaleLogo(int factor)
-
 {
   extern int coordinate[], HardLogo[], LogoY;
   register int i, y, *s, *d;
@@ -150,7 +149,6 @@ ScaleLogo(int factor)
 
 static void
 DrawBackground(int time)
-
 {
   extern void far *Buffer2, far *MapScreen;
   extern int ScreenX, OrgY, LogoY, HardLogo[];
@@ -167,7 +165,6 @@ DrawBackground(int time)
 
 void
 DrawLogo(void)
-
 {
   extern int coordinate[], PolyVertex[];
   register int i, *p;
@@ -203,7 +200,6 @@ DrawLogo(void)
 
 static void
 TypeText(int time)
-
 {
   register char ch;
   static char halt;
@@ -237,7 +233,6 @@ TypeText(int time)
 
 static void
 TitleScreen(void)
-
 {
   extern char DemoMode;
   register int i;
@@ -258,7 +253,6 @@ TitleScreen(void)
 
 void
 ShowTitle(void)
-
 {
   extern void far *MapScreen, far *ScreenBuffer, far *Buffer2;
   extern char TimeFlag;
@@ -312,7 +306,6 @@ static int max1;
 
 static void
 DisplayFlags(int time)
-
 {
   extern int NumOfT1controls, NumOfT2controls;
   extern s_BitImage FlagRed, FlagYellow;
@@ -358,7 +351,6 @@ DisplayFlags(int time)
 
 static void
 ShowFlags(void)
-
 {
   extern char ExitWait;
   extern int button;
@@ -386,7 +378,6 @@ ShowFlags(void)
 
 void
 ShowRestOfLap(void)
-
 {
   extern void far *MapScreen, far *ScreenBuffer, far *Buffer2;
   extern char TimeFlag, OnTrack;
@@ -439,7 +430,6 @@ ShowRestOfLap(void)
 
 static int
 DrawArrowAndBox(void)
-
 {
   extern int SteerX, OrgX;
   register int x;
@@ -500,7 +490,6 @@ DrawArrowAndBox(void)
 
 static void
 Choose(void)
-
 {
   extern void far* SelectScreen;
   extern char TimeFlag, GameMode, ExitWait;
@@ -572,7 +561,6 @@ Choose(void)
 
 void
 ChooseTransmission(void)
-
 {
   extern void far *SelectScreen, far *ScreenBuffer, far *Buffer2;
   extern char DemoMode;
@@ -603,7 +591,6 @@ ChooseTransmission(void)
 
 static void
 DrawBox(int x1, int y1, int x2, int y2, int color)
-
 {
   NewColor(color);
 
@@ -618,7 +605,6 @@ static char xpos, ypos, saveflag;
 
 static int
 PrintSelectScreen(void)
-
 {
   extern char SteerSelect, GearSelect, MouseFlag;
   extern char Difficulty, DirtyFlag, UK_Flag, MouseDriverFlag;
@@ -853,7 +839,6 @@ PrintSelectScreen(void)
 
 void
 SetOptions(void)
-
 {
   extern char TimeFlag, GameMode, SloMoFlag;
   extern int ScreenX, ScreenY;

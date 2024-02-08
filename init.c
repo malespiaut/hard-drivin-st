@@ -38,7 +38,6 @@ static uchar near Filter(uchar n, s_object* obj);
 
 static uchar near
 Filter(uchar n, s_object* obj)
-
 {
   uchar result;
 
@@ -177,7 +176,6 @@ Filter(uchar n, s_object* obj)
 
 void
 InitObjects(void)
-
 {
   extern int NumOfObjects, NumOfFields;
   extern s_object *object, *field;
@@ -311,7 +309,6 @@ InitObjects(void)
 
 void
 InitCar(void)
-
 {
   extern int StartSegment, StartLane, StartRow;
   extern s_car car;
@@ -357,7 +354,6 @@ InitCar(void)
 
 void
 InitPhantomPhoton(void)
-
 {
   extern char BlueSample, DirtyFlag, PhantomLane;
   extern int StartSegment;
@@ -412,7 +408,6 @@ InitPhantomPhoton(void)
 
 void
 InitControlPoints(void)
-
 {
   extern int NumOfT1controls, NumOfT2controls;
   extern int CheckP1_segment, CheckP2_segment;

@@ -34,7 +34,6 @@ static void near FindFields(void);
 
 static void near
 CarDemoDrive(void)
-
 {
   extern char UK_Flag;
   extern s_track *track1, *track2;
@@ -184,7 +183,6 @@ CarDemoDrive(void)
 
 void
 MoveCar(void)
-
 {
   extern char DemoMode, ExtendedClip, SloMoFlag, EngineOn;
   extern char StartFlag, LapMode, GameMode;
@@ -266,7 +264,6 @@ MoveCar(void)
 
 static void near
 FindFields(void)
-
 {
   extern int NumOfFields;
   extern s_object* field;
@@ -330,7 +327,6 @@ FindFields(void)
 
 void
 FindAllVisibleObjects(void)
-
 {
   extern char CarInLoop, DemoMode, SloMoFlag, AccidentFlag;
   extern uchar WrongDirection, NoReturnCheck;

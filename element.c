@@ -23,7 +23,6 @@
 
 void
 SetNearestElement(void)
-
 {
   extern uchar OnTrack;
   extern s_track *NextStreet, *track1, *track2;

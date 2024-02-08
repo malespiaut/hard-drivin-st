@@ -121,7 +121,6 @@ int far* PokePitch;   /* Pointer to pitch variable. */
 
 void
 SystemSpeed(void)
-
 {
   extern int PolyVertex[];
   extern volatile uint frames;
@@ -158,7 +157,6 @@ SystemSpeed(void)
 
 void
 CenterMouse(void)
-
 {
   extern char MouseDriverFlag;
   extern int SteerX, SteerY;
@@ -176,7 +174,6 @@ CenterMouse(void)
 
 void
 ClearButtons(void)
-
 {
   extern char ExitWait;
   extern volatile uint button;
@@ -188,7 +185,6 @@ ClearButtons(void)
 
 void
 StopEngine(void)
-
 {
   extern char EngineKilled;
   union REGS regs;
@@ -200,7 +196,6 @@ StopEngine(void)
 
 void
 StartEngine(void)
-
 {
   extern char EngineKilled, SoundEnabled;
   extern int EnginePitch;
@@ -222,7 +217,6 @@ StartEngine(void)
 
 void
 DisableMouse(void)
-
 {
   extern char MouseFlag;
 
@@ -231,7 +225,6 @@ DisableMouse(void)
 
 void
 EnableMouse(void)
-
 {
   extern char MouseFlag;
 
@@ -240,7 +233,6 @@ EnableMouse(void)
 
 static void
 CreditsScreen(void)
-
 {
   extern volatile uint frames;
   union REGS regs;
@@ -285,7 +277,6 @@ CreditsScreen(void)
 
 static void
 SelectGraphMode(void)
-
 {
   extern char GraphMode;
   char key;
@@ -340,7 +331,6 @@ SelectGraphMode(void)
 
 void
 Switch(void)
-
 {
   extern volatile uint frames;
 
@@ -352,14 +342,12 @@ Switch(void)
 
 void
 StopSound(void)
-
 {
   StopEngine();
 }
 
 void
 MakeSound(char sound)
-
 {
   extern char SloMoFlag, AccidentFlag, DemoMode;
   extern char ReturnFlag, EngineKilled, SoundEnabled;
@@ -403,7 +391,6 @@ MakeSound(char sound)
 
 int
 Random(void)
-
 { /* Random 16 bit number -32768..32767. */
 
   static long rand;
@@ -417,7 +404,6 @@ Random(void)
 
 static void huge*
 GetBuffer(long size)
-
 {
   void huge* addr;
   long AllocChunk;
@@ -443,7 +429,6 @@ GetBuffer(long size)
 
 void
 CopySmallScreen(int y1, int y2, void far* source, void far* dest)
-
 {
   PlaneSize = WindowY * 40;
 
@@ -454,7 +439,6 @@ CopySmallScreen(int y1, int y2, void far* source, void far* dest)
 
 static long
 FileLength(char* name)
-
 {
   extern int _fmode;
   int handle;
@@ -485,7 +469,6 @@ FileLength(char* name)
 
 static int
 DOS_open(char* name)
-
 {
   int handle;
   union REGS regs;
@@ -504,7 +487,6 @@ DOS_open(char* name)
 
 static int
 DOS_create(char* name)
-
 {
   int handle;
   union REGS regs;
@@ -523,7 +505,6 @@ DOS_create(char* name)
 
 static void
 DOS_read(int handle, void far* addr, uint size)
-
 {
   union REGS regs;
   struct SREGS sregs;
@@ -539,7 +520,6 @@ DOS_read(int handle, void far* addr, uint size)
 
 static void
 DOS_write(int handle, void far* addr, uint size)
-
 {
   union REGS regs;
   struct SREGS sregs;
@@ -555,7 +535,6 @@ DOS_write(int handle, void far* addr, uint size)
 
 static void
 DOS_close(int handle)
-
 {
   union REGS regs;
 
@@ -567,7 +546,6 @@ DOS_close(int handle)
 
 int
 FileRead(char* name, void far* addr)
-
 {
   int handle;
   long size;
@@ -601,7 +579,6 @@ FileRead(char* name, void far* addr)
 
 int
 FixedRead(char* name, void far* addr, long size)
-
 {
   extern int _fmode;
   int handle;
@@ -631,7 +608,6 @@ FixedRead(char* name, void far* addr, long size)
 
 void
 FileWrite(char* name, void far* addr, long size)
-
 {
   extern int _fmode;
   int handle;
@@ -649,7 +625,6 @@ FileWrite(char* name, void far* addr, long size)
 
 int
 ReadBlockFile(s_BitImage* bi, char* name)
-
 {
   extern void far* AuxBuffer;
   register int far *p, ok;
@@ -675,7 +650,6 @@ ReadBlockFile(s_BitImage* bi, char* name)
 
 int
 ReadShapeFile(s_BitImage* shape, char* FileName)
-
 {
   int far* buffer;
   long size;
@@ -694,21 +668,18 @@ ReadShapeFile(s_BitImage* shape, char* FileName)
 
 int
 KeyPressed(void)
-
 {
   return (CheckKeyboard());
 }
 
 int
 SetNewColor(int no, int col)
-
 {
   return (Pal(no, col));
 }
 
 void
 SetColorPalette(int* addr)
-
 {
   int i;
 
@@ -718,7 +689,6 @@ SetColorPalette(int* addr)
 
 void
 BlankScreen(void)
-
 {
   SolidColor(0);
   WideBox(-67, 67);
@@ -726,7 +696,6 @@ BlankScreen(void)
 
 void far*
 GetPieceOfChunk(long amount)
-
 {
   void far* save;
   uint segment, offset;
@@ -755,7 +724,6 @@ GetPieceOfChunk(long amount)
 
 static void
 Allocate(void)
-
 {
   extern void far *AuxScreen, far *SoundModule;
   extern void far *MapScreen, far *SelectScreen, far *AuxBuffer;
@@ -782,7 +750,6 @@ Allocate(void)
 
 static void
 FreeMemory(void)
-
 {
   if (chunk)
     farfree((void far*)chunk);
@@ -790,7 +757,6 @@ FreeMemory(void)
 
 static void
 SetBlock(int x1, int y1, int x2, int y2, int both, s_block* bl)
-
 {
   if (both)
   {
@@ -805,7 +771,6 @@ SetBlock(int x1, int y1, int x2, int y2, int both, s_block* bl)
 
 void
 GetResolution(void)
-
 {
   extern int ScoreX, ScoreY, TimeX, TimeY;
   extern int BestX, BestY, LastX, LastY, DigitLength;
@@ -915,7 +880,6 @@ GetResolution(void)
 
 int
 SystemInit(void)
-
 {
   extern char MouseFlag, GraphMode, SteerSelect, GearSelect;
   extern char MapName[], SelectName[], PanelName[], LoadName[];
@@ -1026,7 +990,6 @@ SystemInit(void)
 
 void
 SystemExit(char* message)
-
 {
   union REGS regs;
 

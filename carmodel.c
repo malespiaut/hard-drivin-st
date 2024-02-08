@@ -111,7 +111,6 @@ static void near InteractionModel(void);
 
 static void near
 TurnPitch(int deltaPitch)
-
 {
   extern s_car car;
   int cosR;
@@ -130,7 +129,6 @@ TurnPitch(int deltaPitch)
 
 static void near
 TurnYaw(int deltaYaw)
-
 {
   extern s_car car;
   register int deltaPitch, deltaRoll, delta;
@@ -161,7 +159,6 @@ TurnYaw(int deltaYaw)
 
 static void near
 SetNormalVector(void)
-
 {
   extern s_car car;
   int sinY, cosY, sinP, cosP, sinR, cosR;
@@ -200,7 +197,6 @@ SetNormalVector(void)
 
 static void near
 PlayerControl(void)
-
 {
   extern char SpinFlag, SkidFlag, AccidentFlag, CarInLoop;
   extern int SteerX;
@@ -283,7 +279,6 @@ PlayerControl(void)
 
 static void near
 CarMotion(void)
-
 {
   extern char SpinFlag, AccidentFlag;
   extern s_car car;
@@ -349,7 +344,6 @@ CarMotion(void)
 
 static void near
 CarEngine(void)
-
 {
   extern char CheckOffRoad, SpinFlag, SkidFlag;
   extern char AccidentFlag, ManualShift, CarInLoop;
@@ -601,7 +595,6 @@ CarEngine(void)
 
 static char near
 CheckCollision(void)
-
 {
   extern char CollisionFlag, LapMode, AccidentFlag;
   extern int VisibleObjects, NumOfBarriers;
@@ -928,7 +921,6 @@ CheckCollision(void)
 
 static void near
 GetNearestStreetSegments(void)
-
 {
   extern char OnTrack;
   extern s_track *NextStreet, *track1, *track2;
@@ -1068,7 +1060,6 @@ GetNearestStreetSegments(void)
 
 static int near
 CompDistance(int x, int y, int z, char set1)
-
 {
   char flag;
   int s1x1, s1y1, s1z1, s1x2, s1y2, s1z2;
@@ -1192,7 +1183,6 @@ CompDistance(int x, int y, int z, char set1)
 
 static int near
 CompHeight(int x, int y, int z)
-
 {
   extern int ObjFace[];
   int x1, y1, z1, dx1, dy1, dz1, dx2, dy2, dz2;
@@ -1230,7 +1220,6 @@ CompHeight(int x, int y, int z)
 
 static void near
 OnTheRoad(void)
-
 {
   status = s_OnTheRoad;
 
@@ -1320,7 +1309,6 @@ OnTheRoad(void)
 
 static void near
 OnTheGreen(void)
-
 {
   int k[4 * 3];
 
@@ -1354,7 +1342,6 @@ OnTheGreen(void)
 
 static void near
 CarOnObject(void)
-
 {
   int Correction;
 
@@ -1373,7 +1360,6 @@ CarOnObject(void)
 
 static void near
 InteractionModel(void)
-
 {
   extern char AccidentFlag, LapMode, CarInLoop;
   extern int EnginePitch;
@@ -1543,7 +1529,6 @@ InteractionModel(void)
 
 void
 CarModel(void)
-
 {
   extern char OnObject, ReturnFlag, CheckOffRoad;
 

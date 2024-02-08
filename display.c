@@ -39,7 +39,6 @@ static void near CarInDip(void);
 
 static void near
 PrintMountains(int y)
-
 {
   extern int MntPositions[], MinX, MaxX;
   extern s_car car;
@@ -64,7 +63,6 @@ PrintMountains(int y)
 
 void
 PrintBackground(void)
-
 {
   extern char GraphMode;
   extern int pitchSIN, pitchCOS, MinX, MaxX, MinY, MaxY;
@@ -176,7 +174,6 @@ PrintBackground(void)
 
 static void near
 ClearCockpit(void)
-
 {
   extern char LapMode, QualifyFlag, DemoMode;
   extern void far *Buffer2, far *ScreenBuffer, far *AuxScreen;
@@ -221,7 +218,6 @@ ClearCockpit(void)
 
 void
 PrintCockpit(void)
-
 {
   extern char SloMoFlag, DemoMode;
   extern void far *Buffer2, far *AuxScreen;
@@ -333,7 +329,6 @@ PrintCockpit(void)
 
 static void near
 ShowAllCarsInTheLoop(s_object* loop)
-
 {
   extern int VisibleObjects;
   extern s_priority PrioList[];
@@ -368,7 +363,6 @@ ShowAllCarsInTheLoop(s_object* loop)
 
 void
 PrintLoop(s_object* obj)
-
 {
   extern int PolyVertex[];
   register uchar far *p, i, j, norm;
@@ -521,7 +515,6 @@ PrintLoop(s_object* obj)
 
 void
 PrintSign(s_object* obj)
-
 {
   extern int PolyVertex[];
   register uchar far *p, i, j, h;
@@ -585,7 +578,6 @@ PrintSign(s_object* obj)
 
 void
 PrintBridge(s_object* obj)
-
 {
   extern int PolyVertex[];
   register uchar far *p, i, j, h;
@@ -650,7 +642,6 @@ PrintBridge(s_object* obj)
 
 void
 PrintCar(s_object* obj)
-
 {
   extern int PolyVertex[];
   register uchar far *p, i, j, h;
@@ -739,7 +730,6 @@ PrintCar(s_object* obj)
 
 void
 PrintUnderpass(s_object* obj)
-
 {
   extern int PolyVertex[];
   register uchar far *p, i, j, h;
@@ -791,7 +781,6 @@ PrintUnderpass(s_object* obj)
 
 void
 PrintObject(s_object* obj)
-
 {
   extern int PolyVertex[];
   register uchar far *p, i, j, h;
@@ -836,7 +825,6 @@ PrintObject(s_object* obj)
 
 void
 PrintBrokenWindow(void)
-
 {
   extern int Debris[];
 
@@ -879,7 +867,6 @@ PrintBrokenWindow(void)
 
 static void near
 PrintHillRoads(int type)
-
 {
   extern uchar VisiStr1, VisiStr2, VisiLns1, VisiLns2;
   extern int *Flags1, *Flags2;
@@ -966,7 +953,6 @@ PrintHillRoads(int type)
 
 static void near
 PrintLowStreets(void)
-
 {
   extern uchar VisiStr1, VisiStr2, VisiLns1, VisiLns2;
   extern int *Flags1, *Flags2;
@@ -1079,7 +1065,6 @@ PrintLowStreets(void)
 
 static void near
 CarOnRoad(void)
-
 {
   extern int VisibleObjects, NumOfFields;
   extern s_object* field;
@@ -1198,7 +1183,6 @@ CarOnRoad(void)
 
 static void near
 CarInDip(void)
-
 {
   extern int VisibleObjects;
   extern s_object* field;
@@ -1260,7 +1244,6 @@ CarInDip(void)
 
 void
 PrintAllObjects(void)
-
 {
   extern s_car car;
 

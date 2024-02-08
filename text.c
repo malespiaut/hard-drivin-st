@@ -44,7 +44,6 @@ CharLength, /* Length of a character. */
 
 void
 ScaleFont(void)
-
 {
   extern int ScreenX, ScreenY;
   register int x, y;
@@ -77,7 +76,6 @@ ScaleFont(void)
 
 static void
 PrintZiffer(int x, int y, int ziffer)
-
 {
   switch (ziffer)
   {
@@ -112,7 +110,6 @@ PrintZiffer(int x, int y, int ziffer)
 
 static void
 PrintText(int x, int y, char* text, int color)
-
 {
   register int ch;
 
@@ -249,7 +246,6 @@ PrintText(int x, int y, char* text, int color)
 
 void
 TypeValue(int x, int y, long value, int color)
-
 {
   char text[100];
 
@@ -260,7 +256,6 @@ TypeValue(int x, int y, long value, int color)
 
   void
   PrintScore(void)
-
 {
   extern int ScoreY, ScoreX, DigitLength;
   extern long Score;
@@ -280,7 +275,6 @@ TypeValue(int x, int y, long value, int color)
 
 void
 PrintTime(void)
-
 {
   extern char RaceIsOn;
   extern int TimeX, TimeY, DigitLength;
@@ -319,7 +313,6 @@ PrintTime(void)
 
 void
 PrintQualify(void)
-
 {
   extern char QualifyFlag, LapMode, DemoMode;
   extern void *Buffer2, *ScreenBuffer;
@@ -381,7 +374,6 @@ PrintQualify(void)
 
 void
 PrintMessage(void)
-
 {
   extern char MessageTime, MessageCode;
 
@@ -437,7 +429,6 @@ PrintMessage(void)
 
 void
 PrintCountDown(void)
-
 {
   extern char TimeOutFlag, StartMessage;
   extern char LapMode, RaceIsOn;
@@ -513,7 +504,6 @@ PrintCountDown(void)
 
 void
 PrintOffRoad(void)
-
 {
   extern char ReturnFlag, WrongDirection, LapMode;
   extern char AccidentFlag, MessageTime, MessageCode;
@@ -564,7 +554,6 @@ PrintOffRoad(void)
 
 void
 PrintHiscoreList(void)
-
 {
   extern char ScoreList[];
   extern int ListX, LineHeight, MessageY;
@@ -600,7 +589,6 @@ PrintHiscoreList(void)
 
 void
 PrintChampion(void)
-
 {
   extern char BestName[], BestTime[];
   extern int LineHeight, MessageY, BestLength;

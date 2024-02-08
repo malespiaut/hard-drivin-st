@@ -41,7 +41,6 @@ static int near CheckSecondTrack(int link);
 
 static void near
 CheckReturnPoints(s_track* segment)
-
 {
   extern uchar OnTrack;
   extern s_control *NextCtr1, *NextCtr2;
@@ -76,7 +75,6 @@ CheckReturnPoints(s_track* segment)
 
 static int near
 CheckFirstTrack(int link)
-
 {
   extern uchar WrongDirection, VisiStr1, OnTrack;
   extern int Street1Vertex[], *First1, *Flags1;
@@ -278,7 +276,6 @@ CheckFirstTrack(int link)
 
 static int near
 CheckSecondTrack(int link)
-
 {
   extern uchar WrongDirection, VisiStr2, OnTrack;
   extern int Street2Vertex[], Streets2;
@@ -475,7 +472,6 @@ CheckSecondTrack(int link)
 
 static int near
 CheckFirstTrack(int link)
-
 {
   extern uchar WrongDirection, VisiStr1, OnTrack, CarInLoop;
   extern int Street1Vertex[], *First1, *Flags1;
@@ -669,7 +665,6 @@ CheckFirstTrack(int link)
 
 static int near
 CheckSecondTrack(int link)
-
 {
   extern uchar WrongDirection, VisiStr2, OnTrack, CarInLoop;
   extern int Street2Vertex[];
@@ -881,7 +876,6 @@ CheckSecondTrack(int link)
 
 void
 FindStreets(void)
-
 {
   extern uchar VisiStr1, VisiStr2, OnTrack;
   extern s_track *NextStreet, *track1, *track2;

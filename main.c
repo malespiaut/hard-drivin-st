@@ -276,7 +276,6 @@ s_BitImage FlagYellow, FlagRed, /* Two flags to show last lap run.			*/
 
 static void
 DemoRun(void)
-
 {
   static char Message;
   int i;
@@ -371,7 +370,6 @@ DemoRun(void)
 
 static void
 GotoReturnPoint(void)
-
 {
   register int h;
   register s_control* cn;
@@ -486,7 +484,6 @@ GotoReturnPoint(void)
 
 static void
 ShowSlowMotion(void)
-
 {
   register int i, j, frames, *p;
   register s_playback* fr;
@@ -688,7 +685,6 @@ ShowSlowMotion(void)
 
 static void
 GameRun(void)
-
 {
   int i;
 
@@ -797,7 +793,6 @@ GameRun(void)
 
 static void
 ChampPlayBack(void)
-
 {
   s_frame far *redpos, far *bluepos;
   s_object* winner;
@@ -911,7 +906,6 @@ ChampPlayBack(void)
 
 static void
 ChampTitle(void)
-
 {
   extern char TuneSpeed;
   int i, ysin, ycos, psin, pcos;
@@ -1055,7 +1049,6 @@ ChampTitle(void)
 
 static void
 ChampRace(void)
-
 {
   GetPlayerInput();
 
@@ -1109,7 +1102,6 @@ ChampRace(void)
 
 static void
 ChampionChipLap(void)
-
 {
   char SaveUK_flag;
 
@@ -1254,7 +1246,6 @@ ChampionChipLap(void)
 
 static void
 PlayAGame(void)
-
 {
   ChooseTransmission();
 
@@ -1297,7 +1288,6 @@ PlayAGame(void)
 extern uint _stklen = 2000;
 
 main(void)
-
 {
   char ever = TRUE;
 

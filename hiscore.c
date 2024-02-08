@@ -55,7 +55,6 @@ static void near GetChampName(s_score* champ);
 
 static void near
 EditString(s_score* sc)
-
 {
   extern char ExitWait, CharNum, SteerSelect;
   extern int button, SteerX;
@@ -115,7 +114,6 @@ EditString(s_score* sc)
 
 static void near
 PrintTable(int num)
-
 {
   extern char ScoreList[];
   extern int CharWidth, CharHeight, LineHeight, SteerX;
@@ -170,7 +168,6 @@ PrintTable(int num)
 
 static void near
 GetNewName(int num, s_score* sc)
-
 {
   extern char CharNum;
   extern int CharWidth, ScreenX;
@@ -196,7 +193,6 @@ GetNewName(int num, s_score* sc)
 
 void
 ScoreUpdate(void)
-
 {
   extern char DirtyFlag, TimeFlag;
   extern long Score;
@@ -252,7 +248,6 @@ ScoreUpdate(void)
 
 static void near
 ShowNewScoreList(int player)
-
 {
   extern char ScoreList[];
   extern int LineHeight;
@@ -288,7 +283,6 @@ ShowNewScoreList(int player)
 
 static void near
 ChampTable(s_score* champ)
-
 {
   extern char ScoreList[], BestTime[];
   extern int CharWidth, CharHeight, LineHeight;
@@ -340,7 +334,6 @@ ChampTable(s_score* champ)
 
 static void near
 GetChampName(s_score* champ)
-
 {
   extern int CharWidth, ScreenX;
   extern char BestTime[], BestName[];
@@ -384,7 +377,6 @@ GetChampName(s_score* champ)
 
 void
 LapUpdate(void)
-
 {
   extern char DirtyFlag, TimeFlag, QualifyFlag;
   extern char BestTime[], BestName[];

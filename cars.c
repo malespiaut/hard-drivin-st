@@ -23,7 +23,6 @@
 
 void
 InitVehicles(void)
-
 {
   extern int NumOfVehicles;
   extern s_vehicle* vehicle;
@@ -53,7 +52,6 @@ InitVehicles(void)
 
 void
 SetVehicle(s_vehicle* vh)
-
 {
   extern char UK_Flag;
   extern s_track *track1, *track2;
@@ -245,7 +243,6 @@ SetVehicle(s_vehicle* vh)
 
 void
 MoveVehicles(void)
-
 {
   extern char RaceIsOn;
   extern int NumOfVehicles;
@@ -268,7 +265,6 @@ MoveVehicles(void)
 
 void
 RevertVehicleMovement(void)
-
 {
   extern int NumOfVehicles;
   extern s_vehicle* vehicle;
@@ -293,7 +289,6 @@ RevertVehicleMovement(void)
 
 void
 EnableVehicles(void)
-
 {
   extern int NumOfVehicles;
   extern s_track *track1, *track2;
@@ -325,7 +320,6 @@ EnableVehicles(void)
 
 void
 DisableVehicles(void)
-
 {
   extern int NumOfVehicles;
   extern s_vehicle* vehicle;

@@ -39,7 +39,6 @@ static void near ReadAllFiles(void);
 
 static void near
 ClearControlPoints(void)
-
 {
   extern int NumOfT1controls, NumOfT2controls;
   extern s_control *T1ContPoints, *T2ContPoints;
@@ -70,7 +69,6 @@ ClearControlPoints(void)
 
 void
 GetPlayerInput(void)
-
 {
   extern char GameMode, DemoMode, TimeFlag, RaceIsOn;
   extern char SloMoFlag, StartFlag, EngineOn, CharNum;
@@ -371,7 +369,6 @@ GetPlayerInput(void)
 
 static int near
 ReadShapeFiles(void)
-
 {
   extern unsigned char MntLength[];
   extern int MntPositions[];
@@ -454,7 +451,6 @@ ReadShapeFiles(void)
 
 static void near
 ReadGameFile(void)
-
 {
   extern char PhantomLane, DirtyFlag;
   extern int BestLength;
@@ -522,7 +518,6 @@ ReadGameFile(void)
 
 void
 SaveGameFile(void)
-
 {
   extern char PhantomLane;
   extern void far* AuxBuffer;
@@ -561,7 +556,6 @@ SaveGameFile(void)
 
 static int near
 ReadTrackFile(void)
-
 {
   extern int TrackData[];
   extern int NumOfFields, NumOfObjects, Streets1;
@@ -637,7 +631,6 @@ ReadTrackFile(void)
 
 static void near
 ReadAllFiles(void)
-
 {
   extern char MapName[], SelectName[], LoadName[], PanelName[];
   extern char TuneSpeed;
@@ -708,7 +701,6 @@ ReadAllFiles(void)
 
 void
 ReadScoreList(void)
-
 {
   extern char ScoreList[];
   extern s_score HiScoreList[];
@@ -753,7 +745,6 @@ ReadScoreList(void)
 
 void
 HardDrivingInit(void)
-
 {
   extern char GameMode, DemoMode, UK_Flag;
   extern char BestTime[], NewScreens;
@@ -806,7 +797,6 @@ HardDrivingInit(void)
 
 void
 GameInit(void)
-
 {
   extern char TimeOutFlag, QualifyFlag, GameMode;
   extern char OpaqueFlag, ReturnFlag, DemoMode;
@@ -860,7 +850,6 @@ GameInit(void)
 
 void
 FramePoly(int n)
-
 {
   extern int PolyVertex[];
   register int i, *p;
@@ -884,7 +873,6 @@ FramePoly(int n)
 
 void
 Insert(int distance, s_object* obj)
-
 {
   extern int VisibleObjects;
   extern s_priority PrioList[];
@@ -911,7 +899,6 @@ Insert(int distance, s_object* obj)
 
 void
 InitRecord(void)
-
 {
   extern s_playback SlowMotion[], *FramePos;
   register s_playback* fr;
@@ -930,7 +917,6 @@ InitRecord(void)
 
 void
 RewindRecord(void)
-
 {
   extern s_playback SlowMotion[], *FramePos;
 
@@ -942,7 +928,6 @@ RewindRecord(void)
 
 void
 RecordCar(void)
-
 {
   extern char SpinFlag;
   extern int EnginePitch, NumOfVehicles;
@@ -990,7 +975,6 @@ RecordCar(void)
 
 void
 RecordRedCar(void)
-
 {
   extern char RedSample, StartFlag;
   extern s_car car;
@@ -1021,7 +1005,6 @@ RecordRedCar(void)
 
 void
 ReadRedCar(void)
-
 {
   extern char RedSample, StartFlag, TimeOutFlag;
   extern s_object* RedCar;
@@ -1068,7 +1051,6 @@ ReadRedCar(void)
 
 void
 ReadBlueCar(void)
-
 {
   extern char BlueSample, StartFlag, TimeOutFlag;
   extern char MessageCode, MessageTime;
@@ -1133,7 +1115,6 @@ ReadBlueCar(void)
 
 void
 TimeString(char* p, long time)
-
 {
   register char c, i;
 
@@ -1155,7 +1136,6 @@ TimeString(char* p, long time)
 
 void
 SetCar(int segment, int lane, int row, int side)
-
 {
   extern char UK_Flag;
   extern s_car car;
@@ -1224,7 +1204,6 @@ SetCar(int segment, int lane, int row, int side)
 
 uchar
 SetObjClass(s_object* obj)
-
 {
   extern int far* ObjDataBase;
   register int vectors, h, far *p;
@@ -1257,7 +1236,6 @@ SetObjClass(s_object* obj)
 
 s_object*
 SearchObject(int type)
-
 {
   extern int NumOfObjects;
   extern s_object* object;
@@ -1284,7 +1262,6 @@ SearchObject(int type)
 
 void
 SetArrows(uchar status)
-
 {
   extern int NumOfObjects;
   extern s_object* object;
@@ -1303,7 +1280,6 @@ SetArrows(uchar status)
 
 void
 CopyCarPosition(s_object* obj)
-
 {
   extern s_car car;
 
@@ -1318,7 +1294,6 @@ CopyCarPosition(s_object* obj)
 
 void
 PassCheckpoint(void)
-
 {
   extern char BonusFlag, MessageTime, MessageCode;
   extern char TimeOutFlag, WrongDirection, Difficulty;
@@ -1371,7 +1346,6 @@ PassCheckpoint(void)
 
 void
 PassFinish(void)
-
 {
   extern char BonusFlag, QualifyFlag, TimeOutFlag;
   extern char MessageTime, MessageCode, WrongDirection;
@@ -1470,7 +1444,6 @@ PassFinish(void)
 
 int
 StringLength(char* string)
-
 {
   register int count;
 
@@ -1485,7 +1458,6 @@ StringLength(char* string)
 
 void
 UpdateTime(void)
-
 {
   extern char TimeFlag;
   extern int OffRoadOut;
@@ -1501,7 +1473,6 @@ UpdateTime(void)
 
 void
 PrintValue(int x, int y, int value)
-
 {
   static char string[] = "00000.";
   int h, num, flag;
@@ -1534,7 +1505,6 @@ PrintValue(int x, int y, int value)
 
 /*
 void	FramePoly( int n)
-
 {	extern	int	PolyVertex[];
                 int	i, *p;
 
