@@ -194,7 +194,7 @@ SetVehicle(s_vehicle* vh)
   /* ----------------------------------------------------------------
      --- GIVES PROBLEMS AT CERTAIN POSITIONS. -----------------------
 
-  /* SMOOTH TRANSITION TO NEXT SEGMENT'S ANGLES. */
+  // SMOOTH TRANSITION TO NEXT SEGMENT'S ANGLES.
 
   if (sub > (MaxRoadPos - swing))
   {
@@ -210,7 +210,7 @@ SetVehicle(s_vehicle* vh)
       obj->pitch = (vh->direction == 1) ? -h1 : h1;
     }
   }
-  * /
+  */
 
     /* LAST SUBPOSITION ON THIS SEGMENT ? */
 

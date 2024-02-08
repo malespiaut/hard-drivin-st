@@ -33,14 +33,13 @@
 */
 
 /*
-        int	SpaceLength,		/* Length of a blank. */
-CharLength, /* Length of a character. */
+        int	SpaceLength,		// Length of a blank.
+CharLength, // Length of a character.
   x0, x1, x2, x3, x4, x5, x6,
   y0, y1, y2, y3, y4, y5, y6;
 
-/*		FUNCTIONS :
-                ===========
-*/
+//		FUNCTIONS :
+//                ===========
 
 void
 ScaleFont(void)
@@ -252,7 +251,7 @@ TypeValue(int x, int y, long value, int color)
   sprintf(text, "%ld", value);
   PrintText(x, y, text, color);
 }
-* /
+*/
 
   void
   PrintScore(void)
