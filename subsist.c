@@ -19,43 +19,43 @@
 #option separate PITCHER_BACKGROUND_SCRN
 #option separate PITCHER_BACKGROUND_STMP
 #option separate team_names
-extern LONG BAT_BACKGROUND_SCRN;
-extern LONG BAT_BACKGROUND_STMP;
-extern LONG PITCHER_BACKGROUND_SCRN;
-extern LONG PITCHER_BACKGROUND_STMP;
-extern LONG TENGEN_PRESENTS_STMP;
-extern LONG TEAMSEL_COL;
-extern LONG TEAMSEL_SCRN;
-extern UCHAR inputs_edge[];
-extern UCHAR inputs[];
-extern LONG color_addr;
-extern INT pal_num;
-extern INT pass_vars[];
-extern INT temp[];
-extern UCHAR Team_Num[];
-extern CHAR message_buffer[];
+extern long BAT_BACKGROUND_SCRN;
+extern long BAT_BACKGROUND_STMP;
+extern long PITCHER_BACKGROUND_SCRN;
+extern long PITCHER_BACKGROUND_STMP;
+extern long TENGEN_PRESENTS_STMP;
+extern long TEAMSEL_COL;
+extern long TEAMSEL_SCRN;
+extern unsigned char inputs_edge[];
+extern unsigned char inputs[];
+extern long color_addr;
+extern int pal_num;
+extern int pass_vars[];
+extern int temp[];
+extern unsigned char Team_Num[];
+extern char message_buffer[];
 extern TN_TYPE team_names[];
 extern PITCHER_TYPE PITCHERS[2][11];
-extern UCHAR curpitcher[];
-extern INT ERATBL[];
-extern UCHAR dhfl;
-extern UCHAR lineup[2][15];
-extern UCHAR fielders[2][9];
+extern unsigned char curpitcher[];
+extern int ERATBL[];
+extern unsigned char dhfl;
+extern unsigned char lineup[2][15];
+extern unsigned char fielders[2][9];
 extern BATTER_TYPE BATTERS[2][14];
-extern UCHAR teamup;       /* Teamup 0-Player 0, 1-Player 1 */
-extern UCHAR curbatter[2]; /* Who's Batting */
-extern UCHAR state4;
-extern UCHAR Offense_CTRL_edge; /* Offense/Defense Joystick Trigger */
-extern UCHAR Defense_CTRL_edge;
+extern unsigned char teamup;       /* Teamup 0-Player 0, 1-Player 1 */
+extern unsigned char curbatter[2]; /* Who's Batting */
+extern unsigned char state4;
+extern unsigned char Offense_CTRL_edge; /* Offense/Defense Joystick Trigger */
+extern unsigned char Defense_CTRL_edge;
 
-extern UCHAR rnnr_on_1b;
-extern UCHAR rnnr_on_2b;
-extern UCHAR rnnr_on_3b;
-extern UCHAR rnnr_on_hb;
-extern UCHAR player_on_1b; /* number of player on base(in BATTER struct) */
-extern UCHAR player_on_2b;
-extern UCHAR player_on_3b;
-extern UCHAR Batting_Num[2]; /* Batter who is up */
+extern unsigned char rnnr_on_1b;
+extern unsigned char rnnr_on_2b;
+extern unsigned char rnnr_on_3b;
+extern unsigned char rnnr_on_hb;
+extern unsigned char player_on_1b; /* number of player on base(in BATTER struct) */
+extern unsigned char player_on_2b;
+extern unsigned char player_on_3b;
+extern unsigned char Batting_Num[2]; /* Batter who is up */
 
 extern UGH_S();
 
@@ -118,7 +118,7 @@ substitute()
 
 batter_substitution_init()
 {
-  INT j, k, pal, team, number;
+  int j, k, pal, team, number;
 
   temp[0] = 0; /* out of game flags */
   temp[1] = 0;
@@ -135,13 +135,13 @@ batter_substitution_init()
   number = curbatter[teamup];
 
   drawscreen(&BAT_BACKGROUND_SCRN, &BAT_BACKGROUND_STMP, &TEAMSEL_COL);
-  color_addr = (LONG)&TEAMSEL_COL + (UCHAR)32;
+  color_addr = (long)&TEAMSEL_COL + (unsigned char)32;
   pal_num = 1;
   movecolortable();
-  color_addr = (LONG)&TEAMSEL_COL + (UCHAR)64;
+  color_addr = (long)&TEAMSEL_COL + (unsigned char)64;
   pal_num = 2;
   movecolortable();
-  color_addr = (LONG)&TEAMSEL_COL + (UCHAR)96;
+  color_addr = (long)&TEAMSEL_COL + (unsigned char)96;
   pal_num = 3;
   movecolortable();
 
@@ -234,7 +234,7 @@ batter_substitution_init()
 
 full_stats()
 {
-  INT x, i, pal, number;
+  int x, i, pal, number;
   x = temp[12];
   pal = temp[11];
   number = temp[10];
@@ -274,7 +274,7 @@ full_stats()
 
 full_stats_pit()
 {
-  INT x, i, pal, number;
+  int x, i, pal, number;
   x = temp[12];
   pal = temp[11];
   number = temp[10];
@@ -298,7 +298,7 @@ full_stats_pit()
 
 batter_substitution_move()
 {
-  INT number, k, pal;
+  int number, k, pal;
   pal = 2 + teamup;
 
   if (Offense_CTRL_edge & JS_UP)
@@ -434,7 +434,7 @@ batter_substitution_move()
 /*===================================*/
 get_pposition()
 {
-  INT i;
+  int i;
 
   i = pass_vars[0];
   switch (i)
@@ -529,7 +529,7 @@ prt_cursor()
 
 fielder_substitution_init()
 {
-  INT j, k, i, pal, team, number;
+  int j, k, i, pal, team, number;
 
   temp[0] = 0; /* out of game flags */
   temp[1] = 0;
@@ -545,13 +545,13 @@ fielder_substitution_init()
   number = lineup[temp[6]][0];
 
   drawscreen(&PITCHER_BACKGROUND_SCRN, &PITCHER_BACKGROUND_STMP, &TEAMSEL_COL);
-  color_addr = (LONG)&TEAMSEL_COL + (UCHAR)32;
+  color_addr = (long)&TEAMSEL_COL + (unsigned char)32;
   pal_num = 1;
   movecolortable();
-  color_addr = (LONG)&TEAMSEL_COL + (UCHAR)64;
+  color_addr = (long)&TEAMSEL_COL + (unsigned char)64;
   pal_num = 2;
   movecolortable();
-  color_addr = (LONG)&TEAMSEL_COL + (UCHAR)96;
+  color_addr = (long)&TEAMSEL_COL + (unsigned char)96;
   pal_num = 3;
   movecolortable();
 
@@ -626,7 +626,7 @@ fielder_substitution_init()
 
 fielder_substitution_move()
 {
-  INT pal, k;
+  int pal, k;
   pal = 2 + teamup ^ 1;
 
   if (Defense_CTRL_edge & JS_UP)
@@ -718,7 +718,7 @@ fielder_substitution_move()
 
 pitcher_substitution_init()
 {
-  INT j, i, k, pal, team, number;
+  int j, i, k, pal, team, number;
 
   temp[0] = 0; /* out of game flags */
   temp[1] = 0;
@@ -734,13 +734,13 @@ pitcher_substitution_init()
   number = curpitcher[teamup ^ 1];
 
   drawscreen(&PITCHER_BACKGROUND_SCRN, &PITCHER_BACKGROUND_STMP, &TEAMSEL_COL);
-  color_addr = (LONG)&TEAMSEL_COL + (UCHAR)32;
+  color_addr = (long)&TEAMSEL_COL + (unsigned char)32;
   pal_num = 1;
   movecolortable();
-  color_addr = (LONG)&TEAMSEL_COL + (UCHAR)64;
+  color_addr = (long)&TEAMSEL_COL + (unsigned char)64;
   pal_num = 2;
   movecolortable();
-  color_addr = (LONG)&TEAMSEL_COL + (UCHAR)96;
+  color_addr = (long)&TEAMSEL_COL + (unsigned char)96;
   pal_num = 3;
   movecolortable();
 
@@ -796,7 +796,7 @@ pitcher_substitution_init()
 
 pitcher_substitution_move()
 {
-  INT pal;
+  int pal;
   pal = 2 + temp[6];
   if (Defense_CTRL_edge & JS_UP)
   {
@@ -843,9 +843,9 @@ pitcher_substitution_move()
 /*===================================*/
 
 /* Print names of teams
-/*   pass_vars[0] = x position
-/*   pass_vars[1] = y position
-/*   pass_vars[2] = palette number
+//   pass_vars[0] = x position
+//   pass_vars[1] = y position
+//   pass_vars[2] = palette number
 */
 pr_line_names()
 {
@@ -858,14 +858,14 @@ pr_line_names()
 }
 
 /* Print names of teams
-/*   pass_vars[0] = x position
-/*   pass_vars[1] = y position
-/*   pass_vars[2] = 0 = team1, 1 = team2
-/*   pass_vars[3] = palette number
+//   pass_vars[0] = x position
+//   pass_vars[1] = y position
+//   pass_vars[2] = 0 = team1, 1 = team2
+//   pass_vars[3] = palette number
 */
 pr_lineup_names()
 {
-  INT j, k;
+  int j, k;
   j = Team_Num[pass_vars[2]];
   if (j < 128)
   {
