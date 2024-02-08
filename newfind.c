@@ -1,10 +1,6 @@
 
 
-
-	#include	"proto.h"
-
-
-
+#include "proto.h"
 
 /*
 
@@ -14,7 +10,7 @@
  PROJECT..............	HARDDRIVING game program
 
  DESCRIPTION..........	This module includes functions to find all
-			visible street elements.
+                        visible street elements.
 
  DATE OF CREATION.....	December 25th 1989
  LAST CHANGE..........	December 25th 1989
@@ -25,889 +21,887 @@
 
 */
 
-
-
-
-	#define	NewVersion	0	/* OLD VERSION: looks at near segments.
-					   NEW VERSION: looks at all segments.
-					*/
-
-
-
-
-
+#define NewVersion 0 /* OLD VERSION: looks at near segments. \
+                        NEW VERSION: looks at all segments.  \
+                     */
 
 /*		VARIABLES :
-		===========
+                ===========
 */
 
-
-
-	char	NoReturnCheck;		/* Flag indicates no checking for next returnpoint. */
-
-
-
-
-
+char NoReturnCheck; /* Flag indicates no checking for next returnpoint. */
 
 /*		FUNCTIONS :
-		===========
+                ===========
 */
 
+static void near CheckReturnPoints(s_track* segment);
+static int near CheckFirstTrack(int link);
+static int near CheckSecondTrack(int link);
 
+static void near
+CheckReturnPoints(s_track* segment)
 
-static	void near	CheckReturnPoints( s_track *segment);
-static	int near	CheckFirstTrack( int link);
-static	int near	CheckSecondTrack( int link);
+{
+  extern uchar OnTrack;
+  extern s_control *NextCtr1, *NextCtr2;
+  extern s_track *track1, *track2;
 
+  if (NoReturnCheck)
+    return;
 
-
-
-
-
-
-
-static	void near	CheckReturnPoints( s_track *segment)
-
-{	extern	 uchar		OnTrack;
-	extern	 s_control	*NextCtr1, *NextCtr2;
-	extern	 s_track	*track1, *track2;
-
-	if (NoReturnCheck)
-		return;
-
-	if (OnTrack == 0)
-	{	if (segment == &track1[NextCtr1->segment])
-		{	segment->flags &= (~f_returnpoint);
-			NextCtr1->covered = TRUE;
-			NextCtr1++;
-		}
-	}
-	else
-	{	if (segment == &track2[NextCtr2->segment])
-		{	segment->flags &= (~f_returnpoint);
-			NextCtr2->covered = TRUE;
-			NextCtr2++;
-		}
-	}
+  if (OnTrack == 0)
+  {
+    if (segment == &track1[NextCtr1->segment])
+    {
+      segment->flags &= (~f_returnpoint);
+      NextCtr1->covered = TRUE;
+      NextCtr1++;
+    }
+  }
+  else
+  {
+    if (segment == &track2[NextCtr2->segment])
+    {
+      segment->flags &= (~f_returnpoint);
+      NextCtr2->covered = TRUE;
+      NextCtr2++;
+    }
+  }
 }
 
-
-
-
-
-
-
-
-	#define	MaxDistance	4000
-
-
-
-
+#define MaxDistance 4000
 
 #if (NewVersion)
 
+static int near
+CheckFirstTrack(int link)
 
-static	int near	CheckFirstTrack( int link)
+{
+  extern uchar WrongDirection, VisiStr1, OnTrack;
+  extern int Street1Vertex[], *First1, *Flags1;
+  extern int yawSIN, yawCOS, pitchSIN, pitchCOS, rollSIN, rollCOS;
+  extern int nearestStreet, Streets1;
+  extern s_track *track1, *Junct1, *Junct2;
+  extern s_track *End1, *NextStreet;
+  extern s_car car;
 
-{	extern	 uchar          WrongDirection, VisiStr1, OnTrack;
-	extern	 int		Street1Vertex[], *First1, *Flags1;
-	extern	 int		yawSIN, yawCOS, pitchSIN, pitchCOS, rollSIN, rollCOS;
-	extern	 int		nearestStreet, Streets1;
-	extern	 s_track	*track1, *Junct1, *Junct2;
-	extern	 s_track	*End1, *NextStreet;
-	extern	 s_car		car;
+  register int i, count;
+  register int *d, *flag;
+  register s_track* p;
+  register uint dz;
+  char FirstTime;
+  int junction, pos, n, nearest, NearFlags;
+  s_track *NearestElement, *first;
 
-	register int		i, count;
-	register int		*d, *flag;
-	register s_track	*p;
-	register uint		dz;
-		 char		FirstTime;
-		 int		junction, pos, n, nearest, NearFlags;
-		 s_track	*NearestElement, *first;
+  static int VisiFlags[MaxSegments];
 
-	static	 int		VisiFlags[MaxSegments];
+  /* START WITH AN SEGMENT OUTSIDE THE QUADRANT. */
 
+  for (p = track1, i = 0; i < Streets1; i++)
+  {
+    if (abs(p->x1 - car.x) > MaxDistance)
+      break;
+    if (abs(p->z1 - car.z) > MaxDistance)
+      break;
+  }
 
+  /* NOW FIND ALL SEGMENTS INSIDE THE QUADRANT. */
 
-	/* START WITH AN SEGMENT OUTSIDE THE QUADRANT. */
+  junction = 0;
+  count = 0;
+  flag = VisiFlags;
+  d = Street1Vertex;
+  FirstTime = TRUE;
 
-	for (p = track1, i = 0; i < Streets1; i++)
-	{	if (abs( p->x1 - car.x) > MaxDistance)	break;
-		if (abs( p->z1 - car.z) > MaxDistance)	break;
-	}
+  for (i = 0; i < Streets1; i++)
+  {
+    if (p >= End1)
+      p = track1;
 
+    /* VISIBILITY TEST: */
 
-	/* NOW FIND ALL SEGMENTS INSIDE THE QUADRANT. */
+    if ((abs(p->x1 - car.x) < MaxDistance) &&
+        (abs(p->z1 - car.z) < MaxDistance))
+    {
+      if (FirstTime)
+      {
+        first = p;
+        FirstTime = FALSE;
+      }
 
-	junction  = 0;
-	count     = 0;
-	flag	  = VisiFlags;
-	d	  = Street1Vertex;
-	FirstTime = TRUE;
+      *d++ = (p->x1 - car.x);
+      *d++ = (p->y1 - car.y);
+      *d++ = (p->z1 - car.z);
 
+      *d++ = (p->x2 - car.x);
+      *d++ = (p->y2 - car.y);
+      *d++ = (p->z2 - car.z);
 
-	for (i = 0; i < Streets1; i++)
-	{	if (p >= End1)
-			p = track1;
+      count++;
 
-		/* VISIBILITY TEST: */
+      *flag++ = p->flags;
+      junction |= p->flags;
+    }
+    else
+    {
+      if (!FirstTime)
+        break;
+    }
 
-		if ( (abs( p->x1 - car.x) < MaxDistance) &&
-		     (abs( p->z1 - car.z) < MaxDistance))
-		{
-			if (FirstTime)
-			{	first = p;
-				FirstTime = FALSE;
-			}
+    p++;
+  }
 
-			*d++ = (p->x1 - car.x);
-			*d++ = (p->y1 - car.y);
-			*d++ = (p->z1 - car.z);
+  /* ROTATE ALL STREET ELEMENTS INTO POSITION. */
 
-			*d++ = (p->x2 - car.x);
-			*d++ = (p->y2 - car.y);
-			*d++ = (p->z2 - car.z);
+  n = count << 1;
 
-			count++;
+  if (car.yaw)
+    RotXZ(n, yawCOS, yawSIN, Street1Vertex, Street1Vertex);
+  if (car.pitch)
+    RotYZ(n, pitchCOS, pitchSIN, Street1Vertex, Street1Vertex);
+  if (car.roll)
+    RotXY(n, rollCOS, rollSIN, Street1Vertex, Street1Vertex);
 
-			*flag++   = p->flags;
-			junction |= p->flags;
-		}
-		else
-		{	if (!FirstTime)
-				break;
-		}
+  nearest = MaxInt;
+  flag = VisiFlags;
+  d = Street1Vertex;
+  p = first;
 
-		p++;
-	}
+  for (i = pos = 0; i < count; i++)
+  {
+    if (p >= End1)
+      p = track1;
 
+    /* FIND NEAREST STREET ELEMENT. */
 
-	/* ROTATE ALL STREET ELEMENTS INTO POSITION. */
+    if ((d[1] < 0) || (d[4] < 0))
+    { /* RETURNPOINT PASSED ? */
 
-	n = count << 1;
+      if (*flag & f_returnpoint)
+      {
+        int y;
 
-	if (car.yaw)	RotXZ( n, yawCOS,   yawSIN,   Street1Vertex, Street1Vertex);
-	if (car.pitch)	RotYZ( n, pitchCOS, pitchSIN, Street1Vertex, Street1Vertex);
-	if (car.roll)	RotXY( n, rollCOS,  rollSIN,  Street1Vertex, Street1Vertex);
+        y = d[1] + d[4];
 
+        /* RETURNPOINT MUST BE CLOSE. */
 
-	nearest = MaxInt;
-	flag = VisiFlags;
-	d = Street1Vertex;
-	p = first;
+        if ((y <= 0) && (y > -100))
+        {
+          if (d[2] + d[5] < 0)
+            if (abs(d[0] + d[3]) < 2500)
+              CheckReturnPoints(p);
+        }
+      }
 
-	for (i = pos = 0; i < count; i++)
-	{	if (p >= End1)
-			p = track1;
+      dz = abs(d[0] + d[3]) + abs(d[1] + d[4] + 2 * CarHeight) + abs(d[2] + d[5]);
 
-		/* FIND NEAREST STREET ELEMENT. */
+      if (dz < nearest)
+      {
+        if (i - pos < 10)
+        {
+          NearestElement = p;
+          nearest = dz;
+          pos = i;
+        }
+      }
+    }
 
-		if ((d[1] < 0) || (d[4] < 0))
-		{	/* RETURNPOINT PASSED ? */
+    d += 6;
+    flag++;
+    p++;
+  }
 
-			if (*flag & f_returnpoint)
-			{	int	y;
+  if (!link)
+  {
+    NextStreet = NearestElement;
+    nearestStreet = nearest;
+  }
+  else
+  {
+    if (nearest < nearestStreet)
+    {
+      NextStreet = NearestElement;
+      nearestStreet = nearest;
+      OnTrack = 0;
+    }
+  }
 
-				y = d[1] + d[4];
+  NearFlags = VisiFlags[pos];
 
-				/* RETURNPOINT MUST BE CLOSE. */
+  if (NearFlags & (f_checkpoint + f_finish))
+  {
+    if (NearFlags & f_checkpoint)
+      PassCheckpoint();
+    else
+      PassFinish();
+  }
 
-				if ((y <= 0) && (y > -100))
-				{	if (d[2] + d[5] < 0)
-						if (abs(d[0] + d[3]) < 2500)
-							CheckReturnPoints(p);
-				}
-			}
+  /* CHECK CAR'S DIRECTION. */
 
-			dz = abs(d[0]+d[3]) + abs(d[1]+d[4]+2*CarHeight) + abs(d[2]+d[5]);
+  if (!link)
+  {
+    i = pos << 1;
+    d = &Street1Vertex[i + i + i];
+    WrongDirection = (d[2] > d[2 + 2 * 3]);
+  }
 
-			if (dz < nearest)
-			{	if (i - pos < 10)
-				{	NearestElement = p;
-					nearest = dz;
-					pos = i;
-				}
-			}
-		}
+  /* FIND FIRST AND LAST VISIBLE STREET ELEMENT. */
 
-		d += 6;
-		flag++;
-		p++;
-	}
+  d = First1 = Street1Vertex;
+  flag = VisiFlags;
 
+  for (i = count, count = 0; --i;)
+  {
+    if ((d[2] > -RoadLength) && (d[2] < MaxDistance))
+    {
+      if (!count)
+      {
+        Flags1 = flag;
+        First1 = d;
+      }
+      count++;
+    }
+    else
+    {
+      if (count)
+        break;
+      flag++;
+    }
+    d += 2 * 3;
+  }
 
-	if (!link)
-	{	NextStreet = NearestElement;
-		nearestStreet = nearest;
-	}
-	else
-	{	if (nearest < nearestStreet)
-		{	NextStreet = NearestElement;
-			nearestStreet = nearest;
-			OnTrack = 0;
-		}
-	}
+  VisiStr1 = count;
 
-
-	NearFlags = VisiFlags[pos];
-
-	if (NearFlags & (f_checkpoint + f_finish))
-	{	if (NearFlags & f_checkpoint)
-			PassCheckpoint();
-		else
-			PassFinish();
-	}
-
-
-	/* CHECK CAR'S DIRECTION. */
-
-	if (!link)
-	{	i = pos << 1;
-		d = &Street1Vertex[i+i+i];
-		WrongDirection = (d[2] > d[2+2*3]);
-	}
-
-
-	/* FIND FIRST AND LAST VISIBLE STREET ELEMENT. */
-
-	d = First1 = Street1Vertex;
-	flag = VisiFlags;
-
-	for (i = count, count = 0; --i;)
-	{	if ((d[2] > -RoadLength) && (d[2] < MaxDistance))
-		{	if (!count)
-			{	Flags1 = flag;
-				First1 = d;
-			}
-			count++;
-		}
-		else
-		{	if (count)
-				break;
-			flag++;
-		}
-		d += 2*3;
-	}
-
-	VisiStr1 = count;
-
-	return( junction & (f_junct1 + f_junct2));
+  return (junction & (f_junct1 + f_junct2));
 }
 
+static int near
+CheckSecondTrack(int link)
 
+{
+  extern uchar WrongDirection, VisiStr2, OnTrack;
+  extern int Street2Vertex[], Streets2;
+  extern int yawSIN, yawCOS, pitchSIN, pitchCOS, rollSIN, rollCOS;
+  extern int *First2, *Flags2, nearestStreet;
+  extern s_track *track2, *End2, *NextStreet;
+  extern s_car car;
 
+  register int i, count;
+  register int *d, *flag;
+  register uint dz, nearest;
+  register s_track* p;
+  int junction, pos, n, NearFlags;
+  s_track *NearestElement, *first;
+  uchar FirstTime;
 
+  static int VisiFlags[MaxSegments];
 
+  /* NOW FIND ALL SEGMENTS INSIDE THE QUADRANT. */
 
+  junction = 0;
+  count = 0;
+  flag = VisiFlags;
+  d = Street2Vertex;
+  p = track2;
+  FirstTime = TRUE;
 
+  for (i = 0; i < Streets2; i++)
+  {
+    /* VISIBILITY TEST: */
 
+    if ((abs(p->x1 - car.x) < MaxDistance) &&
+        (abs(p->z1 - car.z) < MaxDistance))
+    {
+      if (FirstTime)
+      {
+        first = p;
+        FirstTime = FALSE;
+      }
 
+      *d++ = (p->x1 - car.x);
+      *d++ = (p->y1 - car.y);
+      *d++ = (p->z1 - car.z);
 
-static	int near	CheckSecondTrack( int link)
+      *d++ = (p->x2 - car.x);
+      *d++ = (p->y2 - car.y);
+      *d++ = (p->z2 - car.z);
 
-{	extern	 uchar		WrongDirection, VisiStr2, OnTrack;
-	extern	 int		Street2Vertex[], Streets2;
-	extern	 int		yawSIN, yawCOS, pitchSIN, pitchCOS, rollSIN, rollCOS;
-	extern	 int		*First2, *Flags2, nearestStreet;
-	extern	 s_track	*track2, *End2, *NextStreet;
-	extern	 s_car		car;
+      count++;
 
-	register int		i, count;
-	register int		*d, *flag;
-	register uint		dz, nearest;
-	register s_track	*p;
-		 int		junction, pos, n, NearFlags;
-		 s_track	*NearestElement, *first;
-		 uchar		FirstTime;
+      *flag++ = p->flags;
+      junction |= p->flags;
+    }
+    else
+    {
+      if (!FirstTime)
+        break;
+    }
 
-	static	 int		VisiFlags[MaxSegments];
+    p++;
+  }
 
+  /* ROTATE ALL STREET ELEMENTS INTO POSITION. */
 
-	/* NOW FIND ALL SEGMENTS INSIDE THE QUADRANT. */
+  n = count << 1;
 
-	junction  = 0;
-	count     = 0;
-	flag	  = VisiFlags;
-	d	  = Street2Vertex;
-	p	  = track2;
-	FirstTime = TRUE;
+  if (car.yaw)
+    RotXZ(n, yawCOS, yawSIN, Street2Vertex, Street2Vertex);
+  if (car.pitch)
+    RotYZ(n, pitchCOS, pitchSIN, Street2Vertex, Street2Vertex);
+  if (car.roll)
+    RotXY(n, rollCOS, rollSIN, Street2Vertex, Street2Vertex);
 
+  nearest = MaxInt;
+  d = Street2Vertex;
+  p = NearestElement = first;
+  flag = VisiFlags;
 
-	for (i = 0; i < Streets2; i++)
-	{
-		/* VISIBILITY TEST: */
+  for (i = pos = 0; i < count; i++)
+  {
+    if (p >= End2)
+      break;
 
-		if ( (abs( p->x1 - car.x) < MaxDistance) &&
-		     (abs( p->z1 - car.z) < MaxDistance))
-		{
-			if (FirstTime)
-			{	first = p;
-				FirstTime = FALSE;
-			}
+    /* FIND NEAREST STREET ELEMENT. */
 
-			*d++ = (p->x1 - car.x);
-			*d++ = (p->y1 - car.y);
-			*d++ = (p->z1 - car.z);
+    if ((d[1] < 0) || (d[4] < 0))
+    { /* RETURNPOINT PASSED ? */
 
-			*d++ = (p->x2 - car.x);
-			*d++ = (p->y2 - car.y);
-			*d++ = (p->z2 - car.z);
+      if (*flag & f_returnpoint)
+      {
+        int y;
 
-			count++;
+        y = d[1] + d[4];
 
-			*flag++   = p->flags;
-			junction |= p->flags;
-		}
-		else
-		{	if (!FirstTime)
-				break;
-		}
+        /* RETURNPOINT MUST BE CLOSE. */
 
-		p++;
-	}
+        if ((y <= 0) && (y > -100))
+        {
+          if (d[2] + d[5] < 0)
+            if (abs(d[0] + d[3]) < 2500)
+              CheckReturnPoints(p);
+        }
+      }
 
+      dz = abs(d[0] + d[3]) + abs(d[1] + d[4] + 2 * CarHeight) + abs(d[2] + d[5]);
 
-	/* ROTATE ALL STREET ELEMENTS INTO POSITION. */
+      if (dz <= nearest)
+      {
+        if (i - pos < 10)
+        {
+          NearestElement = p;
+          nearest = dz;
+          pos = i;
+        }
+      }
+    }
 
-	n = count << 1;
+    d += 6;
+    flag++;
+    p++;
+  }
 
-	if (car.yaw)	RotXZ( n, yawCOS,   yawSIN,   Street2Vertex, Street2Vertex);
-	if (car.pitch)	RotYZ( n, pitchCOS, pitchSIN, Street2Vertex, Street2Vertex);
-	if (car.roll)	RotXY( n, rollCOS,  rollSIN,  Street2Vertex, Street2Vertex);
+  if (!link)
+  {
+    NextStreet = NearestElement;
+    nearestStreet = nearest;
+  }
+  else
+  {
+    if (nearest < nearestStreet)
+    {
+      NextStreet = NearestElement;
+      nearestStreet = nearest;
+      OnTrack = 1;
+    }
+  }
 
+  NearFlags = VisiFlags[pos];
 
-	nearest = MaxInt;
-	d = Street2Vertex;
-	p = NearestElement = first;
-	flag = VisiFlags;
+  if (NearFlags & (f_checkpoint + f_finish))
+  {
+    if (NearFlags & f_checkpoint)
+      PassCheckpoint();
+    else
+      PassFinish();
+  }
 
-	for (i = pos = 0; i < count; i++)
-	{	if (p >= End2)
-			break;
+  /* CHECK CAR'S DIRECTION. */
 
-		/* FIND NEAREST STREET ELEMENT. */
+  if (!link)
+  {
+    i = pos << 1;
+    if (i + 4 < n)
+    {
+      d = &Street2Vertex[i + i + i];
+      WrongDirection = (d[2] > d[2 + 2 * 3]);
+    }
+  }
 
-		if ((d[1] < 0) || (d[4] < 0))
-		{	/* RETURNPOINT PASSED ? */
+  /* FIND FIRST AND LAST VISIBLE STREET ELEMENT. */
 
-			if (*flag & f_returnpoint)
-			{	int	y;
+  d = First2 = Street2Vertex;
+  flag = VisiFlags;
+  pos -= 2;
 
-				y = d[1] + d[4];
+  for (i = count, count = 0; --i;)
+  {
+    if ((d[2] > -RoadLength) && (d[2] < MaxDistance))
+    {
+      if (!count)
+      {
+        Flags2 = flag;
+        First2 = d;
+      }
+      count++;
+    }
+    else
+    {
+      if (d[2] > MaxDistance)
+        break;
+      else if (count)
+        count++;
+      flag++;
+    }
+    d += 2 * 3;
+  }
 
-				/* RETURNPOINT MUST BE CLOSE. */
+  VisiStr2 = count;
 
-				if ((y <= 0) && (y > -100))
-				{	if (d[2] + d[5] < 0)
-						if (abs(d[0] + d[3]) < 2500)
-							CheckReturnPoints(p);
-				}
-			}
-
-			dz = abs(d[0]+d[3]) + abs(d[1]+d[4]+2*CarHeight) + abs(d[2]+d[5]);
-
-			if (dz <= nearest)
-			{	if (i - pos < 10)
-				{	NearestElement = p;
-					nearest = dz;
-					pos = i;
-				}
-			}
-		}
-
-		d += 6;
-		flag++;
-		p++;
-	}
-
-
-	if (!link)
-	{	NextStreet = NearestElement;
-		nearestStreet = nearest;
-	}
-	else
-	{	if (nearest < nearestStreet)
-		{	NextStreet = NearestElement;
-			nearestStreet = nearest;
-			OnTrack = 1;
-		}
-	}
-
-
-	NearFlags = VisiFlags[pos];
-
-	if (NearFlags & (f_checkpoint + f_finish))
-	{	if (NearFlags & f_checkpoint)
-			PassCheckpoint();
-		else
-			PassFinish();
-	}
-
-
-	/* CHECK CAR'S DIRECTION. */
-
-	if (!link)
-	{	i = pos << 1;
-		if (i+4 < n)
-		{	d = &Street2Vertex[i+i+i];
-			WrongDirection = (d[2] > d[2+2*3]);
-		}
-	}
-
-
-	/* FIND FIRST AND LAST VISIBLE STREET ELEMENT. */
-
-	d = First2 = Street2Vertex;
-	flag = VisiFlags;
-	pos -= 2;
-
-	for (i = count, count = 0; --i;)
-	{       if ((d[2] > -RoadLength) && (d[2] < MaxDistance))
-		{	if (!count)
-			{	Flags2 = flag;
-				First2 = d;
-			}
-			count++;
-		}
-		else
-		{	if (d[2] > MaxDistance)
-				break;
-			else	if (count)
-					count++;
-			flag++;
-		}
-		d += 2*3;
-	}
-
-	VisiStr2 = count;
-
-	return( junction & (f_junct1 + f_junct2));
+  return (junction & (f_junct1 + f_junct2));
 }
-
-
-
-
-
 
 #else
 
+static int near
+CheckFirstTrack(int link)
 
+{
+  extern uchar WrongDirection, VisiStr1, OnTrack, CarInLoop;
+  extern int Street1Vertex[], *First1, *Flags1;
+  extern int yawSIN, yawCOS, pitchSIN, pitchCOS, rollSIN, rollCOS;
+  extern int nearestStreet;
+  extern s_track *track1, *Junct1, *Junct2;
+  extern s_track *End1, *NextStreet;
+  extern s_car car;
+  register uchar i, count;
+  register int *d, *flag;
+  register s_track* p;
+  register uint dz;
+  int junction, pos, n, nearest, NearFlags, dist;
+  s_track *NearestElement, *first;
+  static int VisiFlags[MaxSegments];
 
+  junction = 0;
+  count = 2 * lookahead + 1; /* TOTAL NUMBER OF STREET SEGMENTS TO LOOK AT. */
 
+  if (link)
+  {
+    p = (link & f_junct1) ? Junct1 : Junct2;
+    p -= lookahead;
+  }
+  else
+  {
+    p = NextStreet - lookahead;
 
-static	int near	CheckFirstTrack( int link)
+    if (p < track1)
+      p = End1 + (int)(p - track1);
+  }
 
-{	extern	 uchar		WrongDirection, VisiStr1, OnTrack, CarInLoop;
-	extern	 int		Street1Vertex[], *First1, *Flags1;
-	extern	 int		yawSIN, yawCOS, pitchSIN, pitchCOS, rollSIN, rollCOS;
-	extern	 int		nearestStreet;
-	extern	 s_track	*track1, *Junct1, *Junct2;
-	extern	 s_track	*End1, *NextStreet;
-	extern	 s_car		car;
-	register uchar		i, count;
-	register int		*d, *flag;
-	register s_track	*p;
-	register uint		dz;
-		 int		junction, pos, n, nearest, NearFlags, dist;
-		 s_track	*NearestElement, *first;
-	static	 int		VisiFlags[MaxSegments];
+  first = p;
+  flag = VisiFlags;
+  d = Street1Vertex;
 
+  for (i = 0; i < count; i++)
+  {
+    if (p >= End1)
+      p = track1;
 
-	junction = 0;
-	count    = 2*lookahead+1;	/* TOTAL NUMBER OF STREET SEGMENTS TO LOOK AT. */
+    *d++ = (p->x1 - car.x);
+    *d++ = (p->y1 - car.y);
+    *d++ = (p->z1 - car.z);
 
-	if (link)
-	{	p  = (link & f_junct1) ? Junct1 : Junct2;
-		p -= lookahead;
-	}
-	else
-	{	p  = NextStreet - lookahead;
+    *d++ = (p->x2 - car.x);
+    *d++ = (p->y2 - car.y);
+    *d++ = (p->z2 - car.z);
 
-		if (p < track1)
-			p = End1 + (int) (p - track1);
-	}
+    if (p->flags & f_invisible)
+    { /* DON'T COUNT INVISIBLE SEGMENTS. */
 
+      if (++count >= MaxSegments)
+        break;
+    }
 
-	first = p;
-	flag = VisiFlags;
-	d = Street1Vertex;
+    *flag++ = p->flags;
+    junction |= p->flags;
 
-	for (i = 0; i < count; i++)
-	{	if (p >= End1)
-			p = track1;
+    p++;
+  }
 
-		*d++ = (p->x1 - car.x);
-		*d++ = (p->y1 - car.y);
-		*d++ = (p->z1 - car.z);
+  /* ROTATE ALL STREET ELEMENTS INTO POSITION. */
 
-		*d++ = (p->x2 - car.x);
-		*d++ = (p->y2 - car.y);
-		*d++ = (p->z2 - car.z);
+  n = count << 1;
 
-		if (p->flags & f_invisible)
-		{	/* DON'T COUNT INVISIBLE SEGMENTS. */
+  if (car.yaw)
+    RotXZ(n, yawCOS, yawSIN, Street1Vertex, Street1Vertex);
+  if (car.pitch)
+    RotYZ(n, pitchCOS, pitchSIN, Street1Vertex, Street1Vertex);
+  if (car.roll)
+    RotXY(n, rollCOS, rollSIN, Street1Vertex, Street1Vertex);
 
-			if (++count >= MaxSegments)
-				break;
-		}
+  nearest = MaxInt;
+  flag = VisiFlags;
+  d = Street1Vertex;
+  p = first;
 
-		*flag++   = p->flags;
-		junction |= p->flags;
+  for (i = pos = 0; i < count; i++)
+  {
+    if (p >= End1)
+      p = track1;
 
-		p++;
-	}
+    /* FIND NEAREST STREET ELEMENT. */
 
+    if ((d[1] < 0) || (d[4] < 0))
+    { /* RETURNPOINT PASSED ? */
 
-	/* ROTATE ALL STREET ELEMENTS INTO POSITION. */
+      if (*flag & f_returnpoint)
+      {
+        int y;
 
-	n = count << 1;
+        if (!CarInLoop)
+        {
+          y = d[1] + d[4];
 
-	if (car.yaw)	RotXZ( n, yawCOS,   yawSIN,   Street1Vertex, Street1Vertex);
-	if (car.pitch)	RotYZ( n, pitchCOS, pitchSIN, Street1Vertex, Street1Vertex);
-	if (car.roll)	RotXY( n, rollCOS,  rollSIN,  Street1Vertex, Street1Vertex);
+          /* RETURNPOINT MUST BE CLOSE. */
 
+          if ((y <= 0) && (y > -100))
+          {
+            if (d[2] + d[5] < 0)
+              if (abs(d[0] + d[3]) < 2500)
+                CheckReturnPoints(p);
+          }
+        }
+      }
 
-	nearest = MaxInt;
-	flag = VisiFlags;
-	d = Street1Vertex;
-	p = first;
+      dz = abs(d[0] + d[3]) + abs(d[1] + d[4] /*+2*CarHeight*/) + abs(d[2] + d[5]);
 
-	for (i = pos = 0; i < count; i++)
-	{	if (p >= End1)
-			p = track1;
+      if (dz < nearest)
+      {
+        if (i - pos < 10)
+        {
+          NearestElement = p;
+          nearest = dz;
+          pos = i;
+        }
+      }
+    }
 
-		/* FIND NEAREST STREET ELEMENT. */
+    d += 6;
+    flag++;
+    p++;
+  }
 
-		if ((d[1] < 0) || (d[4] < 0))
-		{	/* RETURNPOINT PASSED ? */
+  if (!link)
+  {
+    NextStreet = NearestElement;
+    nearestStreet = nearest;
+  }
+  else
+  {
+    if (nearest < nearestStreet)
+    {
+      NextStreet = NearestElement;
+      nearestStreet = nearest;
+      OnTrack = 0;
+    }
+  }
 
-			if (*flag & f_returnpoint)
-			{	int	y;
+  NearFlags = VisiFlags[pos];
 
-				if (!CarInLoop)
-				{	y = d[1] + d[4];
+  if (NearFlags & (f_checkpoint + f_finish))
+  {
+    if (NearFlags & f_checkpoint)
+      PassCheckpoint();
+    else
+      PassFinish();
+  }
 
-					/* RETURNPOINT MUST BE CLOSE. */
+  /* CHECK CAR'S DIRECTION. */
 
-					if ((y <= 0) && (y > -100))
-					{	if (d[2] + d[5] < 0)
-							if (abs(d[0] + d[3]) < 2500)
-								CheckReturnPoints(p);
-					}
-				}
-			}
+  if (!link)
+  {
+    i = pos << 1;
+    d = &Street1Vertex[i + i + i];
+    WrongDirection = (d[2] > d[2 + 2 * 3]);
+  }
 
-			dz = abs(d[0]+d[3]) + abs(d[1]+d[4] /*+2*CarHeight*/) + abs(d[2]+d[5]);
+  /* FIND FIRST AND LAST VISIBLE STREET ELEMENT. */
 
-			if (dz < nearest)
-			{	if (i - pos < 10)
-				{	NearestElement = p;
-					nearest = dz;
-					pos = i;
-				}
-			}
-		}
+  d = First1 = Street1Vertex;
+  flag = VisiFlags;
 
-		d += 6;
-		flag++;
-		p++;
-	}
+  for (i = count, count = 0; --i;)
+  {
+    dist = (d[2] + d[5]) >> 1;
 
+    if ((dist > -RoadLength) && (dist < MaxDistance))
+    {
+      if (!count)
+      {
+        Flags1 = flag;
+        First1 = d;
+      }
+      count++;
+    }
+    else
+    {
+      if (count)
+        break;
+      flag++;
+    }
+    d += 2 * 3;
+  }
 
-	if (!link)
-	{	NextStreet = NearestElement;
-		nearestStreet = nearest;
-	}
-	else
-	{	if (nearest < nearestStreet)
-		{	NextStreet = NearestElement;
-			nearestStreet = nearest;
-			OnTrack = 0;
-		}
-	}
+  VisiStr1 = count;
 
-
-	NearFlags = VisiFlags[pos];
-
-	if (NearFlags & (f_checkpoint + f_finish))
-	{	if (NearFlags & f_checkpoint)
-			PassCheckpoint();
-		else
-			PassFinish();
-	}
-
-
-	/* CHECK CAR'S DIRECTION. */
-
-	if (!link)
-	{	i = pos << 1;
-		d = &Street1Vertex[i+i+i];
-		WrongDirection = (d[2] > d[2+2*3]);
-	}
-
-
-	/* FIND FIRST AND LAST VISIBLE STREET ELEMENT. */
-
-	d = First1 = Street1Vertex;
-	flag = VisiFlags;
-
-	for (i = count, count = 0; --i;)
-	{	dist = (d[2]+d[5]) >> 1;
-
-		if ((dist > -RoadLength) && (dist < MaxDistance))
-		{	if (!count)
-			{	Flags1 = flag;
-				First1 = d;
-			}
-			count++;
-		}
-		else
-		{	if (count)
-				break;
-			flag++;
-		}
-		d += 2*3;
-	}
-
-	VisiStr1 = count;
-
-	return( junction & (f_junct1 + f_junct2));
+  return (junction & (f_junct1 + f_junct2));
 }
 
+static int near
+CheckSecondTrack(int link)
 
+{
+  extern uchar WrongDirection, VisiStr2, OnTrack, CarInLoop;
+  extern int Street2Vertex[];
+  extern int yawSIN, yawCOS, pitchSIN, pitchCOS, rollSIN, rollCOS;
+  extern int *First2, *Flags2, nearestStreet;
+  extern s_track *track2, *End2, *NextStreet;
+  extern s_car car;
+  register uchar i, count;
+  register int *d, *flag;
+  register uint dz, nearest;
+  register s_track* p;
+  int junction, pos, n, NearFlags, dist;
+  s_track *NearestElement, *first;
+  static int VisiFlags[MaxSegments];
 
+  junction = 0;
+  count = 2 * lookahead + 1; /* TOTAL NUMBER OF STREET SEGMENTS TO LOOK AT. */
 
+  if (link)
+  {
+    p = (link & f_junct1) ? track2 : &End2[-lookahead];
+    count = lookahead + 1;
+  }
+  else
+  {
+    p = &NextStreet[-lookahead];
 
+    if (p < track2)
+    {
+      count -= (track2 - p);
+      p = track2;
+      junction = f_junct1;
+    }
+  }
 
+  first = p;
+  flag = VisiFlags;
+  d = Street2Vertex;
 
+  for (i = 0; i < count; i++)
+  {
+    if (p >= End2)
+    {
+      junction = f_junct2;
+      count = i + 1;
+      break;
+    }
 
+    *d++ = (p->x1 - car.x);
+    *d++ = (p->y1 - car.y);
+    *d++ = (p->z1 - car.z);
 
+    *d++ = (p->x2 - car.x);
+    *d++ = (p->y2 - car.y);
+    *d++ = (p->z2 - car.z);
 
-static	int near	CheckSecondTrack( int link)
+    *flag++ = p->flags;
 
-{	extern	 uchar		WrongDirection, VisiStr2, OnTrack, CarInLoop;
-	extern	 int		Street2Vertex[];
-	extern	 int		yawSIN, yawCOS, pitchSIN, pitchCOS, rollSIN, rollCOS;
-	extern	 int		*First2, *Flags2, nearestStreet;
-	extern	 s_track	*track2, *End2, *NextStreet;
-	extern	 s_car		car;
-	register uchar		i, count;
-	register int		*d, *flag;
-	register uint		dz, nearest;
-	register s_track	*p;
-		 int		junction, pos, n, NearFlags, dist;
-		 s_track	*NearestElement, *first;
-	static	 int		VisiFlags[MaxSegments];
+    if (p->flags & f_invisible)
+    { /* DON'T COUNT INVISIBLE SEGMENTS. */
 
+      if (++count >= MaxSegments)
+        break;
+    }
 
-	junction = 0;
-	count    = 2*lookahead+1;	/* TOTAL NUMBER OF STREET SEGMENTS TO LOOK AT. */
+    p++;
+  }
 
-	if (link)
-	{	p = (link & f_junct1) ? track2 : &End2[-lookahead];
-		count = lookahead+1;
-	}
-	else
-	{	p = &NextStreet[-lookahead];
+  /* ROTATE ALL STREET ELEMENTS INTO POSITION. */
 
-		if (p < track2)
-		{	count -= (track2 - p);
-			p = track2;
-			junction = f_junct1;
-		}
-	}
+  n = count << 1;
 
+  if (car.yaw)
+    RotXZ(n, yawCOS, yawSIN, Street2Vertex, Street2Vertex);
+  if (car.pitch)
+    RotYZ(n, pitchCOS, pitchSIN, Street2Vertex, Street2Vertex);
+  if (car.roll)
+    RotXY(n, rollCOS, rollSIN, Street2Vertex, Street2Vertex);
 
-	first = p;
-	flag = VisiFlags;
-	d = Street2Vertex;
+  nearest = MaxInt;
+  d = Street2Vertex;
+  p = NearestElement = first;
+  flag = VisiFlags;
 
-	for (i = 0; i < count; i++)
-	{	if (p >= End2)
-		{	junction = f_junct2;
-			count = i+1;
-			break;
-		}
+  for (i = pos = 0; i < count; i++)
+  {
+    if (p >= End2)
+      break;
 
-		*d++ = (p->x1 - car.x);
-		*d++ = (p->y1 - car.y);
-		*d++ = (p->z1 - car.z);
+    /* FIND NEAREST STREET ELEMENT. */
 
-		*d++ = (p->x2 - car.x);
-		*d++ = (p->y2 - car.y);
-		*d++ = (p->z2 - car.z);
+    if ((d[1] < 0) || (d[4] < 0))
+    { /* RETURNPOINT PASSED ? */
 
-		*flag++ = p->flags;
+      if (*flag & f_returnpoint)
+      {
+        int y;
 
-		if (p->flags & f_invisible)
-		{	/* DON'T COUNT INVISIBLE SEGMENTS. */
+        /* NO RETURNPOINT INSIDE THE LOOP. */
 
-			if (++count >= MaxSegments)
-				break;
-		}
+        if (!CarInLoop)
+        {
+          y = d[1] + d[4];
 
-		p++;
-	}
+          /* RETURNPOINT MUST BE CLOSE. */
 
-	/* ROTATE ALL STREET ELEMENTS INTO POSITION. */
+          if ((y <= 0) && (y > -100))
+          {
+            if (d[2] + d[5] < 0)
+              if (abs(d[0] + d[3]) < 2500)
+                CheckReturnPoints(p);
+          }
+        }
+      }
 
-	n = count << 1;
+      dz = abs(d[0] + d[3]) + abs(d[1] + d[4] /*+2*CarHeight*/) + abs(d[2] + d[5]);
 
-	if (car.yaw)	RotXZ( n, yawCOS,   yawSIN,   Street2Vertex, Street2Vertex);
-	if (car.pitch)	RotYZ( n, pitchCOS, pitchSIN, Street2Vertex, Street2Vertex);
-	if (car.roll)	RotXY( n, rollCOS,  rollSIN,  Street2Vertex, Street2Vertex);
+      if (dz <= nearest)
+      {
+        if (i - pos < 10)
+        {
+          NearestElement = p;
+          nearest = dz;
+          pos = i;
+        }
+      }
+    }
 
+    d += 6;
+    flag++;
+    p++;
+  }
 
-	nearest = MaxInt;
-	d = Street2Vertex;
-	p = NearestElement = first;
-	flag = VisiFlags;
+  if (!link)
+  {
+    NextStreet = NearestElement;
+    nearestStreet = nearest;
+  }
+  else
+  {
+    if (nearest < nearestStreet)
+    {
+      NextStreet = NearestElement;
+      nearestStreet = nearest;
+      OnTrack = 1;
+    }
+  }
 
-	for (i = pos = 0; i < count; i++)
-	{	if (p >= End2)
-			break;
+  NearFlags = VisiFlags[pos];
 
-		/* FIND NEAREST STREET ELEMENT. */
+  if (NearFlags & (f_checkpoint + f_finish))
+  {
+    if (NearFlags & f_checkpoint)
+      PassCheckpoint();
+    else
+      PassFinish();
+  }
 
-		if ((d[1] < 0) || (d[4] < 0))
-		{	/* RETURNPOINT PASSED ? */
+  /* CHECK CAR'S DIRECTION. */
 
-			if (*flag & f_returnpoint)
-			{	int	y;
+  if (!link)
+  {
+    i = pos << 1;
+    if (i + 4 < n)
+    {
+      d = &Street2Vertex[i + i + i];
+      WrongDirection = (d[2] > d[2 + 2 * 3]);
+    }
+  }
 
-				/* NO RETURNPOINT INSIDE THE LOOP. */
+  /* FIND FIRST AND LAST VISIBLE STREET ELEMENT. */
 
-				if (!CarInLoop)
-				{	y = d[1] + d[4];
+  d = First2 = Street2Vertex;
+  flag = VisiFlags;
+  pos -= 2;
 
-					/* RETURNPOINT MUST BE CLOSE. */
+  for (i = count, count = 0; --i;)
+  {
+    dist = (d[2] + d[5]) >> 1;
 
-					if ((y <= 0) && (y > -100))
-					{	if (d[2] + d[5] < 0)
-							if (abs(d[0] + d[3]) < 2500)
-								CheckReturnPoints(p);
-					}
-				}
-			}
+    if ((dist > -RoadLength) && (dist < MaxDistance))
+    {
+      if (!count)
+      {
+        Flags2 = flag;
+        First2 = d;
+      }
+      count++;
+    }
+    else
+    {
+      if (dist > MaxDistance)
+        break;
+      else if (count)
+        count++;
+      flag++;
+    }
+    d += 2 * 3;
+  }
 
-			dz = abs(d[0]+d[3]) + abs(d[1]+d[4] /*+2*CarHeight*/) + abs(d[2]+d[5]);
+  VisiStr2 = count;
 
-			if (dz <= nearest)
-			{	if (i - pos < 10)
-				{	NearestElement = p;
-					nearest = dz;
-					pos = i;
-				}
-			}
-		}
-
-		d += 6;
-		flag++;
-		p++;
-	}
-
-
-	if (!link)
-	{	NextStreet = NearestElement;
-		nearestStreet = nearest;
-	}
-	else
-	{	if (nearest < nearestStreet)
-		{	NextStreet = NearestElement;
-			nearestStreet = nearest;
-			OnTrack = 1;
-		}
-	}
-
-
-	NearFlags = VisiFlags[pos];
-
-	if (NearFlags & (f_checkpoint + f_finish))
-	{	if (NearFlags & f_checkpoint)
-			PassCheckpoint();
-		else
-			PassFinish();
-	}
-
-
-	/* CHECK CAR'S DIRECTION. */
-
-	if (!link)
-	{	i = pos << 1;
-		if (i+4 < n)
-		{	d = &Street2Vertex[i+i+i];
-			WrongDirection = (d[2] > d[2+2*3]);
-		}
-	}
-
-
-	/* FIND FIRST AND LAST VISIBLE STREET ELEMENT. */
-
-	d = First2 = Street2Vertex;
-	flag = VisiFlags;
-	pos -= 2;
-
-	for (i = count, count = 0; --i;)
-	{	dist = (d[2]+d[5]) >> 1;
-
-		if ((dist > -RoadLength) && (dist < MaxDistance))
-		{	if (!count)
-			{	Flags2 = flag;
-				First2 = d;
-			}
-			count++;
-		}
-		else
-		{	if (dist > MaxDistance)
-				break;
-			else	if (count)
-					count++;
-			flag++;
-		}
-		d += 2*3;
-	}
-
-	VisiStr2 = count;
-
-	return( junction & (f_junct1 + f_junct2));
+  return (junction & (f_junct1 + f_junct2));
 }
 
 #endif
 
+#undef MaxDistance
 
+void
+FindStreets(void)
 
+{
+  extern uchar VisiStr1, VisiStr2, OnTrack;
+  extern s_track *NextStreet, *track1, *track2;
+  extern s_track *End1, *End2;
+  register int code;
 
-	#undef	MaxDistance
+  VisiStr1 = VisiStr2 = 0;
 
+  if (OnTrack == 1)
+  {
+    code = CheckSecondTrack(0);
 
+    if (code)
+      CheckFirstTrack(code);
+  }
+  else
+  {
+    code = CheckFirstTrack(0);
 
-
-
-
-
-
-
-void	FindStreets( void)
-
-{	extern	 uchar		VisiStr1, VisiStr2, OnTrack;
-	extern	 s_track	*NextStreet, *track1, *track2;
-	extern	 s_track	*End1, *End2;
-	register int		code;
-
-
-	VisiStr1 = VisiStr2 = 0;
-
-	if (OnTrack == 1)
-	{	code = CheckSecondTrack(0);
-
-		if (code)
-			CheckFirstTrack(code);
-	}
-	else
-	{	code = CheckFirstTrack(0);
-
-		if (code)
-			CheckSecondTrack(code);
-	}
+    if (code)
+      CheckSecondTrack(code);
+  }
 }

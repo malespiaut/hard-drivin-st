@@ -1,10 +1,8 @@
 
 
-	#include	"proto.h"
-	#include	<stdio.h>
-	#include	<dos.h>
-
-
+#include "proto.h"
+#include <stdio.h>
+#include <dos.h>
 
 /*
 
@@ -14,7 +12,7 @@
  PROJECT..............	HARDDRIVING game program.
 
  DESCRIPTION..........	This module is the main module, from which
- 			all other modules are called.
+                        all other modules are called.
 
  DATE OF CREATION.....	March 22th 1989
  LAST CHANGE..........	October 18th 1989
@@ -25,1384 +23,1298 @@
 
 */
 
-
-
-
-
-
 /*		GLOBAL VARIABLES :
-		==================
+                ==================
 */
 
+void /* SYSTEM VARIABLES. */
 
+  far *ScreenBuffer, /* Pointer to   visible Screen Buffer.			*/
+  far *Buffer2,      /* Pointer to invisible Screen Buffer.			*/
 
+  /* HARD DRIVIN' VARIABLES. */
 
-void		/* SYSTEM VARIABLES. */
+  far *AuxScreen,    /* Pointer to the auxiliary screen.			*/
+  far *MapScreen,    /* Pointer to the map window.				*/
+  far *AuxBuffer,    /* Pointer to a auxiliary buffer.			*/
+  far *Marcus,       /* Pointer to 32k aux buffer.				*/
+  far *Tim,          /* Pointer to 32k aux buffer.				*/
+  far *SoundModule,  /* Pointer to sound routines.				*/
+  far *SelectScreen; /* Pointer to the select window.			*/
 
-		far *ScreenBuffer,	/* Pointer to   visible Screen Buffer.			*/
-		far *Buffer2,		/* Pointer to invisible Screen Buffer.			*/
+char MapName[20], /* Various picture names.				*/
+  SelectName[20],
+  LoadName[20],
+  PanelName[20],
 
-		/* HARD DRIVIN' VARIABLES. */
+  SoundFX,      /* Flag enables the sound effects.			*/
+  GraphMode,    /* Choosen graph mode.					*/
+  SoundEnabled, /* Flag indicates new sound to be loaded.		*/
+  EngineKilled, /* Flag indicates engine sound was interrupted.		*/
+  RaceIsOn,     /* Flag indicates that the race has started.		*/
+  EngineOn,     /* Flag indicates engine is running.			*/
 
-		far *AuxScreen,		/* Pointer to the auxiliary screen.			*/
-		far *MapScreen,		/* Pointer to the map window.				*/
-		far *AuxBuffer,		/* Pointer to a auxiliary buffer.			*/
-		far *Marcus,		/* Pointer to 32k aux buffer.				*/
-		far *Tim,		/* Pointer to 32k aux buffer.				*/
-		far *SoundModule,	/* Pointer to sound routines.				*/
-		far *SelectScreen;	/* Pointer to the select window.			*/
+  GameMode,         /* Flag indicates end of the game.			*/
+  DemoMode,         /* Flag indicates end of the demo mode.			*/
+  LapMode,          /* Flag indicates that the championship lap is on.	*/
+  LapFinished,      /* Flag indicates championship lap was finished.	*/
+  NewScreens,       /* Flag indicates the use of the allocated screens.	*/
+  UK_Flag,          /* Flag indicates traffic on the lefthand lane.		*/
+  QualifyFlag,      /* Flag indicates proper qualify lap time.		*/
+  SwitchFlag,       /* Flag indicates switching of the screen pages.	*/
+  BonusFlag,        /* Flag indicates passing of the checkpoint.		*/
+  TimeOutFlag,      /* Flag indicates the end of the count down.		*/
+  ReturnFlag,       /* Flag indicates an offroad time out.			*/
+  CheckOffRoad,     /* Flag indicates car is off road.			*/
+  CollisionFlag,    /* Flag indicates a collision with a object.		*/
+  AccidentFlag,     /* Flag indicates that the car is destroyed.		*/
+  SkidFlag,         /* Flag indicates car is skiding (oversteering).	*/
+  SpinFlag,         /* Flag indicates car is spinning off.			*/
+  OnObject,         /* Flag indicates car is driving on an object.		*/
+  NewPhantomPhoton, /* Flag indicates winning of championship lap.		*/
+  SloMoFlag,        /* Flag indicates beginning of the Slow Mo sequence.	*/
+  WrongDirection,   /* Flag indicates wrong driving direction.		*/
+  OnTrack,          /* Flag indicates on which track the car travels.	*/
+  CarInLoop,        /* Flag indicates car is in the loop.			*/
+  ExitWait,         /* Flag indicates end of gear select mode.		*/
+  TimeFlag,         /* Flag indicates whether the clock is running.		*/
+  StartFlag,        /* Flag indicates race has started.			*/
+  StartMessage,     /* Flag indicates printing of the start message.	*/
+  DirtyFlag,        /* Flag indicates a hiscore file update.		*/
+  QuitFlag,         /* Just what the name says.				*/
+  OpaqueFlag,       /* Flag indicates hatched Polygon Draw Mode.		*/
+  ExtendedClip,     /* Extended 3D clipping if pitch angle too large.	*/
+  CharNum,          /* Choosen char during hiscore entry.			*/
+  PhantomLane,      /* Start lane of the Phantom Photon.			*/
+  MessageTime,      /* Message display duration.				*/
+  MessageCode,      /* Message discription code.				*/
+  MouseFlag,        /* Enables/Disables the mouse.				*/
+  ManualShift,      /* Indicates manual up or down shift.			*/
+  Difficulty,       /* Difficulty of game play.				*/
+  SteerSelect,      /* Selects steering input device.			*/
+  GearSelect,       /* Selects gear shift input device.			*/
 
+  RedSample,  /* Subsampling step of red car's recording.		*/
+  BlueSample, /* Subsampling step of blue car's recording.		*/
 
-char            MapName[20],		/* Various picture names.				*/
-		SelectName[20],
-		LoadName[20],
-		PanelName[20],
+  VisiStr1, /* Number of visible street elements on track 1.	*/
+  VisiStr2, /* Number of visible street elements on track 2.	*/
+  VisiLns1, /* Number of visible lane markers on track 1.		*/
+  VisiLns2, /* Number of visible lane markers on track 2.		*/
 
-		SoundFX,		/* Flag enables the sound effects.			*/
-		GraphMode,		/* Choosen graph mode.					*/
-		SoundEnabled,		/* Flag indicates new sound to be loaded.		*/
-		EngineKilled,		/* Flag indicates engine sound was interrupted.		*/
-		RaceIsOn,		/* Flag indicates that the race has started.		*/
-		EngineOn,		/* Flag indicates engine is running.			*/
+  ScoreList[10 * 39], /* Array for Hiscore List.				*/
+  BestName[30],       /* Best driver's name.					*/
+  BestTime[10];       /* Best lap time.					*/
 
-		GameMode,		/* Flag indicates end of the game.			*/
-		DemoMode,		/* Flag indicates end of the demo mode.			*/
-		LapMode,		/* Flag indicates that the championship lap is on.	*/
-		LapFinished,		/* Flag indicates championship lap was finished.	*/
-		NewScreens,		/* Flag indicates the use of the allocated screens.	*/
-		UK_Flag,		/* Flag indicates traffic on the lefthand lane.		*/
-		QualifyFlag,		/* Flag indicates proper qualify lap time.		*/
-		SwitchFlag,		/* Flag indicates switching of the screen pages.	*/
-		BonusFlag,		/* Flag indicates passing of the checkpoint.		*/
-		TimeOutFlag,		/* Flag indicates the end of the count down.		*/
-		ReturnFlag,		/* Flag indicates an offroad time out.			*/
-		CheckOffRoad,		/* Flag indicates car is off road.			*/
-		CollisionFlag,		/* Flag indicates a collision with a object.		*/
-		AccidentFlag,		/* Flag indicates that the car is destroyed.		*/
-		SkidFlag,		/* Flag indicates car is skiding (oversteering).	*/
-		SpinFlag,		/* Flag indicates car is spinning off.			*/
-		OnObject,		/* Flag indicates car is driving on an object.		*/
-		NewPhantomPhoton,	/* Flag indicates winning of championship lap.		*/
-		SloMoFlag,		/* Flag indicates beginning of the Slow Mo sequence.	*/
-		WrongDirection,		/* Flag indicates wrong driving direction.		*/
-		OnTrack,		/* Flag indicates on which track the car travels.	*/
-		CarInLoop,		/* Flag indicates car is in the loop.			*/
-		ExitWait,		/* Flag indicates end of gear select mode.		*/
-		TimeFlag,		/* Flag indicates whether the clock is running.		*/
-		StartFlag,		/* Flag indicates race has started.			*/
-		StartMessage,		/* Flag indicates printing of the start message.	*/
-		DirtyFlag,		/* Flag indicates a hiscore file update.		*/
-		QuitFlag,		/* Just what the name says.				*/
-		OpaqueFlag,		/* Flag indicates hatched Polygon Draw Mode.		*/
-		ExtendedClip,		/* Extended 3D clipping if pitch angle too large.	*/
-		CharNum,		/* Choosen char during hiscore entry.			*/
-		PhantomLane,		/* Start lane of the Phantom Photon.			*/
-		MessageTime,		/* Message display duration.				*/
-		MessageCode,		/* Message discription code.				*/
-		MouseFlag,		/* Enables/Disables the mouse.				*/
-		ManualShift,		/* Indicates manual up or down shift.			*/
-		Difficulty,		/* Difficulty of game play.				*/
-		SteerSelect,		/* Selects steering input device.			*/
-		GearSelect,		/* Selects gear shift input device.			*/
+int /* VARIABLES DEPENDING ON SCREEN RESOLUTION. */
 
-		RedSample,		/* Subsampling step of red car's recording.		*/
-		BlueSample,		/* Subsampling step of blue car's recording.		*/
+  OrgX,
+  OrgY,                   /* Screen Coordinates of the origin.			*/
+  MinX, MaxX, MinY, MaxY, /* Current Window.					*/
+  MinY1, MaxY1, OrgY1,    /* Screen Window.					*/
+  MinY2, MaxY2, OrgY2,    /* Cockpit Window.					*/
+  ScreenX, ScreenY,       /* Screen resolution.					*/
+  MessageY,               /* Y position of the message during demo mode.		*/
+  LogoY,                  /* Y position of the HardDrivin' logo.			*/
+  mphX, mphY,             /* Origin of the speedometer.				*/
+  rpmX, rpmY,             /* Origin of the rev gauge.				*/
+  ampX, ampY,             /* Origin of the amperemeter.				*/
+  tmpX, tmpY,             /* Origin of the thermometer.				*/
+  oilX, oilY,             /* Origin of the oil gauge.				*/
+  gasX, gasY,             /* Origin of the gasometer.				*/
+  largePointer,           /* Length of a large gauge pointer.			*/
+  smallPointer,           /* Length of a small gauge pointer.			*/
+  ScoreX, ScoreY,         /* Offset to the Score field.				*/
+  TimeX, TimeY,           /* Offset to the Time field.				*/
+  BestX, BestY,           /* Offset to the Best field.				*/
+  LastX, LastY,           /* Offset to the Last field.				*/
+  SecondsX, SecondsY,     /* Offset to the Second field.				*/
+  OffRoadX, OffRoadY,     /* Offset to the OffRoad field.				*/
+  ListX,                  /* Offset to the Hiscore field.				*/
+  MaxLine,                /* Maximal offset.					*/
+  CharWidth,              /* Width  of a large character.				*/
+  CharHeight,             /* Height of a large character.				*/
+  LineHeight,             /* Height of a line of large characters.		*/
+  DigitLength,            /* Length of a digit character.				*/
 
-		VisiStr1,		/* Number of visible street elements on track 1.	*/
-		VisiStr2,		/* Number of visible street elements on track 2.	*/
-		VisiLns1,		/* Number of visible lane markers on track 1.		*/
-		VisiLns2,		/* Number of visible lane markers on track 2.		*/
+  /* SYSTEM VARIABLES. */
 
-		ScoreList[10*39],	/* Array for Hiscore List.				*/
-		BestName[30],		/* Best driver's name.					*/
-		BestTime[10];		/* Best lap time.					*/
+  hh1, hh2, hh3, hh4, hh5, hh6,
 
+  button,         /* Joysticks/mouse button flags.					*/
+  SteerX, SteerY, /* Steering coordinates.				*/
 
-int		/* VARIABLES DEPENDING ON SCREEN RESOLUTION. */
+  OffRoadOut, /* Countdown: offroad					*/
+  frames,     /* count of VBL's.					*/
+  MinVBL,     /* Minimal number of VBL's for a new frame.		*/
 
-		OrgX, OrgY,		/* Screen Coordinates of the origin.			*/
-		MinX, MaxX, MinY, MaxY,	/* Current Window.					*/
-		MinY1, MaxY1, OrgY1,	/* Screen Window.					*/
-		MinY2, MaxY2, OrgY2,	/* Cockpit Window.					*/
-		ScreenX, ScreenY,	/* Screen resolution.					*/
-		MessageY,		/* Y position of the message during demo mode.		*/
-		LogoY,			/* Y position of the HardDrivin' logo.			*/
-		mphX, mphY,		/* Origin of the speedometer.				*/
-		rpmX, rpmY,		/* Origin of the rev gauge.				*/
-		ampX, ampY,		/* Origin of the amperemeter.				*/
-		tmpX, tmpY,		/* Origin of the thermometer.				*/
-		oilX, oilY,		/* Origin of the oil gauge.				*/
-		gasX, gasY,		/* Origin of the gasometer.				*/
-		largePointer,		/* Length of a large gauge pointer.			*/
-		smallPointer,		/* Length of a small gauge pointer.			*/
-		ScoreX, ScoreY,		/* Offset to the Score field.				*/
-		TimeX, TimeY,		/* Offset to the Time field.				*/
-		BestX, BestY,		/* Offset to the Best field.				*/
-		LastX, LastY,		/* Offset to the Last field.				*/
-		SecondsX, SecondsY,	/* Offset to the Second field.				*/
-		OffRoadX, OffRoadY,	/* Offset to the OffRoad field.				*/
-		ListX,			/* Offset to the Hiscore field.				*/
-		MaxLine,		/* Maximal offset.					*/
-		CharWidth,		/* Width  of a large character.				*/
-		CharHeight,		/* Height of a large character.				*/
-		LineHeight,		/* Height of a line of large characters.		*/
-		DigitLength,		/* Length of a digit character.				*/
+  /* VARIABLES TO MANAGE STREET ELEMENTS. */
 
-		/* SYSTEM VARIABLES. */
+  StartSegment,     /* Number of the start segment.	(Track1)		*/
+  StartLane,        /* Start lane.						*/
+  StartRow,         /* Start row.						*/
+  FinishSegment,    /* Number of the finish segment. (Track1)		*/
+  CheckP1_segment,  /* Number of the checkpoint segment on track 1.		*/
+  CheckP2_segment,  /* Number of the checkpoint segment on track 2.		*/
+  *First1, *First2, /* Pointer to first visible street element.		*/
+  nearestStreet,    /* Distance of the nearest street.			*/
+  *LaneM1,
+  *LaneM2,
+  *Flags1,  /* Flags for visible street elements on track 1.	*/
+  *Flags2,  /* Flags for visible street elements on track 1.	*/
+  Streets1, /* Number of street elements on track 1.		*/
+  Streets2, /* Number of street elements on track 2.		*/
 
+  BestLength,      /* Length of the best driver's name.			*/
+  BonusCheckpoint, /* Bonus time when passing the checkpoint.		*/
+  BonusFinish,     /* Bonus time when passing the finish.			*/
 
-		hh1, hh2, hh3, hh4, hh5, hh6,
+  EnginePitch, /* Depends on the engine revs.				*/
 
+  yawSIN, yawCOS,
+  pitchSIN, pitchCOS,
+  rollSIN, rollCOS, /* trigonometric values of yaw, pitch and roll angles.	*/
 
-		button,			/* Joysticks/mouse button flags.					*/
-		SteerX, SteerY,		/* Steering coordinates.				*/
+  LapViewX,
+  LapViewY,
+  LapViewZ, /* Playback viewpoint after championship lap.		*/
 
-		OffRoadOut,		/* Countdown: offroad					*/
-		frames,			/* count of VBL's.					*/
-		MinVBL,			/* Minimal number of VBL's for a new frame.		*/
+  FinishX,
+  FinishY,
+  FinishZ, /* Finish coordinates. Used for the championship lap.	*/
 
-		/* VARIABLES TO MANAGE STREET ELEMENTS. */
+  NumOfObjects,    /* Total number of objects in the HardDrivin' universe.	*/
+  NumOfVehicles,   /* Total number of cars.				*/
+  NumOfBarriers,   /* Total number of barriers.				*/
+  NumOfFields,     /* Total number of fields.				*/
+  NumOfT1controls, /* Total number of track1 control points.		*/
+  NumOfT2controls, /* Total number of track2 control points.		*/
+  VisibleObjects,  /* Number of visible objects in the next frame.		*/
 
-		StartSegment,		/* Number of the start segment.	(Track1)		*/
-		StartLane,		/* Start lane.						*/
-		StartRow,		/* Start row.						*/
-		FinishSegment,		/* Number of the finish segment. (Track1)		*/
-		CheckP1_segment,	/* Number of the checkpoint segment on track 1.		*/
-		CheckP2_segment,	/* Number of the checkpoint segment on track 2.		*/
-		*First1, *First2,	/* Pointer to first visible street element.		*/
-		nearestStreet,		/* Distance of the nearest street.			*/
-		*LaneM1,
-		*LaneM2,
-		*Flags1,		/* Flags for visible street elements on track 1.	*/
-		*Flags2,		/* Flags for visible street elements on track 1.	*/
-		Streets1,		/* Number of street elements on track 1.		*/
-		Streets2,		/* Number of street elements on track 2.		*/
+  *VertIndex,                         /* Pointer to the rest of the vertex[] buffer.		*/
+  *CoorIndex,                         /* Pointer to the rest of the coordinate[] buffer.	*/
+  far *ObjDataBase,                   /* Pointer to object data base.				*/
+  *Barriers,                          /* Pointer to barrier coordinates.			*/
+  objTable[ObjTypes],                 /* Offset table to object data base.			*/
+  coordinate[3 * MaxKoor],            /* Buffer for 3D coordinates				*/
+  vertex[2 * (MaxKoor + 200)],        /* Buffer for 2D coordinates				*/
+  Street1Vertex[MaxSegments * 3 * 2], /* Buffer for visible street elements of track 1.	*/
+  Street2Vertex[MaxSegments * 3 * 2], /* Buffer for visible street elements of track 2.	*/
+  ObjFace[3 * 3],                     /* Object surface vectors used by car simulation model.	*/
+  TrackData[11000],                   /* This array contains all track, control, vehicle data	*/
+  PolyVertex[MaxVertex],              /* Vertex paramaters for polygon solid fill		*/
+  AuxVertex[MaxVertex];               /* Aux. vertex paramaters for polygon solid fill	*/
 
-		BestLength,		/* Length of the best driver's name.			*/
-		BonusCheckpoint,	/* Bonus time when passing the checkpoint.		*/
-		BonusFinish,		/* Bonus time when passing the finish.			*/
+long Score,      /* Current game score.					*/
+  HiScore,       /* Just what the name says.				*/
+  Duration,      /* Duration of the count down.				*/
+  Time,          /* Current game time.					*/
+  TimeOut,       /* End time of the count down.				*/
+  BestLapTime,   /* Best lap time.					*/
+  LastLapTime,   /* Last lap time.					*/
+  QualifyTime,   /* Last lap time which qualified.			*/
+  TimeToQualify, /* Just what the name says.				*/
 
-		EnginePitch,		/* Depends on the engine revs.				*/
+  *Pattern; /* Pattern for solid fill routines.			*/
 
-		yawSIN,   yawCOS,
-		pitchSIN, pitchCOS,
-		rollSIN,  rollCOS,	/* trigonometric values of yaw, pitch and roll angles.	*/
+s_block ScoreRect, TimeRect,
+  MessageRect[3], /* Left  windows bit block description.			*/
+  MidRect,        /* Mid   gauges  bit block description.			*/
+  AutoRect,       /* Bit block for automatic gear display.		*/
+  ManualRect,     /* Bit block for manual gear display.			*/
+  BarRect,        /* Bit block for steering wheel position.		*/
+  GearARect[5],   /* Bit block for 5 gears. (automatic)			*/
+  GearMRect[5];   /* Bit block for 5 gears. (manual)			*/
 
-		LapViewX,
-		LapViewY,
-		LapViewZ,		/* Playback viewpoint after championship lap.		*/
+s_object *field, /* Pointer to field array.				*/
+  *object,       /* Array of all objects.				*/
+  *GreenLight,
+  *YellowLight,
+  *RedLight, /* Pointer to traffic light objects.			*/
+  *RedCar,   /* Pointer to own car. (Championship Lap)		*/
+  *BlueCar;  /* Pointer to Phantom Photon's car. (Championship Lap)	*/
 
-		FinishX,
-		FinishY,
-		FinishZ,		/* Finish coordinates. Used for the championship lap.	*/
+s_vehicle* vehicle; /* Cars on the track.					*/
 
-		NumOfObjects,		/* Total number of objects in the HardDrivin' universe.	*/
-		NumOfVehicles,		/* Total number of cars.				*/
-		NumOfBarriers,		/* Total number of barriers.				*/
-		NumOfFields,		/* Total number of fields.				*/
-		NumOfT1controls,	/* Total number of track1 control points.		*/
-		NumOfT2controls,	/* Total number of track2 control points.		*/
-		VisibleObjects,		/* Number of visible objects in the next frame.		*/
+s_priority PrioList[MaxObj]; /* Priority list of visible objects.			*/
 
-		*VertIndex,		/* Pointer to the rest of the vertex[] buffer.		*/
-		*CoorIndex,		/* Pointer to the rest of the coordinate[] buffer.	*/
-		far *ObjDataBase,	/* Pointer to object data base.				*/
-		*Barriers,		/* Pointer to barrier coordinates.			*/
-		objTable[ObjTypes],	/* Offset table to object data base.			*/
-		coordinate[3*MaxKoor],	/* Buffer for 3D coordinates				*/
-		vertex[2*(MaxKoor+200)],/* Buffer for 2D coordinates				*/
-		Street1Vertex[MaxSegments*3*2],	/* Buffer for visible street elements of track 1.	*/
-		Street2Vertex[MaxSegments*3*2],	/* Buffer for visible street elements of track 2.	*/
-		ObjFace[3*3],		/* Object surface vectors used by car simulation model.	*/
-		TrackData[11000],	/* This array contains all track, control, vehicle data	*/
-		PolyVertex[MaxVertex],	/* Vertex paramaters for polygon solid fill		*/
-		AuxVertex[MaxVertex];	/* Aux. vertex paramaters for polygon solid fill	*/
+s_car car; /* Player's car data.					*/
 
+s_score HiScoreList[10]; /* HiScore list.					*/
 
-long		Score,			/* Current game score.					*/
-		HiScore,		/* Just what the name says.				*/
-		Duration,		/* Duration of the count down.				*/
-		Time,			/* Current game time.					*/
-		TimeOut,		/* End time of the count down.				*/
-		BestLapTime,		/* Best lap time.					*/
-		LastLapTime,		/* Last lap time.					*/
-		QualifyTime,		/* Last lap time which qualified.			*/
-		TimeToQualify,		/* Just what the name says.				*/
+s_frame far *RedPointer, /* Pointer used to record red car's movement.		*/
+  far *BluePointer,      /* Pointer used to record blue car's movement.		*/
+  far *OldChampLap,      /* Array holds Phanton Photon's lap.			*/
+  far *NewChampLap;      /* Array holds the challenger's lap.			*/
 
-		*Pattern;		/* Pattern for solid fill routines.			*/
+s_playback SlowMotion[MaxFrame], /* Array for last MaxFrame frames. (Slow Motion).	*/
+  *FramePos;                     /* Pointer to current frame in slow motion array.	*/
 
+s_track *StreetUnderCar, /* Pointer to street element in use for demo drive.	*/
+  *track1,               /* Pointer to street elements of track1.		*/
+  *track2,               /* Pointer to street elements of track2.		*/
+  *Junct1,
+  *Junct2, /* Pointer to both junctions on track1.			*/
+  *End1,
+  *End2,       /* Pointer to last street segment + 1 on both tracks.	*/
+  *NextStreet; /* Pointer to nearest street element.			*/
 
-s_block		ScoreRect, TimeRect,
-		MessageRect[3],		/* Left  windows bit block description.			*/
-		MidRect,		/* Mid   gauges  bit block description.			*/
-		AutoRect,		/* Bit block for automatic gear display.		*/
-		ManualRect,		/* Bit block for manual gear display.			*/
-		BarRect,		/* Bit block for steering wheel position.		*/
-		GearARect[5],		/* Bit block for 5 gears. (automatic)			*/
-		GearMRect[5];		/* Bit block for 5 gears. (manual)			*/
+s_control *NextCtr1, /* Next control point to pass on track 1.		*/
+  *NextCtr2,         /* Next control point to pass on track 2.		*/
+  *T1ContPoints,     /* Speed track control points.				*/
+  *T2ContPoints;     /* Stunt track control points.				*/
 
-s_object	*field,			/* Pointer to field array.				*/
-		*object,		/* Array of all objects.				*/
-		*GreenLight,
-		*YellowLight,
-		*RedLight,		/* Pointer to traffic light objects.			*/
-		*RedCar,		/* Pointer to own car. (Championship Lap)		*/
-		*BlueCar;		/* Pointer to Phantom Photon's car. (Championship Lap)	*/
-
-s_vehicle	*vehicle;		/* Cars on the track.					*/
-
-s_priority	PrioList[MaxObj];	/* Priority list of visible objects.			*/
-
-s_car		car;			/* Player's car data.					*/
-
-s_score		HiScoreList[10];	/* HiScore list.					*/
-
-s_frame		far *RedPointer,	/* Pointer used to record red car's movement.		*/
-		far *BluePointer,	/* Pointer used to record blue car's movement.		*/
-		far *OldChampLap,	/* Array holds Phanton Photon's lap.			*/
-		far *NewChampLap;	/* Array holds the challenger's lap.			*/
-
-s_playback	SlowMotion[MaxFrame],	/* Array for last MaxFrame frames. (Slow Motion).	*/
-		*FramePos;		/* Pointer to current frame in slow motion array.	*/
-
-s_track		*StreetUnderCar,	/* Pointer to street element in use for demo drive.	*/
-		*track1,		/* Pointer to street elements of track1.		*/
-		*track2,		/* Pointer to street elements of track2.		*/
-		*Junct1,
-		*Junct2,		/* Pointer to both junctions on track1.			*/
-		*End1,
-		*End2,			/* Pointer to last street segment + 1 on both tracks.	*/
-		*NextStreet;		/* Pointer to nearest street element.			*/
-
-s_control	*NextCtr1,		/* Next control point to pass on track 1.		*/
-		*NextCtr2,		/* Next control point to pass on track 2.		*/
-		*T1ContPoints,		/* Speed track control points.				*/
-		*T2ContPoints;		/* Stunt track control points.				*/
-
-
-s_BitImage	FlagYellow, FlagRed,	/* Two flags to show last lap run.			*/
-		ChampLogo,		/* Championship logo.					*/
-		Cup,			/* Championship cup.					*/
-		Explosion[6],		/* Explosion shapes.					*/
-		Mountain[10];		/* BitMap description of the mountain shapes.		*/
-
-
-
-
-
-
-
+s_BitImage FlagYellow, FlagRed, /* Two flags to show last lap run.			*/
+  ChampLogo,                    /* Championship logo.					*/
+  Cup,                          /* Championship cup.					*/
+  Explosion[6],                 /* Explosion shapes.					*/
+  Mountain[10];                 /* BitMap description of the mountain shapes.		*/
 
 /*		FUNCTIONS :
-		===========
+                ===========
 */
 
+static void
+DemoRun(void)
 
+{
+  static char Message;
+  int i;
 
+  /* SKIP, IF NEW GAME REQUIRED. */
 
+  if (!DemoMode)
+    return;
 
+  /* NO CARS ! */
 
+  DisableVehicles();
 
+  TimeFlag = FALSE;
+  QualifyFlag = FALSE;
+  AccidentFlag = FALSE;
+  GameMode = FALSE;
+  LapMode = FALSE;
+  SloMoFlag = FALSE;
 
-static	void	DemoRun( void)
+  /* SET DEMO TEXT TO START POSITION. */
 
-{	static	char	Message;
-		int	i;
+  MessageY = 200;
 
-	/* SKIP, IF NEW GAME REQUIRED. */
+  /* FIND NEAREST STREET SEGMENT. */
 
-	if (!DemoMode)
-		return;
+  MoveCar();
+  SetNearestElement();
 
-	/* NO CARS ! */
+  /* PRODUCE FIRST DEMO SCREEN TO BLEND IN. */
 
-	DisableVehicles();
+  MoveCar();
+  FindAllVisibleObjects();
+  CompAllObjects();
+  PrintBackground();
+  PrintAllObjects();
 
-	TimeFlag     = FALSE;
-	QualifyFlag  = FALSE;
-	AccidentFlag = FALSE;
-	GameMode     = FALSE;
-	LapMode      = FALSE;
-	SloMoFlag    = FALSE;
+  /* BLEND FIRST SCREEN IN. */
 
+  UpdateTime();
+  Switch();
+  RealToDummy();
 
-	/* SET DEMO TEXT TO START POSITION. */
+  /* DEMO. */
 
-	MessageY = 200;
+  TimeFlag = TRUE;
 
-	/* FIND NEAREST STREET SEGMENT. */
+  for (i = 0; i < 1000; i++)
+  {
+    GetPlayerInput();
 
-	MoveCar();
-	SetNearestElement();
+    if (!DemoMode)
+      break;
 
-	/* PRODUCE FIRST DEMO SCREEN TO BLEND IN. */
+    MoveCar();
 
-	MoveCar();
-	FindAllVisibleObjects();
-	CompAllObjects();
-	PrintBackground();
-	PrintAllObjects();
+    FindAllVisibleObjects();
+    CompAllObjects();
 
-	/* BLEND FIRST SCREEN IN. */
+    PrintBackground();
+    PrintAllObjects();
+    PrintCockpit();
+    PrintOffRoad();
 
-	UpdateTime();
-	Switch();
-	RealToDummy();
+    if (Message)
+      PrintChampion();
+    else
+      PrintHiscoreList();
 
+#if (0)
+    {
+      extern char JoyCode, CPUspeed, TuneSpeed;
+      extern char OverflowFlag;
 
-	/* DEMO. */
+      SetTextColor(white);
+      PrintValue(1, 10, (uint)VisiStr1);
+      PrintValue(1, 20, (uint)Streets1);
+      PrintValue(18, 10, (uint)VisiStr2);
+      PrintValue(18, 20, (uint)Streets2);
+      PrintValue(1, 30, (uint)VisibleObjects);
+      PrintValue(1, 40, (uint)QualifyFlag);
+      PrintValue(1, 50, (uint)DemoMode);
+    }
+#endif
 
-	TimeFlag = TRUE;
+    UpdateTime();
+    Switch();
+  }
 
-	for (i = 0; i < 1000; i++)
-	{	GetPlayerInput();
-
-		if (!DemoMode)
-			break;
-
-		MoveCar();
-
-		FindAllVisibleObjects();
-		CompAllObjects();
-
-		PrintBackground();
-		PrintAllObjects();
-		PrintCockpit();
-		PrintOffRoad();
-
-		if (Message)
-			PrintChampion();
-		else
-			PrintHiscoreList();
-
-		#if (0)
-		{	extern	char	JoyCode, CPUspeed, TuneSpeed;
-			extern	char	OverflowFlag;
-
-			SetTextColor( white);
-			PrintValue(  1, 10, (uint) VisiStr1);
-			PrintValue(  1, 20, (uint) Streets1);
-			PrintValue( 18, 10, (uint) VisiStr2);
-			PrintValue( 18, 20, (uint) Streets2);
-			PrintValue(  1, 30, (uint) VisibleObjects);
-			PrintValue(  1, 40, (uint) QualifyFlag);
-			PrintValue(  1, 50, (uint) DemoMode);
-		}
-		#endif
-
-		UpdateTime();
-		Switch();
-	}
-
-	Message ^= TRUE;
+  Message ^= TRUE;
 }
 
+static void
+GotoReturnPoint(void)
 
+{
+  register int h;
+  register s_control* cn;
+  s_track* str;
+  static uchar control = 0;
+  static s_track* street;
 
+#define end 8
 
+  if (!ReturnFlag)
+    return;
 
+  if (!control)
+  { /*  RESET CAR */
 
+    car.GravityY = 0;
+    car.ImpulseX = 0;
+    car.ImpulseY = 0;
+    car.ImpulseZ = 0;
+    car.deltaSpin = 0;
+    car.wheelSpeed = 0;
+    car.speed = 0;
+    car.throttle = 0;
+    car.rpm = 0;
+    car.BrakeFlag = FALSE;
+    car.ImpulseFlag = FALSE;
 
-static	void	GotoReturnPoint( void)
+    OffRoadOut = 0;
 
-{	register int		h;
-	register s_control	*cn;
-		 s_track 	*str;
-	static	 uchar		control = 0;
-	static	 s_track	*street;
+    StopSound();
 
+    StartFlag = 0;
+    EngineOn = FALSE;
+    AccidentFlag = FALSE;
+    SpinFlag = FALSE;
 
-	#define	end	8
+    /*  FIND LAST RETURN POINT PASSED. */
 
+    if (NextCtr1 - T1ContPoints > NextCtr2 - T2ContPoints)
+    {
+      cn = NextCtr1 - 1;
+      if (cn < T1ContPoints)
+        cn = T1ContPoints;
+      NextStreet = street = &track1[cn->segment];
+    }
+    else
+    {
+      cn = NextCtr2 - 1;
+      if (cn < T2ContPoints)
+        cn = T2ContPoints;
+      NextStreet = street = &track2[cn->segment];
+    }
+  }
 
-	if (!ReturnFlag)
-		return;
+  str = street;
 
-	if (!control)
-	{	/*  RESET CAR */
+  if (UK_Flag)
+  {
+    car.newX = (uint)((3 * (ulong)str->x1 + (ulong)str->x2) >> 2);
+    car.newY = (uint)((3 * (ulong)str->y1 + (ulong)str->y2) >> 2);
+    car.newZ = (uint)((3 * (ulong)str->z1 + (ulong)str->z2) >> 2);
+  }
+  else
+  {
+    car.newX = (uint)((3 * (ulong)str->x2 + (ulong)str->x1) >> 2);
+    car.newY = (uint)((3 * (ulong)str->y2 + (ulong)str->y1) >> 2);
+    car.newZ = (uint)((3 * (ulong)str->z2 + (ulong)str->z1) >> 2);
+  }
 
-		car.GravityY = 0;
-		car.ImpulseX = 0;
-		car.ImpulseY = 0;
-		car.ImpulseZ = 0;
-		car.deltaSpin  = 0;
-		car.wheelSpeed = 0;
-		car.speed      = 0;
-		car.throttle   = 0;
-		car.rpm        = 0;
-		car.BrakeFlag   = FALSE;
-		car.ImpulseFlag = FALSE;
+  h = str->yaw;
 
-		OffRoadOut = 0;
+  if (h > 4 * 180)
+    h -= 4 * 360;
+  else if (h < -4 * 180)
+    h -= 4 * 360;
 
-		StopSound();
+  car.mx = car.newX;
+  car.my = car.newY;
+  car.mz = car.newZ;
 
-		StartFlag    = 0;
-		EngineOn     = FALSE;
-		AccidentFlag = FALSE;
-		SpinFlag     = FALSE;
+  car.newYaw = car.yaw = h;
+  car.newPitch = car.pitch = str->pitch;
+  car.newRoll = car.roll = 0;
 
-		/*  FIND LAST RETURN POINT PASSED. */
+  car.deltaPitch = car.deltaRoll = 0;
 
-		if (NextCtr1-T1ContPoints > NextCtr2-T2ContPoints)
-		{	cn = NextCtr1 - 1;
-			if (cn < T1ContPoints)
-				cn = T1ContPoints;
-			NextStreet = street = &track1[cn->segment];
-		}
-		else
-		{	cn = NextCtr2 - 1;
-			if (cn < T2ContPoints)
-				cn = T2ContPoints;
-			NextStreet = street = &track2[cn->segment];
-		}
-	}
+  car.throttle = car.speed = 0;
+  car.vx = car.vy = car.vz = 0;
+  car.ImpulseX = car.ImpulseY = car.ImpulseZ = 0;
 
-	str = street;
+  car.newY += 4 * 5 * (end - control);
 
-	if (UK_Flag)
-	{	car.newX = (uint) ((3 * (ulong) str->x1 + (ulong) str->x2) >> 2);
-		car.newY = (uint) ((3 * (ulong) str->y1 + (ulong) str->y2) >> 2);
-		car.newZ = (uint) ((3 * (ulong) str->z1 + (ulong) str->z2) >> 2);
-	}
-	else
-	{	car.newX = (uint) ((3 * (ulong) str->x2 + (ulong) str->x1) >> 2);
-		car.newY = (uint) ((3 * (ulong) str->y2 + (ulong) str->y1) >> 2);
-		car.newZ = (uint) ((3 * (ulong) str->z2 + (ulong) str->z1) >> 2);
-	}
+  car.preciseX = ((long)car.newX) << 3;
+  car.preciseY = ((long)car.newY) << 3;
+  car.preciseZ = ((long)car.newZ) << 3;
 
-	h = str->yaw;
+  StopSound();
 
-		if (h >  4*180)		h -= 4*360;
-	else	if (h < -4*180)		h -= 4*360;
+  if (++control > end)
+  {
+    control = 0;
+    ReturnFlag = FALSE;
+    ClearButtons();
+  }
 
-	car.mx = car.newX;
-	car.my = car.newY;
-	car.mz = car.newZ;
+  SetNearestElement();
+  CenterMouse();
+  SpinFlag = FALSE;
 
-	car.newYaw   = car.yaw   = h;
-	car.newPitch = car.pitch = str->pitch;
-	car.newRoll  = car.roll  = 0;
-
-	car.deltaPitch = car.deltaRoll = 0;
-
-	car.throttle = car.speed = 0;
-	car.vx	     = car.vy	    = car.vz	   = 0;
-	car.ImpulseX = car.ImpulseY = car.ImpulseZ = 0;
-
-	car.newY += 4*5 * (end - control);
-
-	car.preciseX = ((long) car.newX) << 3;
-	car.preciseY = ((long) car.newY) << 3;
-	car.preciseZ = ((long) car.newZ) << 3;
-
-	StopSound();
-
-	if (++control > end)
-	{	control    = 0;
-		ReturnFlag = FALSE;
-		ClearButtons();
-	}
-
-	SetNearestElement();
-	CenterMouse();
-	SpinFlag = FALSE;
-
-	#undef	end
+#undef end
 }
 
+static void
+ShowSlowMotion(void)
 
+{
+  register int i, j, frames, *p;
+  register s_playback* fr;
+  register s_vehicle* vh;
+  register s_object* obj;
+  s_BitImage* expl;
+  char soundFlag;
+  int ysin, ycos, psin, pcos, dx, dy, dz;
+  char count1, count2;
 
+  if (!SloMoFlag)
+    return;
 
+  StopEngine();
+  StopSound();
 
+  /* ACTIVATE RED CAR OBJECT AND STOP TIMER. */
 
+  RedCar->active = TRUE;
+  RedCar->color = red1;
+  TimeFlag = FALSE;
+  soundFlag = TRUE;
 
+  /* SET FRAME POINTER TO START OF RECORDING. */
 
+  fr = FramePos - MaxFrame;
+  if (fr < SlowMotion)
+    fr += MaxFrame;
 
-static	void	ShowSlowMotion( void)
+  /* SKIP EMPTY SECTION. */
 
-{	register int		i, j, frames, *p;
-	register s_playback	*fr;
-	register s_vehicle	*vh;
-	register s_object	*obj;
-		 s_BitImage	*expl;
-		 char		soundFlag;
-		 int		ysin, ycos, psin, pcos, dx, dy, dz;
-		 char		count1, count2;
+  for (frames = MaxFrame; frames > 0;)
+  {
+    if (!(fr->x | fr->y | fr->z))
+    {
+      frames--;
+      fr++;
+    }
+    else
+      break;
 
-	if (!SloMoFlag)
-		return;
+    if (fr >= &SlowMotion[MaxFrame])
+      fr = SlowMotion;
+  }
 
-	StopEngine();
-	StopSound();
+  /* SET STREET POINTER TO NEAREST STREET SEGMENT. */
+
+  car.mx = fr->x;
+  car.my = fr->y;
+  car.mz = fr->z;
+  SetNearestElement();
+
+  /* START PLAYBACK. */
 
+  ClearButtons();
+
+  expl = Explosion;
+  count1 = 0;
+  count2 = 0;
 
-	/* ACTIVATE RED CAR OBJECT AND STOP TIMER. */
+  for (i = 0; (i < frames) && !button; i++)
+  {
+    /* READ RECORDED CAR POSITION */
 
-	RedCar->active = TRUE;
-	RedCar->color  = red1;
-	TimeFlag       = FALSE;
-	soundFlag      = TRUE;
+    RedCar->yaw = -fr->yaw;
+    RedCar->pitch = -fr->pitch;
+    RedCar->roll = -fr->roll;
 
+    RedCar->worldX = car.newX = fr->x;
+    RedCar->worldY = car.newY = fr->y;
+    RedCar->worldZ = car.newZ = fr->z;
 
-	/* SET FRAME POINTER TO START OF RECORDING. */
+    EnginePitch = fr->engine;
 
-	fr = FramePos - MaxFrame;
-	if (fr < SlowMotion)
-		fr += MaxFrame;
+    if (fr->engine & 0x8000)
+      MakeSound(s_squeal);
 
+    /* POSITION VIEWPOINT */
 
-	/* SKIP EMPTY SECTION. */
+    ysin = sinus(fr->yaw + 4 * 90);
+    ycos = cosinus(fr->yaw + 4 * 90);
+    psin = sinus(4 * 30);
+    pcos = cosinus(4 * 30);
 
-	for (frames = MaxFrame; frames > 0;)
-	{	if (!(fr->x | fr->y | fr->z))
-		{	frames--;
-			fr++;
-		}
-		else	break;
+#define dist 700
 
-		if (fr >= &SlowMotion[MaxFrame])
-			fr = SlowMotion;
-	}
+    dy = rot1(0, dist, psin, pcos);
+    dz = rot2(0, dist, psin, pcos);
+    dx = rot1(0, dz, ysin, ycos);
+    dz = rot2(0, dz, ysin, ycos);
 
+#undef dist
 
-	/* SET STREET POINTER TO NEAREST STREET SEGMENT. */
+    car.newX -= dx;
+    car.newY -= dy;
+    car.newZ += dz;
 
-	car.mx = fr->x;
-	car.my = fr->y;
-	car.mz = fr->z;		SetNearestElement();
+    car.preciseX = (long)car.newX << 3;
+    car.preciseY = (long)car.newY << 3;
+    car.preciseZ = (long)car.newZ << 3;
 
+    car.newYaw = fr->yaw - 4 * 90;
+    car.newPitch = -4 * 28;
+    car.newRoll = 0;
 
-	/* START PLAYBACK. */
+    /* SET CARS. */
 
-	ClearButtons();
+    vh = vehicle;
+    p = fr->carpos;
 
-	expl = Explosion;
-	count1 = 0;
-	count2 = 0;
+    for (j = NumOfVehicles + 1; --j;)
+    {
+      obj = (vh++)->obj;
+      obj->worldX = (uint)*p++;
+      obj->worldY = (int)*p++;
+      obj->worldZ = (uint)*p++;
+      obj->yaw = *p++;
+      obj->pitch = *p++;
+      obj->roll = *p++;
+    }
 
-	for (i = 0; (i < frames) && !button; i++)
-	{
-		/* READ RECORDED CAR POSITION */
+    /* PRINT FRAME */
 
-		RedCar->yaw   = - fr->yaw;
-		RedCar->pitch = - fr->pitch;
-		RedCar->roll  = - fr->roll;
+    GetPlayerInput();
+    MoveCar();
+    FindAllVisibleObjects();
+    CompAllObjects();
 
-		RedCar->worldX = car.newX = fr->x;
-		RedCar->worldY = car.newY = fr->y;
-		RedCar->worldZ = car.newZ = fr->z;
+    PrintBackground();
+    PrintAllObjects();
 
-		EnginePitch = fr->engine;
+    if (i >= (frames - (AccidentDelay + 1)))
+    {
+      DrawShape((Random() >> 14) - 4, (Random() >> 14) + 10, *expl);
 
-		if (fr->engine & 0x8000)
-			MakeSound( s_squeal);
+      if (++count1 > 2)
+      {
+        count1 = 0;
+        if (++count2 < 6)
+          expl++;
+        else
+          expl--;
+      }
 
-		/* POSITION VIEWPOINT */
+      if (soundFlag)
+      {
+        MakeSound(s_crash);
+        soundFlag = FALSE;
+      }
+    }
 
-		ysin =   sinus( fr->yaw + 4*90);
-		ycos = cosinus( fr->yaw + 4*90);
-		psin =   sinus( 4*30);
-		pcos = cosinus( 4*30);
+    StartEngine();
 
-		#define	dist	700
+    PrintMessage();
+    PrintCockpit();
 
-		dy = rot1( 0, dist, psin, pcos);
-		dz = rot2( 0, dist, psin, pcos);
-		dx = rot1( 0,   dz, ysin, ycos);
-		dz = rot2( 0,   dz, ysin, ycos);
+    SetTextColor(white);
+    PrintString(12, 10, "INSTANT REPLAY.");
 
-		#undef	dist
+    UpdateTime();
+    Switch();
 
-		car.newX -= dx;
-		car.newY -= dy;
-		car.newZ += dz;
+    /* NEXT FRAME */
 
-		car.preciseX = (long) car.newX << 3;
-		car.preciseY = (long) car.newY << 3;
-		car.preciseZ = (long) car.newZ << 3;
+    if (++fr >= &SlowMotion[MaxFrame])
+      fr = SlowMotion;
+  }
 
-		car.newYaw   = fr->yaw - 4*90;
-		car.newPitch =         - 4*28;
-		car.newRoll  = 0;
+  /* RESET FRAME ARRAY. */
 
-		/* SET CARS. */
+  InitRecord();
 
-		vh = vehicle;
-		p  = fr->carpos;
+  /* DEACTIVATE RED CAR, START TIMER */
 
-		for (j = NumOfVehicles+1; --j;)
-		{	obj = (vh++)->obj;
-			obj->worldX = (uint) *p++;
-			obj->worldY =  (int) *p++;
-			obj->worldZ = (uint) *p++;
-			obj->yaw   = *p++;
-			obj->pitch = *p++;
-			obj->roll  = *p++;
-		}
+  SloMoFlag = FALSE;
+  RedCar->active = FALSE;
+  AccidentFlag = FALSE;
+  SpinFlag = FALSE;
+  SkidFlag = FALSE;
+  car.ImpulseFlag = FALSE;
+  TimeFlag = TRUE;
+  ReturnFlag = TRUE;
 
-		/* PRINT FRAME */
+  ClearButtons();
+  StopSound();
 
-		GetPlayerInput();
-		MoveCar();
-		FindAllVisibleObjects();
-		CompAllObjects();
+  /* FINISH CHAMPIONSHIP LAP. */
 
-		PrintBackground();
-		PrintAllObjects();
+  LapMode = FALSE;
+  LapFinished = FALSE;
 
-		if (i >= (frames - (AccidentDelay+1)))
-		{	DrawShape( (Random() >> 14)-4, (Random() >> 14)+10, *expl);
+  /* PUT INTO NEUTRAL, IF MANUAL SHIFT. */
 
-			if (++count1 > 2)
-			{	count1 = 0;
-				if (++count2 < 6)
-					expl++;
-				else	expl--;
-			}
-
-
-			if (soundFlag)
-			{	MakeSound( s_crash);
-				soundFlag = FALSE;
-			}
-		}
-
-		StartEngine();
-
-		PrintMessage();
-		PrintCockpit();
-
-		SetTextColor(white);
-		PrintString( 12, 10, "INSTANT REPLAY.");
-
-		UpdateTime();
-		Switch();
-
-		/* NEXT FRAME */
-
-		if (++fr >= &SlowMotion[MaxFrame])
-			fr = SlowMotion;
-	}
-
-
-	/* RESET FRAME ARRAY. */
-
-	InitRecord();
-
-
-	/* DEACTIVATE RED CAR, START TIMER */
-
-	SloMoFlag	= FALSE;
-	RedCar->active	= FALSE;
-	AccidentFlag	= FALSE;
-	SpinFlag	= FALSE;
-	SkidFlag	= FALSE;
-	car.ImpulseFlag	= FALSE;
-	TimeFlag	= TRUE;
-	ReturnFlag	= TRUE;
-
-	ClearButtons();
-	StopSound();
-
-
-	/* FINISH CHAMPIONSHIP LAP. */
-
-	LapMode     = FALSE;
-	LapFinished = FALSE;
-
-
-	/* PUT INTO NEUTRAL, IF MANUAL SHIFT. */
-
-	if (!car.autoFlag)
-	{	car.ShiftFlag = 5;
-	}
+  if (!car.autoFlag)
+  {
+    car.ShiftFlag = 5;
+  }
 }
 
+static void
+GameRun(void)
 
+{
+  int i;
 
+  ClearButtons();
+  CenterMouse();
+  ResetKeys();
 
+  while (GameMode)
+  {
+    /* CHECK FOR TIME RUNNING OUT. */
 
+    if (TimeOutFlag)
+    {
+      if (car.speed == 0)
+        GameMode = FALSE;
+      TimeFlag = FALSE;
+    }
 
+    /* WAS THERE AN ACCIDENT ? */
 
+    if (AccidentFlag)
+    {
+      if (AccidentFlag == 1)
+      {
+        MessageTime = 0;
+        SloMoFlag = TRUE;
+      }
+      AccidentFlag--;
+    }
 
+    GetPlayerInput();
+    GotoReturnPoint();
 
+    MoveCar();
+    MoveVehicles();
+    FindAllVisibleObjects();
 
+    CompAllObjects();
+    CarModel();
 
+    PrintBackground();
+    PrintAllObjects();
 
+    if (AccidentFlag)
+      PrintBrokenWindow();
+    PrintCountDown();
+    PrintOffRoad();
+    PrintMessage();
+    PrintCockpit();
+    PrintScore();
 
-static	void	GameRun( void)
+    ShowSlowMotion();
 
-{       int	i;
+#if (0)
+    {
+      extern char JoyCode, CPUspeed, TuneSpeed;
+      extern char OverflowFlag;
 
+      SetTextColor(white);
+      PrintValue(1, 10, hh1);
+      /*
+      PrintValue( 1, 20, (uint) Streets1);
+      PrintValue( 1, 30, (uint) QualifyFlag);
+      */
+    }
+#endif
 
-	ClearButtons();
-	CenterMouse();
-	ResetKeys();
+    UpdateTime();
+    Switch();
+  }
 
+  /* GAME OVER SEQUENCE */
 
-	while (GameMode)
-	{
-		/* CHECK FOR TIME RUNNING OUT. */
+  StopSound();
+  TimeFlag = FALSE;
 
-		if (TimeOutFlag)
-		{	if (car.speed == 0)
-				GameMode = FALSE;
-			TimeFlag = FALSE;
-		}
+  for (i = 0; i < 20 + 15; i++)
+  {
+    int h;
 
-		/* WAS THERE AN ACCIDENT ? */
+    GetPlayerInput();
+    FindAllVisibleObjects();
+    CompAllObjects();
 
-		if (AccidentFlag)
-		{	if (AccidentFlag == 1)
-			{	MessageTime = 0;
-				SloMoFlag = TRUE;
-			}
-			AccidentFlag--;
-		}
+    PrintBackground();
+    PrintAllObjects();
+    if (AccidentFlag)
+      PrintBrokenWindow();
 
+    h = (i > 20) ? 20 : i;
+    SetTextColor(white);
+    PrintString(36 - h, 70, "GAME.");
+    PrintString(1 + h, 70, "OVER.");
 
-		GetPlayerInput();
-		GotoReturnPoint();
+    PrintOffRoad();
+    PrintCockpit();
+    PrintScore();
 
-		MoveCar();
-		MoveVehicles();
-		FindAllVisibleObjects();
+    UpdateTime();
+    Switch();
+  }
 
-		CompAllObjects();
-		CarModel();
-
-		PrintBackground();
-		PrintAllObjects();
-
-		if (AccidentFlag)
-			PrintBrokenWindow();
-		PrintCountDown();
-		PrintOffRoad();
-		PrintMessage();
-		PrintCockpit();
-		PrintScore();
-
-		ShowSlowMotion();
-
-		#if (0)
-		{	extern	char	JoyCode, CPUspeed, TuneSpeed;
-			extern	char	OverflowFlag;
-
-			SetTextColor( white);
-			PrintValue( 1, 10, hh1);
-			/*
-			PrintValue( 1, 20, (uint) Streets1);
-			PrintValue( 1, 30, (uint) QualifyFlag);
-			*/
-		}
-		#endif
-
-		UpdateTime();
-		Switch();
-	}
-
-
-	/* GAME OVER SEQUENCE */
-
-	StopSound();
-	TimeFlag = FALSE;
-
-	for (i = 0; i < 20+15; i++)
-	{	int	h;
-
-		GetPlayerInput();
-		FindAllVisibleObjects();
-		CompAllObjects();
-
-		PrintBackground();
-		PrintAllObjects();
-		if (AccidentFlag)
-			PrintBrokenWindow();
-
-		h = (i > 20) ? 20 : i;
-		SetTextColor(white);
-		PrintString( 36 - h, 70, "GAME.");
-		PrintString(  1 + h, 70, "OVER.");
-
-		PrintOffRoad();
-		PrintCockpit();
-		PrintScore();
-
-		UpdateTime();
-		Switch();
-	}
-
-	ClearButtons();
-	StopSound();
+  ClearButtons();
+  StopSound();
 }
 
+static void
+ChampPlayBack(void)
 
+{
+  s_frame far *redpos, far *bluepos;
+  s_object* winner;
+  int yaw, dx, dz, distance, lastdistance;
 
+  StopSound();
 
+  /* ACTIVATE RED CAR. */
 
+  RedCar->active = TRUE;
 
+  /* WHO HAS WON ? */
 
+  winner = (NewPhantomPhoton) ? RedCar : BlueCar;
 
+  /* REWIND FRAME POINTER TO SHOW THE LAST SECONDS. */
 
+  redpos = RedPointer;
+  bluepos = BluePointer;
 
+  BluePointer -= 30;
+  RedPointer -= 30;
 
-static	void	ChampPlayBack( void)
+  if (BluePointer < OldChampLap)
+    BluePointer = OldChampLap;
+  if (RedPointer < NewChampLap)
+    RedPointer = NewChampLap;
 
-{	s_frame		far *redpos, far *bluepos;
-	s_object	*winner;
-	int		yaw, dx, dz, distance, lastdistance;
+  /* SET STREET POINTER TO NEAREST STREET SEGMENT. */
 
+  car.newX = car.mx = car.x = LapViewX;
+  car.newY = car.my = car.y = LapViewY;
+  car.newZ = car.mz = car.z = LapViewZ;
 
-	StopSound();
+  car.newPitch = car.pitch = -5;
+  car.newRoll = car.roll = 0;
 
-	/* ACTIVATE RED CAR. */
+  pitchSIN = sinus(car.pitch);
+  pitchCOS = cosinus(car.pitch);
+  rollSIN = sinus(car.roll);
+  rollCOS = cosinus(car.roll);
 
-	RedCar->active = TRUE;
+  car.preciseX = car.newX << 3;
+  car.preciseY = car.newY << 3;
+  car.preciseZ = car.newZ << 3;
 
+  SetNearestElement();
+  lastdistance = 1000;
 
-	/* WHO HAS WON ? */
+  /* START PLAYBACK. */
 
-	winner = (NewPhantomPhoton) ? RedCar : BlueCar;
+  while ((BluePointer < bluepos - 1) && (RedPointer < redpos - 1))
+  {
+    /* READ RECORDED CAR POSITIONS. */
 
-	/* REWIND FRAME POINTER TO SHOW THE LAST SECONDS. */
+    ReadRedCar();
+    ReadBlueCar();
 
-	redpos  = RedPointer;
-	bluepos = BluePointer;
+    /* VIEWDIRECTION */
 
-	BluePointer -= 30;
-	RedPointer  -= 30;
+    dx = winner->worldX - car.newX;
+    dz = winner->worldZ - car.newZ;
 
-	if (BluePointer < OldChampLap)   BluePointer = OldChampLap;
-	if (RedPointer  < NewChampLap)   RedPointer  = NewChampLap;
+    distance = Sqrt(mult(dx, dx) + mult(dz, dz));
 
+    /* GET THE OLD DOPPLER EFFECT WORKING. */
 
-	/* SET STREET POINTER TO NEAREST STREET SEGMENT. */
+    EnginePitch = 800 - ((distance - lastdistance) << 3);
+    lastdistance = distance;
 
-	car.newX = car.mx = car.x = LapViewX;
-	car.newY = car.my = car.y = LapViewY;
-	car.newZ = car.mz = car.z = LapViewZ;
+    StartEngine();
 
-	car.newPitch = car.pitch = -5;
-	car.newRoll  = car.roll  =  0;
+    yaw = arcsin(dx, distance);
 
-	pitchSIN =   sinus(car.pitch);
-	pitchCOS = cosinus(car.pitch);
-	rollSIN  =   sinus(car.roll);
-	rollCOS  = cosinus(car.roll);
+    if (dz < 0)
+    {
+      if (yaw > 0)
+        yaw = 4 * 180 - yaw;
+      else
+        yaw = -4 * 180 - yaw;
+    }
+    car.yaw = car.newYaw = yaw;
 
-	car.preciseX = car.newX << 3;
-	car.preciseY = car.newY << 3;
-	car.preciseZ = car.newZ << 3;
+    yawSIN = sinus(car.yaw);
+    yawCOS = cosinus(car.yaw);
 
-	SetNearestElement();
-	lastdistance = 1000;
+    /* PRINT FRAME */
 
+    GetPlayerInput();
+    FindAllVisibleObjects();
+    CompAllObjects();
 
-	/* START PLAYBACK. */
+    PrintBackground();
+    PrintAllObjects();
+    PrintCockpit();
+    PrintScore();
 
-	while ((BluePointer < bluepos-1) && (RedPointer < redpos-1))
-	{
-		/* READ RECORDED CAR POSITIONS. */
+    UpdateTime();
+    Switch();
+  }
 
-		ReadRedCar();
-		ReadBlueCar();
+  /* DEACTIVATE RED CAR. */
 
-		/* VIEWDIRECTION */
+  RedCar->active = FALSE;
 
-		dx = winner->worldX - car.newX;
-		dz = winner->worldZ - car.newZ;
+  /* RESTORE OLD POINTER VALUES. */
 
-		distance = Sqrt( mult(dx,dx) + mult(dz,dz));
-
-		/* GET THE OLD DOPPLER EFFECT WORKING. */
-
-		EnginePitch = 800 - ((distance - lastdistance) << 3);
-		lastdistance = distance;
-
-		StartEngine();
-
-		yaw = arcsin( dx, distance);
-
-		if (dz < 0)
-		{	if (yaw > 0)	yaw =  4*180 - yaw;
-			else		yaw = -4*180 - yaw;
-		}
-		car.yaw = car.newYaw = yaw;
-
-		yawSIN =   sinus(car.yaw);
-		yawCOS = cosinus(car.yaw);
-
-		/* PRINT FRAME */
-
-		GetPlayerInput();
-		FindAllVisibleObjects();
-		CompAllObjects();
-
-		PrintBackground();
-		PrintAllObjects();
-		PrintCockpit();
-		PrintScore();
-
-		UpdateTime();
-		Switch();
-	}
-
-
-	/* DEACTIVATE RED CAR. */
-
-	RedCar->active = FALSE;
-
-
-	/* RESTORE OLD POINTER VALUES. */
-
-	RedPointer  = redpos;
-	BluePointer = bluepos;
+  RedPointer = redpos;
+  BluePointer = bluepos;
 }
 
+static void
+ChampTitle(void)
 
+{
+  extern char TuneSpeed;
+  int i, ysin, ycos, psin, pcos;
+  int dx, dy, dz, yaw, pitch;
 
+#define deltaYaw -4 * 152
+#define deltaPitch 4
+#define length 800
 
+  ClearButtons();
 
+  SetCar(StartSegment, 0, 1, (PhantomLane ^ 1));
+  SetNearestElement();
 
+  yaw = car.newYaw + deltaYaw;
+  pitch = car.newPitch + deltaPitch;
 
+  /* POSITION VIEWPOINT */
 
+  ysin = sinus(yaw);
+  ycos = cosinus(yaw);
+  psin = sinus(pitch);
+  pcos = cosinus(pitch);
 
-static	void	ChampTitle( void)
+  dy = rotate(length, psin);
+  dz = rotate(length, pcos);
+  dx = rotate(dz, ysin);
+  dz = rotate(dz, ycos);
 
-{	extern	char	TuneSpeed;
-		int	i, ysin, ycos, psin, pcos;
-		int	dx, dy, dz, yaw, pitch;
+  dy += 80;
 
+  car.newX += dx;
+  car.preciseX = (long)car.newX << 3;
+  car.newY += dy;
+  car.preciseY = (long)car.newY << 3;
+  car.newZ += dz;
+  car.preciseZ = (long)car.newZ << 3;
 
-	#define	deltaYaw	-4*152
-	#define	deltaPitch	     4
-	#define	length		   800
+  car.newYaw = yaw - 4 * 180;
+  car.newPitch = -pitch;
 
+  /* NORMALIZE ANGLE. */
 
-	ClearButtons();
+  if (car.newYaw > 4 * 180)
+    car.newYaw -= 4 * 360;
+  else if (car.newYaw < -4 * 180)
+    car.newYaw += 4 * 360;
 
-	SetCar( StartSegment, 0, 1, (PhantomLane ^ 1));
-	SetNearestElement();
+  MoveCar();
+  FindAllVisibleObjects();
+  CompAllObjects();
 
-	yaw   = car.newYaw   + deltaYaw;
-	pitch = car.newPitch + deltaPitch;
+  PrintBackground();
+  PrintAllObjects();
 
+  SetTextColor(black);
+  PrintString((40 - BestLength) >> 1, 5, BestName);
 
-	/* POSITION VIEWPOINT */
+  SetTextColor(white);
+  TypeString(30, 15, "CHALLENGES YOU TO THE#");
 
-	ysin =   sinus( yaw);
-	ycos = cosinus( yaw);
-	psin =   sinus( pitch);
-	pcos = cosinus( pitch);
+  DrawShape(0, -12, ChampLogo);
+  DrawShape(0, 12, Cup);
 
-	dy = rotate( length, psin);
-	dz = rotate( length, pcos);
-	dx = rotate(     dz, ysin);
-	dz = rotate(     dz, ycos);
+  TypeString(3, 97, "NO CRASHING#");
+  TypeString(3, 106, "ONLY TEN SECONDS OFFROAD#");
+  TypeString(3, 115, "IF YOU WIN[ FUTURE#");
+  TypeString(3, 124, "CHALLENGERS RACE YOU#");
 
-	dy += 80;
+  UpdateTime();
+  Switch();
+  RealToDummy();
 
-	car.newX += dx;     car.preciseX = (long) car.newX << 3;
-	car.newY += dy;     car.preciseY = (long) car.newY << 3;
-	car.newZ += dz;     car.preciseZ = (long) car.newZ << 3;
+  LogoY += 13;
 
-	car.newYaw   =  yaw - 4*180;
-	car.newPitch = -pitch;
+  for (i = 15; i < 105; i += 3)
+  {
+    GetPlayerInput();
+    ScaleLogo(i);
+    SolidColor(blue);
+    Box(-70, LogoY - 10, 70, LogoY + 10);
+    DrawLogo();
+    PrintCockpit();
+    PrintScore();
+    UpdateTime();
+    Switch();
+  }
 
-	/* NORMALIZE ANGLE. */
+  InitTune(TuneSpeed, 0);
+  ClearButtons();
+  for (; !(button | KeyPressed());)
+    RefreshTune();
 
-		if (car.newYaw >  4*180)   car.newYaw -= 4*360;
-	else	if (car.newYaw < -4*180)   car.newYaw += 4*360;
+  StopSound();
+  ClearButtons();
+  LogoY -= 13;
 
-	MoveCar();
-	FindAllVisibleObjects();
-	CompAllObjects();
+#define count 7
 
+  dx = ratio(dx, 1, count + 1);
+  dy = ratio(dy, 1, count + 1);
+  dz = ratio(dz, 1, count + 1);
 
-	PrintBackground();
-	PrintAllObjects();
+  for (i = 0; i < count; i++)
+  {
+    car.newX -= dx;
+    car.newY -= dy;
+    car.newZ -= dz;
 
-	SetTextColor( black);
-	PrintString( (40 - BestLength) >> 1, 5, BestName);
+    car.newPitch += 1;
+    car.newYaw -= (4 * 180 + deltaYaw) / count;
 
-	SetTextColor( white);
-	TypeString(  30, 15, "CHALLENGES YOU TO THE#");
+    car.preciseX = (long)car.newX << 3;
+    car.preciseY = (long)car.newY << 3;
+    car.preciseZ = (long)car.newZ << 3;
 
+    MoveCar();
+    FindAllVisibleObjects();
+    CompAllObjects();
 
-	DrawShape( 0, -12, ChampLogo);
-	DrawShape( 0,  12, Cup);
+    PrintBackground();
+    PrintAllObjects();
+    PrintCockpit();
+    PrintScore();
 
-	TypeString( 3,  97, "NO CRASHING#");
-	TypeString( 3, 106, "ONLY TEN SECONDS OFFROAD#");
-	TypeString( 3, 115, "IF YOU WIN[ FUTURE#");
-	TypeString( 3, 124, "CHALLENGERS RACE YOU#");
+    UpdateTime();
+    Switch();
+  }
 
-	UpdateTime();
-	Switch();
-	RealToDummy();
+  /* DISABLE RED CAR AGAIN. */
 
-	LogoY += 13;
+  RedCar->active = FALSE;
 
-	for (i = 15; i < 105; i += 3)
-	{	GetPlayerInput();
-		ScaleLogo(i);
-		SolidColor( blue);
-		Box( -70, LogoY-10, 70, LogoY+10);
-		DrawLogo();
-		PrintCockpit();
-		PrintScore();
-		UpdateTime();
-		Switch();
-	}
+  StopSound();
 
-	InitTune( TuneSpeed, 0);
-	ClearButtons();
-	for (;!(button | KeyPressed());)
-		RefreshTune();
-
-	StopSound();
-	ClearButtons();
-	LogoY -= 13;
-
-	#define	count	7
-
-	dx = ratio( dx, 1, count+1);
-	dy = ratio( dy, 1, count+1);
-	dz = ratio( dz, 1, count+1);
-
-	for (i = 0; i < count; i++)
-	{	car.newX -= dx;
-		car.newY -= dy;
-		car.newZ -= dz;
-
-		car.newPitch += 1;
-		car.newYaw   -= (4*180+deltaYaw) / count;
-
-		car.preciseX = (long) car.newX << 3;
-		car.preciseY = (long) car.newY << 3;
-		car.preciseZ = (long) car.newZ << 3;
-
-		MoveCar();
-		FindAllVisibleObjects();
-		CompAllObjects();
-
-		PrintBackground();
-		PrintAllObjects();
-		PrintCockpit();
-		PrintScore();
-
-		UpdateTime();
-		Switch();
-	}
-
-
-	/* DISABLE RED CAR AGAIN. */
-
-	RedCar->active = FALSE;
-
-	StopSound();
-
-	#undef	deltaYaw
-	#undef	deltaPitch
-	#undef	length
-	#undef	count
+#undef deltaYaw
+#undef deltaPitch
+#undef length
+#undef count
 }
 
+static void
+ChampRace(void)
 
+{
+  GetPlayerInput();
 
+  /* CHECK IF A CAR HAS REACHED THE FINISH. */
 
+  if (TimeOutFlag)
+  {
+    if (car.speed == 0)
+    {
+      LapMode = FALSE;
+    }
+    TimeFlag = FALSE;
+  }
 
+  /* WAS THERE AN ACCIDENT ? */
 
+  if (AccidentFlag)
+  {
+    if (AccidentFlag == 1)
+    {
+      SloMoFlag = TRUE;
+      MessageTime = msg_duration + 20;
+      MessageCode = msg_disqualified;
+    }
+    AccidentFlag--;
+  }
 
+  MoveCar();
 
+  RecordRedCar();
+  ReadBlueCar();
 
+  FindAllVisibleObjects();
+  CompAllObjects();
+  CarModel();
 
+  PrintBackground();
+  PrintAllObjects();
 
+  if (AccidentFlag)
+    PrintBrokenWindow();
 
-static	void	ChampRace( void)
+  PrintCountDown();
+  PrintOffRoad();
+  PrintMessage();
 
-{	GetPlayerInput();
-
-	/* CHECK IF A CAR HAS REACHED THE FINISH. */
-
-	if (TimeOutFlag)
-	{	if (car.speed == 0)
-		{	LapMode = FALSE;
-		}
-		TimeFlag = FALSE;
-	}
-
-	/* WAS THERE AN ACCIDENT ? */
-
-	if (AccidentFlag)
-	{	if (AccidentFlag == 1)
-		{	SloMoFlag = TRUE;
-			MessageTime = msg_duration + 20;
-			MessageCode = msg_disqualified;
-		}
-		AccidentFlag--;
-	}
-
-	MoveCar();
-	
-	RecordRedCar();
-	ReadBlueCar();
-
-	FindAllVisibleObjects();
-	CompAllObjects();
-	CarModel();
-	
-	PrintBackground();
-	PrintAllObjects();
-
-	if (AccidentFlag)
-		PrintBrokenWindow();
-
-	PrintCountDown();
-	PrintOffRoad();
-	PrintMessage();
-
-	PrintCockpit();
-	PrintScore();
-	ShowSlowMotion();
+  PrintCockpit();
+  PrintScore();
+  ShowSlowMotion();
 }
 
+static void
+ChampionChipLap(void)
 
+{
+  char SaveUK_flag;
 
+  SaveUK_flag = UK_Flag;
+  LapFinished = FALSE;
+  NewPhantomPhoton = FALSE;
 
+  /* SET CHAMPIONSHIP FLAGS. */
 
+  QualifyFlag = FALSE;
+  AccidentFlag = FALSE;
+  DemoMode = FALSE;
+  StartFlag = 0;
+  UK_Flag = FALSE;
+  TimeFlag = FALSE;
+  TimeOutFlag = FALSE;
+  BonusFlag = FALSE;
+  EngineOn = FALSE;
+  RaceIsOn = FALSE;
+  ReturnFlag = FALSE;
 
+  LapMode = TRUE;
+  StartMessage = TRUE;
 
+  MessageTime = 0;
+  MessageCode = 0;
+  Time = 0x0000L;
 
+  StopSound();
 
+  /* TRAFFIC LIGHT IS RED. */
 
+  GreenLight->active = FALSE;
+  YellowLight->active = FALSE;
+  RedLight->active = TRUE;
 
+  /* INIT SOLID RED AND HATCHED BLUE CAR. */
 
-static	void	ChampionChipLap( void)
+  DisableVehicles();
+  RedCar->active = TRUE;
+  BlueCar->active = TRUE;
+  SetCar(StartSegment, 0, 1, (PhantomLane ^ 1));
+  CopyCarPosition(RedCar);
+  SetCar(StartSegment, 0, 1, (PhantomLane));
+  CopyCarPosition(BlueCar);
 
-{	char	SaveUK_flag;
+  /* ACTIVATE ARROW SIGNS TO SHOW THE WAY. */
 
-	SaveUK_flag      = UK_Flag;
-	LapFinished      = FALSE;
-	NewPhantomPhoton = FALSE;
+  SetArrows(TRUE);
 
+  /* DISPLAY START SCREEN. */
 
-	/* SET CHAMPIONSHIP FLAGS. */
+  ChampTitle();
 
-	QualifyFlag  = FALSE;
-	AccidentFlag = FALSE;
-	DemoMode     = FALSE;
-	StartFlag    = 0;
-	UK_Flag      = FALSE;
-	TimeFlag     = FALSE;
-	TimeOutFlag  = FALSE;
-	BonusFlag    = FALSE;
-	EngineOn     = FALSE;
-	RaceIsOn     = FALSE;
-	ReturnFlag   = FALSE;
+  /* INIT CAR. */
 
-	LapMode      = TRUE;
-	StartMessage = TRUE;
+  SetCar(StartSegment, 0, 1, (PhantomLane ^ 1));
 
-	MessageTime  = 0;
-	MessageCode  = 0;
-	Time	     = 0x0000L;
+  car.deltaPitch = 0;
+  car.deltaRoll = 0;
+  car.deltaSpin = 0;
 
-	StopSound();
+  car.rpm = 0;
+  car.mph = 0;
+  car.speed = car.wheelSpeed = 0;
 
+  car.BrakeFlag = FALSE;
+  car.ImpulseFlag = FALSE;
+  car.ShiftFlag = FALSE;
 
-	/* TRAFFIC LIGHT IS RED. */
+  car.gear = (car.autoFlag) ? 1 : 0;
+  car.throttle = 0;
+  car.gearBlock = (car.autoFlag) ? GearARect : GearMRect;
+  car.gearBlock += car.gear;
 
-	GreenLight->active  = FALSE;
-	YellowLight->active = FALSE;
-	RedLight->active    = TRUE;
+  StopEngine();
+  StopSound();
+  SetNearestElement();
 
+  /* REWIND CHAMPIONSHIP RECORDING. */
 
-	/* INIT SOLID RED AND HATCHED BLUE CAR. */
+  RedPointer = NewChampLap;
+  RedSample = 0;
+  BluePointer = OldChampLap;
+  BlueSample = 0;
 
-	DisableVehicles();
-	RedCar->active  = TRUE;
-	BlueCar->active = TRUE;
-	SetCar( StartSegment, 0, 1, (PhantomLane ^ 1));	  CopyCarPosition( RedCar);
-	SetCar( StartSegment, 0, 1, (PhantomLane));	  CopyCarPosition( BlueCar);
+  /* INIT SETTING. */
 
+  OffRoadOut = 0x1099;
+  TimeOut = Duration;
+  TimeFlag = TRUE;
 
-	/* ACTIVATE ARROW SIGNS TO SHOW THE WAY. */
+  ClearButtons();
+  CenterMouse();
 
-	SetArrows(TRUE);
+  while (LapMode)
+  {
+    ChampRace();
+    UpdateTime();
+    Switch();
+  }
 
+  /* PLAYBACK OF LAST SECONDS. */
 
-	/* DISPLAY START SCREEN. */
+  if (LapFinished)
+    ChampPlayBack();
 
-	ChampTitle();
+  /* DEACTIVATE ARROW SIGNS. */
 
+  SetArrows(FALSE);
 
-	/* INIT CAR. */
+  /* DEACTIVATE BLUE AND RED CAR. */
 
-	SetCar( StartSegment, 0, 1, (PhantomLane ^ 1));
+  EnableVehicles();
+  RedCar->active = FALSE;
+  BlueCar->active = FALSE;
 
-	car.deltaPitch = 0;
-	car.deltaRoll  = 0;
-	car.deltaSpin  = 0;
+  /* SAVE NEW CHAMPION'S LAP. */
 
-	car.rpm = 0;
-	car.mph = 0;
-	car.speed = car.wheelSpeed = 0;
+  if (NewPhantomPhoton)
+  {
+    s_frame far *fr1, far *fr2;
 
-	car.BrakeFlag   = FALSE;
-	car.ImpulseFlag = FALSE;
-	car.ShiftFlag	= FALSE;
+    PhantomLane ^= 1;
 
-	car.gear = (car.autoFlag) ? 1 : 0;
-	car.throttle = 0;
-	car.gearBlock  = (car.autoFlag) ? GearARect : GearMRect;
-	car.gearBlock += car.gear;
+    fr1 = OldChampLap;
+    fr2 = NewChampLap;
 
-	StopEngine();
-	StopSound();
-	SetNearestElement();
+    while (fr2 < RedPointer)
+      *fr1++ = *fr2++;
+    fr2--;
+    while (fr1 < &OldChampLap[MaxSample])
+      *fr1++ = *fr2;
+  }
 
+  /* RESTORE UK FLAG. */
 
-	/* REWIND CHAMPIONSHIP RECORDING. */
+  UK_Flag = SaveUK_flag;
 
-	RedPointer  = NewChampLap;	RedSample  = 0;
-	BluePointer = OldChampLap;	BlueSample = 0;
-
-
-	/* INIT SETTING. */
-
-	OffRoadOut = 0x1099;
-	TimeOut    = Duration;
-	TimeFlag   = TRUE;
-
-	ClearButtons();
-	CenterMouse();
-
-
-	while (LapMode)
-	{	ChampRace();
-		UpdateTime();
-		Switch();
-	}
-
-
-	/* PLAYBACK OF LAST SECONDS. */
-
-	if (LapFinished)
-		ChampPlayBack();
-
-
-	/* DEACTIVATE ARROW SIGNS. */
-
-	SetArrows(FALSE);
-
-
-	/* DEACTIVATE BLUE AND RED CAR. */
-
-	EnableVehicles();
-	RedCar->active  = FALSE;
-	BlueCar->active = FALSE;
-
-
-	/* SAVE NEW CHAMPION'S LAP. */
-
-	if (NewPhantomPhoton)
-	{	s_frame		far *fr1, far *fr2;
-
-		PhantomLane ^= 1;
-
-		fr1 = OldChampLap;
-		fr2 = NewChampLap;
-
-		while (fr2 < RedPointer)
-			*fr1++ = *fr2++;
-		fr2--;
-		while (fr1 < &OldChampLap[MaxSample])
-			*fr1++ = *fr2;
-	}
-
-
-	/* RESTORE UK FLAG. */
-
-	UK_Flag = SaveUK_flag;
-
-	StopSound();
+  StopSound();
 }
 
+static void
+PlayAGame(void)
 
+{
+  ChooseTransmission();
 
+  GameInit();
+  GameRun();
 
+  if (QualifyFlag)
+  {
+    ChampionChipLap();
 
+    if (NewPhantomPhoton)
+    { /*
+      TimeToQualify = Time;
+      AddTime( 0x0001, &TimeToQualify);
+      */
 
+      /* if (Time < BestLapTime) */
+      {
+        BestLapTime = Time;
+        LapUpdate();
+      }
+    }
+    else
+      ScoreUpdate();
+  }
+  else
+  {
+    ShowRestOfLap();
+    AddTime(0x0001, &TimeToQualify);
+    ScoreUpdate();
+  }
 
+  if (TimeToQualify > 0x020000L)
+    TimeToQualify = 0x020000L;
 
-
-
-
-static	void	PlayAGame( void)
-
-{	ChooseTransmission();
-
-	GameInit();
-	GameRun();
-
-
-	if (QualifyFlag)
-	{	ChampionChipLap();
-
-		if (NewPhantomPhoton)
-		{	/*
-			TimeToQualify = Time;
-			AddTime( 0x0001, &TimeToQualify);
-			*/
-
-			/* if (Time < BestLapTime) */
-			{	BestLapTime = Time;
-				LapUpdate();
-			}
-		}
-		else	ScoreUpdate();
-	}
-	else
-	{	ShowRestOfLap();
-		AddTime( 0x0001, &TimeToQualify);
-		ScoreUpdate();
-	}
-
-	if (TimeToQualify > 0x020000L)
-		TimeToQualify = 0x020000L;
-
-	DemoMode = TRUE;
-	GameMode = FALSE;
+  DemoMode = TRUE;
+  GameMode = FALSE;
 }
 
+extern uint _stklen = 2000;
 
+main(void)
 
+{
+  char ever = TRUE;
 
+  SystemInit();
+  HardDrivingInit();
 
+  for (; ever;)
+  {
+    while (DemoMode)
+    {
+      ShowTitle();
+      DemoRun();
+    }
+    PlayAGame();
+  }
 
-	extern	uint	_stklen = 2000;
+  SystemExit("");
 
-
-
-
-main( void)
-
-{	char	ever = TRUE;
-
-	SystemInit();
-	HardDrivingInit();
-
-	for (;ever;)
-	{	while (DemoMode)
-		{	ShowTitle();
-			DemoRun();
-		}
-		PlayAGame();
-	}
-
-	SystemExit("");
-
-	return(0);
+  return (0);
 }
