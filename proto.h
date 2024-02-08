@@ -48,10 +48,10 @@ void ResetKeys(void);
 
 /* MODULE...........system.s */
 
-void interrupt EmptyFunction(void); /* Empty interrupt server. */
-void interrupt DivZero(void);       /* Division overflow handler. */
-void interrupt Vblank(void);        /* 'Vertical Blank' routine. */
-void CalibrateJoystick(void);       /* Call once to find center positions. */
+void EmptyFunction(void);     /* Empty interrupt server. */
+void DivZero(void);           /* Division overflow handler. */
+void Vblank(void);            /* 'Vertical Blank' routine. */
+void CalibrateJoystick(void); /* Call once to find center positions. */
 
 /* MODULE...........comp.s */
 

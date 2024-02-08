@@ -88,14 +88,14 @@ int LoadPalette[] = /* Game color palette */
 static char huge *chunk,
   huge *chunk1; /* Aux. pointer for memory management. */
 
-static void interrupt (*OldTimer)(void);
-static void interrupt (*OldBreak)(void);
-static void interrupt (*OldCtrlC)(void);
-static void interrupt (*OldCritic)(void);
-static void interrupt (*OldDivision0)(void);
-static void interrupt (*OldBreak)(void);
-static void interrupt (*OldNMI)(void);
-static void interrupt (*OldTRAP)(void);
+static void (*OldTimer)(void);
+static void (*OldBreak)(void);
+static void (*OldCtrlC)(void);
+static void (*OldCritic)(void);
+static void (*OldDivision0)(void);
+static void (*OldBreak)(void);
+static void (*OldNMI)(void);
+static void (*OldTRAP)(void);
 
 char BlockButtons;    /* Mouse button control bits. */
 char JoyCode;         /* Direction flags of both joysticks. */
@@ -882,7 +882,7 @@ SystemInit(void)
   extern char MouseFlag, GraphMode, SteerSelect, GearSelect;
   extern char MapName[], SelectName[], PanelName[], LoadName[];
   extern int resolution;
-  void interrupt (*mouse)(void);
+  void (*mouse)(void);
   union REGS regs;
 
   PlaneSize = 8000;
