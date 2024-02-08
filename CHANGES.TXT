@@ -1,0 +1,50 @@
+
+
+
+
+
+	HARDDRIVIN'-VERAENDERUNGEN WAEHREND DES TENGEN-AUFENTHALTS:
+	-----------------------------------------------------------
+
+
+
+
+
+
+- Header STRUCT.H :	- fx_moo :	Jetzt auf 8
+			- RoadLength :	Von 700 auf 650
+			- MaxRoadPos:	Neuer Wert: auf 200
+
+
+
+- Module SETUP.ASM :	- int  CheckSteeringKeys() :	Neue Funktion, um die Cursor-Tasten abzufragen
+			- void ResetKeys( void) :	Neue Funktion
+
+
+- Module CARMODEL.C :	- void CarEngine( void) :	Abfrage: Wenn kein rad auf dem Boden, dann keine Bremswirkung...
+							Staerkere Abbremsung auf dem Rough
+
+
+
+- Module MISC.C :	- void GetPlayerInput( void) :	SloMoFlag wird beruecksichtigt...
+							DEBUG-keys enabled
+							Neue Abfragefunktion CheckSteeringKeys()
+							Neue Abfragelogik
+
+
+- Module CARS.C :	- void SetVehicle( s_vehicle *vh) :	Makro MaxPos jetzt global
+
+
+
+- Module ATTRACT.C :	Das Makro DURATION wurde von 15 auf 5 verringert
+
+
+- Module DISPLAY.C :    - void CarOnRoad( void) :	Veraenderung
+			- void ShowAllCars..( ..) :	BUG FIXED !
+
+
+- Module MOVEMENT.C :	- void FindAllVisi..( void) :	LOOP-BUG FIXED !
+
+
+- Module NEWFIND.C :	- int CheckSecondTrack( int link) :
+			- int CheckFirstTrack( int link) :
