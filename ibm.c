@@ -85,8 +85,8 @@ int LoadPalette[] = /* Game color palette */
     0x0711,
 };
 
-static char huge *chunk,
-  huge *chunk1; /* Aux. pointer for memory management. */
+static char *chunk,
+  *chunk1; /* Aux. pointer for memory management. */
 
 static void (*OldTimer)(void);
 static void (*OldBreak)(void);
@@ -400,10 +400,10 @@ Random(void)
   return ((int)rand);
 }
 
-static void huge*
+static void*
 GetBuffer(long size)
 {
-  void huge* addr;
+  void* addr;
   long AllocChunk;
 
   AllocChunk = farcoreleft();
@@ -417,7 +417,7 @@ GetBuffer(long size)
     SystemExit("Not enough memory !");
   }
 
-  addr = (void huge*)farmalloc(size);
+  addr = (void*)farmalloc(size);
 
   if (addr == NULL)
     SystemExit("Memory allocation didn't work !");
