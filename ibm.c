@@ -1223,4 +1223,3 @@ void	SystemExit( char *message)
 
 	exit(0);
 }
-

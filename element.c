@@ -75,4 +75,3 @@ void	SetNearestElement( void)
 
 	StreetUnderCar = NextStreet;
 }
-

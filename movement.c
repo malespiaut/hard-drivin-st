@@ -442,4 +442,3 @@ void	FindAllVisibleObjects( void)
 
 	#undef	border
 }
-

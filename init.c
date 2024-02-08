@@ -495,4 +495,3 @@ void	InitControlPoints( void)
 	}
 	(tr + CheckP2_segment)->flags |= f_checkpoint;
 }
-

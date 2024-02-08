@@ -821,6 +821,3 @@ pr_lineup_names()
    }
 }
 
-
-
-

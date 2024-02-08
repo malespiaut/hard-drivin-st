@@ -47,4 +47,4 @@
 
 
 - Module NEWFIND.C :	- int CheckSecondTrack( int link) :
-			- int CheckFirstTrack( int link) :
+			- int CheckFirstTrack( int link) :

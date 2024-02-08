@@ -1002,4 +1002,3 @@ COMP_TEXT	ends
 	public	_rot2
 	public	_rot1
 	end
-

@@ -511,4 +511,3 @@ SYSTEM_TEXT	ends
 	public	_CalibrateJoystick
 	public	_Vblank
 	end
-

@@ -348,4 +348,3 @@ void	PrintChampion( void);			/* Show current champion and best time. */
 /* MODULE...........carmodel.c */
 
 void	CarModel( void);			/* Compute new car position, angle and check for collisions. */
-

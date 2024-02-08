@@ -679,4 +679,4 @@ void	PrintChampion( void)
 	SetTextColor(white);
 
 	PrintString( 15, y, BestTime);
-}
+}

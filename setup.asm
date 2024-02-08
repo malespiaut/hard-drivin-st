@@ -656,4 +656,3 @@ SETUP_TEXT	ends
 	public	_ResetKeys
 
 	end
-

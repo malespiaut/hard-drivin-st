@@ -359,4 +359,3 @@ void	DisableVehicles( void)
 		vh++;
 	}
 }
-

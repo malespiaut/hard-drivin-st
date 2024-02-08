@@ -462,4 +462,4 @@ void	LapUpdate( void)
 	}
 	
 	BestLength = StringLength( BestName);
-}
+}

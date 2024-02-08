@@ -943,4 +943,3 @@ void	SetOptions( void)
 
 	TimeFlag = TRUE;
 }
-

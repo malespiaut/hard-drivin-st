@@ -278,4 +278,3 @@ void	DrawShape( int x, int y, s_BitImage *shape)
 
 	PutShape( mask, size, offset, height, x, y, words, shift);
 }
-
