@@ -31,13 +31,13 @@
                 ===========
 */
 
-static void near ClearControlPoints(void);
-static int near ReadShapeFiles(void);
-static void near ReadGameFile(void);
-static int near ReadTrackFile(void);
-static void near ReadAllFiles(void);
+static void ClearControlPoints(void);
+static int ReadShapeFiles(void);
+static void ReadGameFile(void);
+static int ReadTrackFile(void);
+static void ReadAllFiles(void);
 
-static void near
+static void
 ClearControlPoints(void)
 {
   extern int NumOfT1controls, NumOfT2controls;
@@ -367,7 +367,7 @@ GetPlayerInput(void)
   }
 }
 
-static int near
+static int
 ReadShapeFiles(void)
 {
   extern unsigned char MntLength[];
@@ -449,7 +449,7 @@ ReadShapeFiles(void)
                       name will be saved !!      \
                    */
 
-static void near
+static void
 ReadGameFile(void)
 {
   extern char PhantomLane, DirtyFlag;
@@ -554,7 +554,7 @@ SaveGameFile(void)
 #undef NameFlag
 #undef size
 
-static int near
+static int
 ReadTrackFile(void)
 {
   extern int TrackData[];
@@ -629,7 +629,7 @@ ReadTrackFile(void)
   return (ok);
 }
 
-static void near
+static void
 ReadAllFiles(void)
 {
   extern char MapName[], SelectName[], LoadName[], PanelName[];

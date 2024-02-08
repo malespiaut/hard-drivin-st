@@ -35,11 +35,11 @@ char NoReturnCheck; /* Flag indicates no checking for next returnpoint. */
                 ===========
 */
 
-static void near CheckReturnPoints(s_track* segment);
-static int near CheckFirstTrack(int link);
-static int near CheckSecondTrack(int link);
+static void CheckReturnPoints(s_track* segment);
+static int CheckFirstTrack(int link);
+static int CheckSecondTrack(int link);
 
-static void near
+static void
 CheckReturnPoints(s_track* segment)
 {
   extern uchar OnTrack;
@@ -73,7 +73,7 @@ CheckReturnPoints(s_track* segment)
 
 #if (NewVersion)
 
-static int near
+static int
 CheckFirstTrack(int link)
 {
   extern uchar WrongDirection, VisiStr1, OnTrack;
@@ -274,7 +274,7 @@ CheckFirstTrack(int link)
   return (junction & (f_junct1 + f_junct2));
 }
 
-static int near
+static int
 CheckSecondTrack(int link)
 {
   extern uchar WrongDirection, VisiStr2, OnTrack;
@@ -470,7 +470,7 @@ CheckSecondTrack(int link)
 
 #else
 
-static int near
+static int
 CheckFirstTrack(int link)
 {
   extern uchar WrongDirection, VisiStr1, OnTrack, CarInLoop;
@@ -663,7 +663,7 @@ CheckFirstTrack(int link)
   return (junction & (f_junct1 + f_junct2));
 }
 
-static int near
+static int
 CheckSecondTrack(int link)
 {
   extern uchar WrongDirection, VisiStr2, OnTrack, CarInLoop;

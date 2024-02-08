@@ -34,9 +34,9 @@
                 ===========
 */
 
-static uchar near Filter(uchar n, s_object* obj);
+static uchar Filter(uchar n, s_object* obj);
 
-static uchar near
+static uchar
 Filter(uchar n, s_object* obj)
 {
   uchar result;

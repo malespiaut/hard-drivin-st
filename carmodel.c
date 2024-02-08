@@ -94,22 +94,22 @@ static int sinY, cosY, /* New yaw   trig. values */
                 ===========
 */
 
-static void near TurnPitch(int);
-static void near TurnYaw(int);
-static void near SetNormalVector(void);
-static void near PlayerControl(void);
-static void near CarMotion(void);
-static void near CarEngine(void);
-static char near CheckCollision(void);
-static void near GetNearestStreetSegments(void);
-static int near CompDistance(int, int, int, char);
-static int near CompHeight(int, int, int);
-static void near OnTheRoad(void);
-static void near OnTheGreen(void);
-static void near CarOnObject(void);
-static void near InteractionModel(void);
+static void TurnPitch(int);
+static void TurnYaw(int);
+static void SetNormalVector(void);
+static void PlayerControl(void);
+static void CarMotion(void);
+static void CarEngine(void);
+static char CheckCollision(void);
+static void GetNearestStreetSegments(void);
+static int CompDistance(int, int, int, char);
+static int CompHeight(int, int, int);
+static void OnTheRoad(void);
+static void OnTheGreen(void);
+static void CarOnObject(void);
+static void InteractionModel(void);
 
-static void near
+static void
 TurnPitch(int deltaPitch)
 {
   extern s_car car;
@@ -127,7 +127,7 @@ TurnPitch(int deltaPitch)
   car.newPitch += deltaPitch;
 }
 
-static void near
+static void
 TurnYaw(int deltaYaw)
 {
   extern s_car car;
@@ -157,7 +157,7 @@ TurnYaw(int deltaYaw)
   car.newRoll += deltaRoll;
 }
 
-static void near
+static void
 SetNormalVector(void)
 {
   extern s_car car;
@@ -195,7 +195,7 @@ SetNormalVector(void)
   /* RESULT: NORMAL VECTOR IN THE WORLD COORDINATE SYSTEM. */
 }
 
-static void near
+static void
 PlayerControl(void)
 {
   extern char SpinFlag, SkidFlag, AccidentFlag, CarInLoop;
@@ -277,7 +277,7 @@ PlayerControl(void)
   cosR = cosinus(car.newRoll);
 }
 
-static void near
+static void
 CarMotion(void)
 {
   extern char SpinFlag, AccidentFlag;
@@ -342,7 +342,7 @@ CarMotion(void)
   }
 }
 
-static void near
+static void
 CarEngine(void)
 {
   extern char CheckOffRoad, SpinFlag, SkidFlag;
@@ -593,7 +593,7 @@ CarEngine(void)
 #undef MaxDeceleration
 }
 
-static char near
+static char
 CheckCollision(void)
 {
   extern char CollisionFlag, LapMode, AccidentFlag;
@@ -919,7 +919,7 @@ CheckCollision(void)
   return (FALSE);
 }
 
-static void near
+static void
 GetNearestStreetSegments(void)
 {
   extern char OnTrack;
@@ -1058,7 +1058,7 @@ GetNearestStreetSegments(void)
   dz24 = StreetCoor[5 * 3 + 2] - StreetCoor[3 * 3 + 2];
 }
 
-static int near
+static int
 CompDistance(int x, int y, int z, char set1)
 {
   char flag;
@@ -1181,7 +1181,7 @@ CompDistance(int x, int y, int z, char set1)
   return (y);
 }
 
-static int near
+static int
 CompHeight(int x, int y, int z)
 {
   extern int ObjFace[];
@@ -1218,7 +1218,7 @@ CompHeight(int x, int y, int z)
   return (y);
 }
 
-static void near
+static void
 OnTheRoad(void)
 {
   status = s_OnTheRoad;
@@ -1307,7 +1307,7 @@ OnTheRoad(void)
 #endif
 }
 
-static void near
+static void
 OnTheGreen(void)
 {
   int k[4 * 3];
@@ -1340,7 +1340,7 @@ OnTheGreen(void)
   height4 = car.newY + k[10];
 }
 
-static void near
+static void
 CarOnObject(void)
 {
   int Correction;
@@ -1358,7 +1358,7 @@ CarOnObject(void)
   height4 = CompHeight(x4, y4, z4) - Correction;
 }
 
-static void near
+static void
 InteractionModel(void)
 {
   extern char AccidentFlag, LapMode, CarInLoop;

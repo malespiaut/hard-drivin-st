@@ -29,15 +29,15 @@
                 ===========
 */
 
-static void near PrintMountains(int);
-static void near ClearCockpit(void);
-static void near ShowAllCarsInTheLoop(s_object*);
-static void near PrintHillRoads(int);
-static void near PrintLowStreets(void);
-static void near CarOnRoad(void);
-static void near CarInDip(void);
+static void PrintMountains(int);
+static void ClearCockpit(void);
+static void ShowAllCarsInTheLoop(s_object*);
+static void PrintHillRoads(int);
+static void PrintLowStreets(void);
+static void CarOnRoad(void);
+static void CarInDip(void);
 
-static void near
+static void
 PrintMountains(int y)
 {
   extern int MntPositions[], MinX, MaxX;
@@ -172,7 +172,7 @@ PrintBackground(void)
 #undef max
 }
 
-static void near
+static void
 ClearCockpit(void)
 {
   extern char LapMode, QualifyFlag, DemoMode;
@@ -327,7 +327,7 @@ PrintCockpit(void)
 #undef width
 }
 
-static void near
+static void
 ShowAllCarsInTheLoop(s_object* loop)
 {
   extern int VisibleObjects;
@@ -865,7 +865,7 @@ PrintBrokenWindow(void)
 #undef DrawP
 }
 
-static void near
+static void
 PrintHillRoads(int type)
 {
   extern uchar VisiStr1, VisiStr2, VisiLns1, VisiLns2;
@@ -951,7 +951,7 @@ PrintHillRoads(int type)
   }
 }
 
-static void near
+static void
 PrintLowStreets(void)
 {
   extern uchar VisiStr1, VisiStr2, VisiLns1, VisiLns2;
@@ -1063,7 +1063,7 @@ PrintLowStreets(void)
 #undef mask
 }
 
-static void near
+static void
 CarOnRoad(void)
 {
   extern int VisibleObjects, NumOfFields;
@@ -1181,7 +1181,7 @@ CarOnRoad(void)
   }
 }
 
-static void near
+static void
 CarInDip(void)
 {
   extern int VisibleObjects;

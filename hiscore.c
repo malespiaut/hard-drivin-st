@@ -46,14 +46,14 @@ static int TableX1,
 
 */
 
-static void near EditString(s_score* sc);
-static void near PrintTable(int num);
-static void near GetNewName(int num, s_score* sc);
-static void near ShowNewScoreList(int player);
-static void near ChampTable(s_score* champ);
-static void near GetChampName(s_score* champ);
+static void EditString(s_score* sc);
+static void PrintTable(int num);
+static void GetNewName(int num, s_score* sc);
+static void ShowNewScoreList(int player);
+static void ChampTable(s_score* champ);
+static void GetChampName(s_score* champ);
 
-static void near
+static void
 EditString(s_score* sc)
 {
   extern char ExitWait, CharNum, SteerSelect;
@@ -112,7 +112,7 @@ EditString(s_score* sc)
   }
 }
 
-static void near
+static void
 PrintTable(int num)
 {
   extern char ScoreList[];
@@ -166,7 +166,7 @@ PrintTable(int num)
   DrawTo(x, y);
 }
 
-static void near
+static void
 GetNewName(int num, s_score* sc)
 {
   extern char CharNum;
@@ -246,7 +246,7 @@ ScoreUpdate(void)
 
 */
 
-static void near
+static void
 ShowNewScoreList(int player)
 {
   extern char ScoreList[];
@@ -281,7 +281,7 @@ ShowNewScoreList(int player)
   }
 }
 
-static void near
+static void
 ChampTable(s_score* champ)
 {
   extern char ScoreList[], BestTime[];
@@ -332,7 +332,7 @@ ChampTable(s_score* champ)
   DrawTo(x, y);
 }
 
-static void near
+static void
 GetChampName(s_score* champ)
 {
   extern int CharWidth, ScreenX;

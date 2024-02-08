@@ -39,14 +39,14 @@ static int ClipVert[3 * MaxVertex], /* 3D clipping coordinates. */
                 ===========
 */
 
-static void near CompCoordinates(s_object*);
-static uchar near ClipProjectPoly(uchar, uchar, s_object*);
-static void near ClipCoordinates(s_object*);
-static int* near ClipStreet(int*, int*, int);
-static void near MakeStreetElements(void);
-static void near StreetProject(void);
-static void near CompTrack(void);
-static void near CompFields(void);
+static void CompCoordinates(s_object*);
+static uchar ClipProjectPoly(uchar, uchar, s_object*);
+static void ClipCoordinates(s_object*);
+static int* ClipStreet(int*, int*, int);
+static void MakeStreetElements(void);
+static void StreetProject(void);
+static void CompTrack(void);
+static void CompFields(void);
 
 uint
 Sqrt(ulong n)
@@ -245,7 +245,7 @@ CompVertices(s_object* obj)
   }
 }
 
-static void near
+static void
 CompCoordinates(s_object* obj)
 {
   extern int* CoorIndex;
@@ -254,7 +254,7 @@ CompCoordinates(s_object* obj)
   CoorIndex = ProjectSmall(obj->vertices, obj->koor, obj->vert);
 }
 
-static uchar near
+static uchar
 ClipProjectPoly(uchar n,
                 uchar visible,
                 s_object* obj)
@@ -549,7 +549,7 @@ ClipProjectPoly(uchar n,
   return (n);
 }
 
-static void near
+static void
 ClipCoordinates(s_object* obj)
 {
   extern char CollisionFlag;
@@ -642,7 +642,7 @@ ClipCoordinates(s_object* obj)
   CoorIndex = coor;
 }
 
-static int* near
+static int*
 ClipStreet(int* vert,   /* pointer to 3D coordinates */
            int* coor,   /* pointer to 2D coordinates */
            int distance /* distance of midpoint */
@@ -923,7 +923,7 @@ ClipStreet(int* vert,   /* pointer to 3D coordinates */
   return (coor);
 }
 
-static void near
+static void
 MakeStreetElements(void)
 {
   extern uchar VisiStr1, VisiStr2, VisiLns1, VisiLns2;
@@ -1111,7 +1111,7 @@ MakeStreetElements(void)
   VertIndex = d;
 }
 
-static void near
+static void
 StreetProject(void)
 {
   extern uchar VisiStr1, VisiStr2, VisiLns1, VisiLns2;
@@ -1203,7 +1203,7 @@ StreetProject(void)
   CoorIndex = d;
 }
 
-static void near
+static void
 CompTrack(void)
 { /* GENERATE STREET ELEMENT VERTICES. */
 
@@ -1214,7 +1214,7 @@ CompTrack(void)
   StreetProject();
 }
 
-static void near
+static void
 CompFields(void)
 {
   extern int NumOfFields;

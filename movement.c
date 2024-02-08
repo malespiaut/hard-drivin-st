@@ -29,10 +29,10 @@
                 ===========
 */
 
-static void near CarDemoDrive(void);
-static void near FindFields(void);
+static void CarDemoDrive(void);
+static void FindFields(void);
 
-static void near
+static void
 CarDemoDrive(void)
 {
   extern char UK_Flag;
@@ -262,7 +262,7 @@ MoveCar(void)
   ExtendedClip = (abs(car.pitch) > 4 * 35) || (abs(car.roll) > 4 * 45);
 }
 
-static void near
+static void
 FindFields(void)
 {
   extern int NumOfFields;
