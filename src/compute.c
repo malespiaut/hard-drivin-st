@@ -27,11 +27,11 @@
 #define NormalLength 2048
 #define ClipZ 8
 
-static int ClipVert[3 * MaxVertex], // 3D clipping coordinates.
-  MidPts1[3 * MaxSegments],         // mid points on track 1.
-  MidPts2[3 * MaxSegments],         // mid points on track 2.
-  Coll_Height,                      // Height of the collision coordinate.
-  Coll_Visibility;                  // Visibility of the collision face.
+static int ClipVert[3 * MaxVertex];  // 3D clipping coordinates.
+static int MidPts1[3 * MaxSegments]; // mid points on track 1.
+static int MidPts2[3 * MaxSegments]; // mid points on track 2.
+static int Coll_Height;              // Height of the collision coordinate.
+static int Coll_Visibility;          // Visibility of the collision face.
 
 // FUNCTIONS :
 //              ===========
@@ -49,7 +49,9 @@ static void CompFields(void);
 unsigned int
 Sqrt(unsigned long n)
 {
-  unsigned long s1, s2, s3;
+  unsigned long s1;
+  unsigned long s2;
+  unsigned long s3;
 
   if (n <= 0)
     return (0);
@@ -71,8 +73,15 @@ Sqrt(unsigned long n)
 void
 CompNormal(int* p1, int* p2, int* p3, int* normal)
 {
-  long x2, y2, z2, x3, y3, z3;
-  long nx, ny, nz;
+  long x2;
+  long y2;
+  long z2;
+  long x3;
+  long y3;
+  long z3;
+  long nx;
+  long ny;
+  long nz;
   unsigned int len;
 
   x2 = p2[0] - p1[0];
@@ -102,8 +111,10 @@ CompNormal(int* p1, int* p2, int* p3, int* normal)
 int
 CompRadius(s_object* obj)
 {
-  int i, *p;
-  long quad, h;
+  int i;
+  int* p;
+  long quad;
+  long h;
 
   quad = 0;
   p = obj->model;
@@ -122,7 +133,12 @@ CompRadius(s_object* obj)
 void
 CompVertices(s_object* obj)
 {
-  int i, h, sin, cos, *s, *d;
+  int i;
+  int h;
+  int sin;
+  int cos;
+  int* s;
+  int* d;
   int count;
 
   s = obj->model;
@@ -249,12 +265,21 @@ CompCoordinates(s_object* obj)
 }
 
 static unsigned char
-ClipProjectPoly(unsigned char n,
-                unsigned char visible,
-                s_object* obj)
+ClipProjectPoly(unsigned char n, unsigned char visible, s_object* obj)
 {
-  int h, c, test1, test2, *v1, *v2;
-  int x, y, z, dx, dy, dz, k;
+  int h;
+  int c;
+  int test1;
+  int test2;
+  int* v1;
+  int* v2;
+  int x;
+  int y;
+  int z;
+  int dx;
+  int dy;
+  int dz;
+  int k;
   int auxbuf[3 * MaxVertex];
   char CopyFlag;
 
@@ -543,9 +568,19 @@ static void
 ClipCoordinates(s_object* obj)
 {
   unsigned char* p;
-  int j, i, h, z, *d, *s, *coor;
-  unsigned char edges, normal, NoSign, visible;
-  int minZ, maxZ;
+  int j;
+  int i;
+  int h;
+  int z;
+  int* d;
+  int* s;
+  int* coor;
+  unsigned char edges;
+  unsigned char normal;
+  unsigned char NoSign;
+  unsigned char visible;
+  int minZ;
+  int maxZ;
 
   obj->koor = coor = CoorIndex;
   NoSign = !(obj->class & (c_sign + c_loop));
@@ -635,9 +670,20 @@ ClipStreet(int* vert,   // pointer to 3D coordinates
            int distance // distance of midpoint
 )
 {
-  unsigned char h, n;
-  int test1, test2, c, *v1, *v2;
-  int x, y, z, k, dx, dy, dz;
+  unsigned char h;
+  unsigned char n;
+  int test1;
+  int test2;
+  int c;
+  int* v1;
+  int* v2;
+  int x;
+  int y;
+  int z;
+  int k;
+  int dx;
+  int dy;
+  int dz;
   int auxbuf[3 * MaxVertex];
 
   // RETURN, IF STREET ELEMENT IS BEHIND VIEWPOINT.
@@ -912,9 +958,16 @@ static void
 MakeStreetElements(void)
 {
   unsigned char i;
-  int *flag, *p, *d, *mid, dx, dy, dz;
+  int* flag;
+  int* p;
+  int* d;
+  int* mid;
+  int dx;
+  int dy;
+  int dz;
   unsigned char flip;
-  int *lanes1, *lanes2;
+  int* lanes1;
+  int* lanes2;
 
   d = VertIndex;
   flip = 0;
@@ -1097,7 +1150,10 @@ static void
 StreetProject(void)
 {
   unsigned char i;
-  int *flag, *d, *p, *mid;
+  int* flag;
+  int* d;
+  int* p;
+  int* mid;
 
   d = CoorIndex; // d POINTS TO 2D COORDINATE BUFFER
   p = vertex;    // p POINTS TO 3D VERTEX BUFFER

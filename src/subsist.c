@@ -98,7 +98,6 @@ substitute(void)
   { // if substitution is called for the nth time
     switch (temp[15])
     {
-
       case BATTSUB:
         batter_substitution_move();
         break;
@@ -119,7 +118,11 @@ substitute(void)
 void
 batter_substitution_init(void)
 {
-  int j, k, pal, team, number;
+  int j;
+  int k;
+  int pal;
+  int team;
+  int number;
 
   temp[0] = 0; // out of game flags
   temp[1] = 0;
@@ -236,7 +239,11 @@ batter_substitution_init(void)
 void
 full_stats(void)
 {
-  int x, i, pal, number;
+  int x;
+  int i;
+  int pal;
+  int number;
+
   x = temp[12];
   pal = temp[11];
   number = temp[10];
@@ -277,7 +284,11 @@ full_stats(void)
 void
 full_stats_pit(void)
 {
-  int x, i, pal, number;
+  int x;
+  int i;
+  int pal;
+  int number;
+
   x = temp[12];
   pal = temp[11];
   number = temp[10];
@@ -302,7 +313,10 @@ full_stats_pit(void)
 void
 batter_substitution_move(void)
 {
-  int number, k, pal;
+  int number;
+  int k;
+  int pal;
+
   pal = 2 + teamup;
 
   if (Offense_CTRL_edge & JS_UP)
@@ -361,7 +375,6 @@ batter_substitution_move(void)
   }
   if (Offense_CTRL_edge & JS_A)
   {
-
     if (temp[8] == 4)
     {
       temp[5] = temp[7]; // Item selected
@@ -538,7 +551,12 @@ prt_cursor(void)
 void
 fielder_substitution_init(void)
 {
-  int j, k, i, pal, team, number;
+  int j;
+  int k;
+  int i;
+  int pal;
+  int team;
+  int number;
 
   temp[0] = 0; // out of game flags
   temp[1] = 0;
@@ -641,7 +659,9 @@ fielder_substitution_init(void)
 void
 fielder_substitution_move(void)
 {
-  int pal, k;
+  int pal;
+  int k;
+
   pal = 2 + teamup ^ 1;
 
   if (Defense_CTRL_edge & JS_UP)
@@ -700,7 +720,6 @@ fielder_substitution_move(void)
   }
   if (Defense_CTRL_edge & JS_A)
   {
-
     if (temp[8] == 4)
     {
       temp[5] = temp[7]; // Item selected
@@ -721,7 +740,6 @@ fielder_substitution_move(void)
     }
     else
     {
-
       state4 = 0xFF; // RETURN
     }
   }
@@ -734,7 +752,12 @@ fielder_substitution_move(void)
 void
 pitcher_substitution_init(void)
 {
-  int j, i, k, pal, team, number;
+  int j;
+  int i;
+  int k;
+  int pal;
+  int team;
+  int number;
 
   temp[0] = 0; // out of game flags
   temp[1] = 0;
@@ -814,6 +837,7 @@ void
 pitcher_substitution_move(void)
 {
   int pal;
+
   pal = 2 + temp[6];
   if (Defense_CTRL_edge & JS_UP)
   {
@@ -847,7 +871,6 @@ pitcher_substitution_move(void)
   }
   if (Defense_CTRL_edge & JS_A)
   {
-
     state4 = 0xFF; // RETURN
   }
   if (Defense_CTRL_edge & (JS_START))
@@ -868,6 +891,7 @@ void
 pr_line_names(void)
 {
   int k;
+
   for (k = 0; k < 8; k++)
   {
     message_buffer[k] = lineup[curbatter[0]][k];
@@ -884,7 +908,9 @@ pr_line_names(void)
 void
 pr_lineup_names(void)
 {
-  int j, k;
+  int j;
+  int k;
+
   j = Team_Num[pass_vars[2]];
   if (j < 128)
   {

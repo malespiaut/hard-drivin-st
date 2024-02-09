@@ -32,7 +32,8 @@
 static void
 Shift(int* source, int* dest, int shift, s_BitImage* shape)
 {
-  int x, y;
+  int x;
+  int y;
   unsigned long chunk;
   int buf[2];
 
@@ -53,7 +54,8 @@ Shift(int* source, int* dest, int shift, s_BitImage* shape)
 void
 PreShift(s_BitImage* shape, int* buf, int* dest)
 {
-  int i, length;
+  int i;
+  int length;
 
   length = shape->size;
 
@@ -69,10 +71,12 @@ PreShift(s_BitImage* shape, int* buf, int* dest)
 void
 DrawBitBlock(int x, int y, s_BitImage* shape)
 {
-
 #if (C_code)
 
-  int mod1, mod2, *data, *pict;
+  int mod1;
+  int mod2;
+  int* data;
+  int* pict;
   long mask;
 
 #else
@@ -81,7 +85,9 @@ DrawBitBlock(int x, int y, s_BitImage* shape)
 
 #if (C_code)
 
-  int h, dx, dy;
+  int h;
+  int dx;
+  int dy;
   static long bitmask[] = {
     0x00000000L,
     0xC000C000L,
@@ -203,7 +209,12 @@ DrawBitBlock(int x, int y, s_BitImage* shape)
 void
 DrawShape(int x, int y, s_BitImage* shape)
 {
-  int shift, h, words, height, offset, size;
+  int shift;
+  int h;
+  int words;
+  int height;
+  int offset;
+  int size;
   int* mask;
 
   x -= shape->hotX;

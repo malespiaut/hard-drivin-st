@@ -34,72 +34,71 @@
 #define LineHeight 8
 #define TextX 1
 
-static char TextSelect, // Used to select text 1..3.
-  EndFlag,              // Flag indicates end of the selected text.
-  *text,                // Pointer to current text selection.
-  *cursor,              // Pointer to current line position.
+static char TextSelect; // Used to select text 1..3.
+static char EndFlag;    // Flag indicates end of the selected text.
+static char* text;      // Pointer to current text selection.
+static char* cursor;    // Pointer to current line position.
 
-  startline[4] = // First line of a given text.
-
+static char startline[4] = // First line of a given text.
   {
     0,
     4,
     7,
     11,
-},
+};
 
-  line[81], // Text line.
+static char line[81]; // Text line.
 
-  /*	ORIGINAL SCRIPT OF THE COINOP
-          LEGEND:		\\ : .
-                           ] : '
-                           [ : ,
+/*	ORIGINAL SCRIPT OF THE COINOP
+        LEGEND:		\\ : .
+                         ] : '
+                         [ : ,
 
-  *script[] = {	"Above you can see a map of the HARD DRIVIN] racetrack[ composed of an outer",
-                  "SPEED track for testing your high speed driving skills[ and an inner STUNT",
-                  "track for the ultimate driving challenge\\#",
+*script[] = {	"Above you can see a map of the HARD DRIVIN] racetrack[ composed of an outer",
+                "SPEED track for testing your high speed driving skills[ and an inner STUNT",
+                "track for the ultimate driving challenge\\#",
 
-                  "HARD DRIVIN] is a revolutionary driving simulation combining the accurate",
-                  "model of race car handling with true _d graphics and force feedback controls\\",
-                  "You can]t get closer to the thrill of real racing without a fire^proof suit\\#",
+                "HARD DRIVIN] is a revolutionary driving simulation combining the accurate",
+                "model of race car handling with true _d graphics and force feedback controls\\",
+                "You can]t get closer to the thrill of real racing without a fire^proof suit\\#",
 
-                  "Your HARD DRIVIN] racer is modelled after a popular sports car but with a more",
-                  "powerful engine and better tires\\ Many of the stunts and maneuvers possible",
-                  "in this game should not be tried in a real car[ since that would be extremely",
-                  "dangerous or fatal\\#",
+                "Your HARD DRIVIN] racer is modelled after a popular sports car but with a more",
+                "powerful engine and better tires\\ Many of the stunts and maneuvers possible",
+                "in this game should not be tried in a real car[ since that would be extremely",
+                "dangerous or fatal\\#",
 
-                  "The red flag on the course marks the last point passed\\ Race to the",
-                  "checkpoint for extra time[ and the finish line for extended play\\#"
-              };
-  */
+                "The red flag on the course marks the last point passed\\ Race to the",
+                "checkpoint for extra time[ and the finish line for extended play\\#"
+            };
+*/
 
-  *script[] = {"Above you can see a map of the HARD DRIVIN] racetrack[ composed of an outer",
-               "SPEED track for testing your high speed driving skills[ and an inner STUNT",
-               "track for the ultimate driving challenge\\",
-               "    Look out for exciting new HARD DRIVIN] racetracks in spring next year\\#",
+static char* script[] = {"Above you can see a map of the HARD DRIVIN] racetrack[ composed of an outer",
+                         "SPEED track for testing your high speed driving skills[ and an inner STUNT",
+                         "track for the ultimate driving challenge\\",
+                         "    Look out for exciting new HARD DRIVIN] racetracks in spring next year\\#",
 
-               "HARD DRIVIN] is a revolutionary driving simulation combining the accurate",
-               "model of race car handling with true _d graphics\\ You can]t get closer to",
-               "the thrill of real racing without a fire^proof suit\\#",
+                         "HARD DRIVIN] is a revolutionary driving simulation combining the accurate",
+                         "model of race car handling with true _d graphics\\ You can]t get closer to",
+                         "the thrill of real racing without a fire^proof suit\\#",
 
-               "Your HARD DRIVIN] racer is modelled after a popular sports car but with a more",
-               "powerful engine and better tyres\\ Many of the stunts and manoeuvers possible",
-               "in this game should not be tried in a real car[ since that would be extremely",
-               "dangerous or fatal\\#",
+                         "Your HARD DRIVIN] racer is modelled after a popular sports car but with a more",
+                         "powerful engine and better tyres\\ Many of the stunts and manoeuvers possible",
+                         "in this game should not be tried in a real car[ since that would be extremely",
+                         "dangerous or fatal\\#",
 
-               "The red flag on the course marks the last point passed\\ Race to the",
-               "checkpoint for extra time[ and the finish line for extended play\\#"};
+                         "The red flag on the course marks the last point passed\\ Race to the",
+                         "checkpoint for extra time[ and the finish line for extended play\\#"};
 
-static int StartY, // Text start line.
+static int StartY; // Text start line.
 
-  starty[] = {
-    111 - LineHeight,
-    111,
-    111 - LineHeight,
-    111 + LineHeight,
-},
+static int starty[] = {
+  111 - LineHeight,
+  111,
+  111 - LineHeight,
+  111 + LineHeight,
+};
 
-  y; // Cursor position.
+static int y; // Cursor position.
 
 //		FUNCTIONS :
 //              ===========
@@ -111,7 +110,10 @@ static int StartY, // Text start line.
 void
 ScaleLogo(int factor)
 {
-  int i, y, *s, *d;
+  int i;
+  int y;
+  int* s;
+  int* d;
 
   if (factor < start)
     return;
@@ -144,7 +146,8 @@ ScaleLogo(int factor)
 static void
 DrawBackground(int time)
 {
-  int y, dy;
+  int y;
+  int dy;
 
   if (time > scale + 2 * step)
     return;
@@ -158,7 +161,8 @@ DrawBackground(int time)
 void
 DrawLogo(void)
 {
-  int i, *p;
+  int i;
+  int* p;
   int koor[4];
 
   SolidColor(darkred);
@@ -289,7 +293,9 @@ static int max1;
 static void
 DisplayFlags(int time)
 {
-  int i, h, max;
+  int i;
+  int h;
+  int max;
   s_control* cp;
   s_BitImage* flag;
 
@@ -331,7 +337,8 @@ DisplayFlags(int time)
 static void
 ShowFlags(void)
 {
-  int i, max2;
+  int i;
+  int max2;
 
   max2 = max1 + 400;
   ClearButtons();
@@ -356,7 +363,9 @@ ShowFlags(void)
 void
 ShowRestOfLap(void)
 {
-  int height, color, h;
+  int height;
+  int color;
+  int h;
 
   SetTextColor(yellow);
 
@@ -457,9 +466,12 @@ DrawArrowAndBox(void)
 static void
 Choose(void)
 {
-  char sec, string[] = "00.";
+  char sec;
+  char string[] = "00.";
   int x;
-  long TimeOut, wait, h;
+  long TimeOut;
+  long wait;
+  long h;
 
   TimeFlag = TRUE;
   GameMode = TRUE;

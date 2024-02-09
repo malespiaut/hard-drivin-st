@@ -69,14 +69,20 @@ CheckReturnPoints(s_track* segment)
 static int
 CheckFirstTrack(int link)
 {
-
-  int i, count;
-  int *d, *flag;
+  int i;
+  int count;
+  int* d;
+  int* flag;
   s_track* p;
   unsigned int dz;
   char FirstTime;
-  int junction, pos, n, nearest, NearFlags;
-  s_track *NearestElement, *first;
+  int junction;
+  int pos;
+  int n;
+  int nearest;
+  int NearFlags;
+  s_track* NearestElement;
+  s_track* first;
 
   static int VisiFlags[MaxSegments];
 
@@ -264,12 +270,19 @@ static int
 CheckSecondTrack(int link)
 {
 
-  int i, count;
-  int *d, *flag;
-  unsigned int dz, nearest;
+  int i;
+  int count;
+  int* d;
+  int* flag;
+  unsigned int dz;
+  unsigned int nearest;
   s_track* p;
-  int junction, pos, n, NearFlags;
-  s_track *NearestElement, *first;
+  int junction;
+  int pos;
+  int n;
+  int NearFlags;
+  s_track* NearestElement;
+  s_track* first;
   unsigned char FirstTime;
 
   static int VisiFlags[MaxSegments];
@@ -453,12 +466,20 @@ CheckSecondTrack(int link)
 static int
 CheckFirstTrack(int link)
 {
-  unsigned char i, count;
-  int *d, *flag;
+  unsigned char i;
+  unsigned char count;
+  int* d;
+  int* flag;
   s_track* p;
   unsigned int dz;
-  int junction, pos, n, nearest, NearFlags, dist;
-  s_track *NearestElement, *first;
+  int junction;
+  int pos;
+  int n;
+  int nearest;
+  int NearFlags;
+  int dist;
+  s_track* NearestElement;
+  s_track* first;
   static int VisiFlags[MaxSegments];
 
   junction = 0;
@@ -639,12 +660,20 @@ CheckFirstTrack(int link)
 static int
 CheckSecondTrack(int link)
 {
-  unsigned char i, count;
-  int *d, *flag;
-  unsigned int dz, nearest;
+  unsigned char i;
+  unsigned char count;
+  int* d;
+  int* flag;
+  unsigned int dz;
+  unsigned int nearest;
   s_track* p;
-  int junction, pos, n, NearFlags, dist;
-  s_track *NearestElement, *first;
+  int junction;
+  int pos;
+  int n;
+  int NearFlags;
+  int dist;
+  s_track* NearestElement;
+  s_track* first;
   static int VisiFlags[MaxSegments];
 
   junction = 0;

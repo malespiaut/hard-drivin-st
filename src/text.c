@@ -269,7 +269,8 @@ PrintScore(void)
 void
 PrintTime(void)
 {
-  int i, x;
+  int i;
+  int x;
   unsigned long h;
 
   x = TimeX;
@@ -303,7 +304,8 @@ PrintTime(void)
 void
 PrintQualify(void)
 {
-  int i, x;
+  int i;
+  int x;
   unsigned long h;
 
   if (LapMode)
@@ -530,7 +532,8 @@ void
 PrintHiscoreList(void)
 {
   char* string;
-  int i, y;
+  int i;
+  int y;
 
   y = MessageY--;
 
@@ -562,7 +565,8 @@ PrintHiscoreList(void)
 void
 PrintChampion(void)
 {
-  int y, dy;
+  int y;
+  int dy;
 
   dy = LineHeight << 1;
   y = MessageY--;

@@ -40,9 +40,7 @@
 #define verbose FALSE
 
 int GamePalette[] = // Game color palette
-
   // RGB // Range: 0..7 for each color
-
   {
     0x0000, // Black
     0x0020, // Dark Green
@@ -63,9 +61,7 @@ int GamePalette[] = // Game color palette
 };
 
 int LoadPalette[] = // Game color palette
-
   // RGB
-
   {
     0x0000,
     0x0666,
@@ -85,8 +81,8 @@ int LoadPalette[] = // Game color palette
     0x0711,
 };
 
-static char *chunk,
-  *chunk1; // Aux. pointer for memory management.
+static char* chunk;
+static char* chunk1; // Aux. pointer for memory management.
 
 static void (*OldTimer)(void);
 static void (*OldBreak)(void);
@@ -119,7 +115,8 @@ int* PokePitch;       // Pointer to pitch variable.
 void
 SystemSpeed(void)
 {
-  int i, buf[3 * 100];
+  int i;
+  int buf[3 * 100];
 
   frames = 0;
 
@@ -332,23 +329,22 @@ MakeSound(char sound)
 {
   // static char lastsound;
   // static char lastprio;
-  static char
-    ts[] = {
-      0,  // Tune 0
-      0,  // Tune 1
-      0,  // VOID
-      0,  // VOID
-      0,  // VOID
-      13, // Finish
-      11, // ExtraTime
-      15, // Squeal
-      6,  // Flag
-      1,  // Crash
-      0,  // Clonk
-      13, // Moo
-      20, // Ignition
-      10, // Offroad
-    };
+  static char ts[] = {
+    0,  // Tune 0
+    0,  // Tune 1
+    0,  // VOID
+    0,  // VOID
+    0,  // VOID
+    13, // Finish
+    11, // ExtraTime
+    15, // Squeal
+    6,  // Flag
+    1,  // Crash
+    0,  // Clonk
+    13, // Moo
+    20, // Ignition
+    10, // Offroad
+  };
   // union REGS regs;
 
   if (DemoMode | ReturnFlag || !SoundEnabled)
@@ -616,8 +612,12 @@ FileWrite(char* name, void* addr, long size)
 int
 ReadBlockFile(s_BitImage** bi, char* name)
 {
-  int *p, ok;
-  int width, height, words, size;
+  int* p;
+  int ok;
+  int width;
+  int height;
+  int words;
+  int size;
 
   ok = FileRead(name, AuxBuffer);
 
@@ -687,7 +687,8 @@ void*
 GetPieceOfChunk(long amount)
 {
   void* save;
-  unsigned int segment, offset;
+  unsigned int segment;
+  unsigned int offset;
 
   amount += 16;
 

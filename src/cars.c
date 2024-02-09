@@ -49,8 +49,13 @@ InitVehicles(void)
 void
 SetVehicle(s_vehicle* vh)
 {
-  int sub, h1, h2, angle1, angle2;
-  s_track *st1, *st2;
+  int sub;
+  int h1;
+  int h2;
+  int angle1;
+  int angle2;
+  s_track* st1;
+  s_track* st2;
   s_object* obj;
   unsigned char side;
 

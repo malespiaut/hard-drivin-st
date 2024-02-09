@@ -28,9 +28,9 @@ static char cursor;   // Character position.
 static char* CharPos; // Position in HiscoreList.
 
 static int choosen; // ASCII code of choosen character.
-static int TableX1,
-  TableX2,
-  TableX3; // Score Table start positions.
+static int TableX1;
+static int TableX2;
+static int TableX3; // Score Table start positions.
 
 //		FUNCTIONS :
 //              ===========
@@ -107,7 +107,10 @@ static void
 PrintTable(int num)
 {
   char* p;
-  int x, y, BoxY, BoxX;
+  int x;
+  int y;
+  int BoxY;
+  int BoxX;
 
   SetTextColor(white);
   PrintString(TableX1, 0, "ENTER YOUR NAME TO THE HIGH SCORES.");
@@ -180,9 +183,12 @@ GetNewName(int num, s_score* sc)
 void
 ScoreUpdate(void)
 {
-  char *p, *chPos;
-  int i, j;
-  s_score *sc, *sc2;
+  char* p;
+  char* chPos;
+  int i;
+  int j;
+  s_score* sc;
+  s_score* sc2;
 
   TimeFlag = FALSE;
 
@@ -229,7 +235,9 @@ static void
 ShowNewScoreList(int player)
 {
   char* p;
-  int i, j, y;
+  int i;
+  int j;
+  int y;
 
   for (i = 0; i < 200; i++)
   {
@@ -261,7 +269,10 @@ ShowNewScoreList(int player)
 static void
 ChampTable(s_score* champ)
 {
-  int x, y, BoxY, BoxX;
+  int x;
+  int y;
+  int BoxY;
+  int BoxX;
 
   SetTextColor(white);
   PrintString(TableX1, LineHeight, "ENTER YOUR NAME AS THE NEW.");
@@ -309,7 +320,8 @@ ChampTable(s_score* champ)
 static void
 GetChampName(s_score* champ)
 {
-  char *p, *d;
+  char* p;
+  char* d;
   int i;
 
   ClearButtons();
@@ -350,7 +362,8 @@ void
 LapUpdate(void)
 {
   int i;
-  s_score *sc, *sc2;
+  s_score* sc;
+  s_score* sc2;
   s_score NewChamp;
 
   TimeFlag = FALSE;

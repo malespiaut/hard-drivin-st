@@ -24,7 +24,9 @@
 void
 SetNearestElement(void)
 {
-  unsigned int i, h, distance;
+  unsigned int i;
+  unsigned int h;
+  unsigned int distance;
   s_track* p;
 
   NextStreet = p = track1;

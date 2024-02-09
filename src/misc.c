@@ -66,7 +66,8 @@ ClearControlPoints(void)
 void
 GetPlayerInput(void)
 {
-  int key, key2;
+  int key;
+  int key2;
 
 #define st_add 30
 #define st_sub 15
@@ -354,7 +355,10 @@ static int
 ReadShapeFiles(void)
 {
   s_BitImage* mo;
-  int i, x, h, *p;
+  int i;
+  int x;
+  int h;
+  int* p;
   int ok;
 
   mo = Mountain;
@@ -522,7 +526,8 @@ SaveGameFile(void)
 static int
 ReadTrackFile(void)
 {
-  int ok, *p;
+  int ok;
+  int* p;
 
   ok = FileRead(TrackName, (void*)TrackData);
 
@@ -645,9 +650,11 @@ ReadAllFiles(void)
 void
 ReadScoreList(void)
 {
-  char c, *p;
+  char c;
+  char* p;
   s_score* h;
-  int i, j;
+  int i;
+  int j;
   long score;
 
   p = ScoreList;
@@ -772,7 +779,8 @@ GameInit(void)
 void
 FramePoly(int n)
 {
-  int i, *p;
+  int i;
+  int* p;
 
   if (n < 3)
     NewColor(2);
@@ -845,7 +853,8 @@ RewindRecord(void)
 void
 RecordCar(void)
 {
-  int i, *p;
+  int i;
+  int* p;
   s_object* obj;
   s_playback* fr;
   s_vehicle* vh;
@@ -915,9 +924,11 @@ void
 ReadRedCar(void)
 {
   s_object* rc;
-  s_frame *f1, *f2;
+  s_frame* f1;
+  s_frame* f2;
   int yaw;
-  unsigned long h1, h2;
+  unsigned long h1;
+  unsigned long h2;
 
   if (!StartFlag)
     return;
@@ -958,9 +969,11 @@ void
 ReadBlueCar(void)
 {
   s_object* bc;
-  s_frame *f1, *f2;
+  s_frame* f1;
+  s_frame* f2;
   int yaw;
-  unsigned long h1, h2;
+  unsigned long h1;
+  unsigned long h2;
 
   if (!StartFlag)
     return;
@@ -1014,7 +1027,8 @@ ReadBlueCar(void)
 void
 TimeString(char* p, long time)
 {
-  char c, i;
+  char c;
+  char i;
 
   p += 9;
   *p-- = '.';
@@ -1035,10 +1049,20 @@ TimeString(char* p, long time)
 void
 SetCar(int segment, int lane, int row, int side)
 {
-  s_track *st1, *st2;
-  unsigned int mx1, my1, mz1, mx2, my2, mz2;
-  unsigned int h1, h2;
-  int dx, dy, dz, h;
+  s_track* st1;
+  s_track* st2;
+  unsigned int mx1;
+  unsigned int my1;
+  unsigned int mz1;
+  unsigned int mx2;
+  unsigned int my2;
+  unsigned int mz2;
+  unsigned int h1;
+  unsigned int h2;
+  int dx;
+  int dy;
+  int dz;
+  int h;
 
   st1 = track1 + segment;
   st2 = st1 + 1;
@@ -1100,7 +1124,9 @@ SetCar(int segment, int lane, int row, int side)
 unsigned char
 SetObjClass(s_object* obj)
 {
-  int vectors, h, *p;
+  int vectors;
+  int h;
+  int* p;
   unsigned char class;
 
   h = ObjDataBase[obj->type];
@@ -1350,7 +1376,9 @@ void
 PrintValue(int x, int y, int value)
 {
   static char string[] = "00000.";
-  int h, num, flag;
+  int h;
+  int num;
+  int flag;
   char* p;
 
   if (value < 0)

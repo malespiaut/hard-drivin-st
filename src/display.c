@@ -38,7 +38,10 @@ static void CarInDip(void);
 static void
 PrintMountains(int y)
 {
-  int i, h, x, *p;
+  int i;
+  int h;
+  int x;
+  int* p;
 
   x = -(6 * car.yaw) / 5;
 
@@ -59,7 +62,9 @@ PrintMountains(int y)
 void
 PrintBackground(void)
 {
-  int y, z, HoriY;
+  int y;
+  int z;
+  int HoriY;
   long h;
 
 #define max 10000
@@ -203,7 +208,10 @@ ClearCockpit(void)
 void
 PrintCockpit(void)
 {
-  int x, y, x1, y1;
+  int x;
+  int y;
+  int x1;
+  int y1;
   char inactive;
   int angle;
   static int OldRpm;
@@ -307,7 +315,9 @@ ShowAllCarsInTheLoop(s_object* loop)
   s_object* obj;
   s_priority* pr;
   unsigned char i;
-  int radius, x, z;
+  int radius;
+  int x;
+  int z;
 
   // DISPLAY ALL CARS IN THE LOOP.
 
@@ -336,9 +346,16 @@ ShowAllCarsInTheLoop(s_object* loop)
 void
 PrintLoop(s_object* obj)
 {
-  unsigned char *p, i, j, norm;
-  long *k, *pv, *q;
-  unsigned char stripes[20], *ps, FullDetails;
+  unsigned char* p;
+  unsigned char i;
+  unsigned char j;
+  unsigned char norm;
+  long* k;
+  long* pv;
+  long* q;
+  unsigned char stripes[20];
+  unsigned char* ps;
+  unsigned char FullDetails;
   int para[2];
 
   FullDetails = (obj->eyeZ < 1500);
@@ -485,8 +502,12 @@ PrintLoop(s_object* obj)
 void
 PrintSign(s_object* obj)
 {
-  unsigned char *p, i, j, h;
-  long *pv, *k;
+  unsigned char* p;
+  unsigned char i;
+  unsigned char j;
+  unsigned char h;
+  long* pv;
+  long* k;
   int para[2];
 
   p = obj->faces;
@@ -547,8 +568,12 @@ PrintSign(s_object* obj)
 void
 PrintBridge(s_object* obj)
 {
-  unsigned char *p, i, j, h;
-  long *pv, *k;
+  unsigned char* p;
+  unsigned char i;
+  unsigned char j;
+  unsigned char h;
+  long* pv;
+  long* k;
   int para[2];
 
   p = obj->faces;
@@ -610,8 +635,12 @@ PrintBridge(s_object* obj)
 void
 PrintCar(s_object* obj)
 {
-  unsigned char *p, i, j, h;
-  long *pv, *k;
+  unsigned char* p;
+  unsigned char i;
+  unsigned char j;
+  unsigned char h;
+  long* pv;
+  long* k;
   char PhantomPhoton;
   int para[2];
 
@@ -697,8 +726,12 @@ PrintCar(s_object* obj)
 void
 PrintUnderpass(s_object* obj)
 {
-  unsigned char *p, i, j, h;
-  long *pv, *k;
+  unsigned char* p;
+  unsigned char i;
+  unsigned char j;
+  unsigned char h;
+  long* pv;
+  long* k;
   int para[2];
 
   p = obj->faces;
@@ -747,8 +780,12 @@ PrintUnderpass(s_object* obj)
 void
 PrintObject(s_object* obj)
 {
-  unsigned char *p, i, j, h;
-  long *pv, *k;
+  unsigned char* p;
+  unsigned char i;
+  unsigned char j;
+  unsigned char h;
+  long* pv;
+  long* k;
   int para[2];
 
   p = obj->faces;
@@ -831,8 +868,12 @@ PrintBrokenWindow(void)
 static void
 PrintHillRoads(int type)
 {
-  char i, j;
-  int h, *flag, *p, *l;
+  char i;
+  char j;
+  int h;
+  int* flag;
+  int* p;
+  int* l;
   long* d;
 
   p = coordinate;
@@ -913,8 +954,12 @@ PrintHillRoads(int type)
 static void
 PrintLowStreets(void)
 {
-  char i, j;
-  int h, *flag, *p, *l;
+  char i;
+  char j;
+  int h;
+  int* flag;
+  int* p;
+  int* l;
   long* d;
 
 #define wire FALSE
@@ -1023,7 +1068,8 @@ CarOnRoad(void)
 {
   s_object* obj;
   s_priority* p;
-  unsigned char i, hills;
+  unsigned char i;
+  unsigned char hills;
 
   //	DISPLAY PRIORITY :
   //      ==================
@@ -1192,7 +1238,6 @@ CarInDip(void)
 void
 PrintAllObjects(void)
 {
-
   if (car.y < 0)
     CarInDip();
   else

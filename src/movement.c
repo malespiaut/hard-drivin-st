@@ -33,16 +33,39 @@ static void FindFields(void);
 static void
 CarDemoDrive(void)
 {
-  char sub, h1, h2;
-  s_track *st1, *st2;
-  int sinY, cosY, sinP, cosP, sinR, cosR;
-  int angle1, angle2, h;
+  char sub;
+  char h1;
+  char h2;
+  s_track* st1;
+  s_track* st2;
+  int sinY;
+  int cosY;
+  int sinP;
+  int cosP;
+  int sinR;
+  int cosR;
+  int angle1;
+  int angle2;
+  int h;
 
-  static int dx, dy, dz, hx, hy, hz;
-  static unsigned int mx1, my1, mz1, mx2, my2, mz2;
-  static char SubPosition, OnStreet;
-  static char TrackUsed, Choose;
-  static s_track *NextSegment, *SegmentUnderCar;
+  static int dx;
+  static int dy;
+  static int dz;
+  static int hx;
+  static int hy;
+  static int hz;
+  static unsigned int mx1;
+  static unsigned int my1;
+  static unsigned int mz1;
+  static unsigned int mx2;
+  static unsigned int my2;
+  static unsigned int mz2;
+  static char SubPosition;
+  static char OnStreet;
+  static char TrackUsed;
+  static char Choose;
+  static s_track* NextSegment;
+  static s_track* SegmentUnderCar;
 
 #define MaxPos 11 // STEPS PER STREET SEGMENT
 #define swing 7   // TRANSITION TO NEXT PITCH ANGLE
@@ -178,7 +201,10 @@ CarDemoDrive(void)
 void
 MoveCar(void)
 {
-  int h, hx, hy, hz;
+  int h;
+  int hx;
+  int hy;
+  int hz;
 
   if (DemoMode)
   { // READ NEXT POSITION FROM TRACK DATA
@@ -254,8 +280,15 @@ static void
 FindFields(void)
 {
   s_object* obj;
-  int i, r, x, y, z;
-  unsigned int x_min, x_max, z_min, z_max;
+  int i;
+  int r;
+  int x;
+  int y;
+  int z;
+  unsigned int x_min;
+  unsigned int x_max;
+  unsigned int z_min;
+  unsigned int z_max;
 
 #define border (int)(32000L / ScaleFactor)
 
@@ -314,8 +347,15 @@ void
 FindAllVisibleObjects(void)
 {
   s_object* obj;
-  int i, r, x, y, z;
-  unsigned int x_min, x_max, z_min, z_max;
+  int i;
+  int r;
+  int x;
+  int y;
+  int z;
+  unsigned int x_min;
+  unsigned int x_max;
+  unsigned int z_min;
+  unsigned int z_max;
 
   NoReturnCheck = (DemoMode | SloMoFlag | WrongDirection | AccidentFlag);
 

@@ -173,10 +173,17 @@ Filter(unsigned char n, s_object* obj)
 void
 InitObjects(void)
 {
-  *RedCar, *BlueCar;
-  int i, j, max;
-  s_object *obj, *obj2;
-  int n, *s, sin, cos;
+  s_object* RedCar;
+  s_object* BlueCar;
+  int i;
+  int j;
+  int max;
+  s_object* obj;
+  s_object* obj2;
+  int n;
+  int* s;
+  int sin;
+  int cos;
 
   // INITIALIZE FIELDS.
 
@@ -347,7 +354,8 @@ InitPhantomPhoton(void)
   s_vehicle phantom;
   s_object dummy;
   unsigned char sample;
-  s_frame *fr, *end;
+  s_frame* fr;
+  s_frame* end;
 
   if (!DirtyFlag)
     // PHANTOM PHOTON IS ALREADY READ FROM DISK.

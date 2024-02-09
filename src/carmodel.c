@@ -53,41 +53,61 @@
 //		LOCAL VARIABLES :
 //              =================
 
-static char OnSameSide, // Auxiliary Flag, used by CompHeight().
-  status;               // Status indicates car's position.
+static char OnSameSide; // Auxiliary Flag, used by CompHeight().
+static char status;     // Status indicates car's position.
 
-static int sinY, cosY, // New yaw   trig. values
-  sinP, cosP,          // New pitch trig. values
-  sinR, cosR,          // New roll  trig. values
-  StreetCoor[6 * 3],   // Street surface coordinates.
-  x1 = -CarWidth,      // Position of front left  contact point.
-  y1 = 0,
-  z1 = CarLength,
-  x2 = CarWidth, // Position of front right contact point.
-  y2 = 0,
-  z2 = CarLength,
-  x3 = -CarWidth, // Position of rear  left  contact point.
-  y3 = 0,
-  z3 = -CarLength,
-  x4 = CarWidth, // Position of rear  right contact point.
-  y4 = 0,
-  z4 = -CarLength,
-  CarNormX, // Car normal vector.
-  CarNormY,
-  CarNormZ,
-  height1,          // Relative height of wheel 1.
-  height2,          // Relative height of wheel 2.
-  height3,          // Relative height of wheel 3.
-  height4,          // Relative height of wheel 4.
-  nx, nz,           // Normal vector to connection between face1 and face2.
-  dx11, dy11, dz11, // Vector1 of face1.
-  dx12, dy12, dz12, // Vector2 of face1.
-  dx13, dy13, dz13, // Vector3 of face1.
-  dx14, dy14, dz14, // Vector4 of face1.
-  dx21, dy21, dz21, // Vector1 of face2.
-  dx22, dy22, dz22, // Vector2 of face2.
-  dx23, dy23, dz23, // Vector3 of face2.
-  dx24, dy24, dz24; // Vector4 of face2.
+static int sinY;              // New yaw   trig. values
+static int cosY;              // New yaw   trig. values
+static int sinP;              // New pitch trig. values
+static int cosP;              // New pitch trig. values
+static int sinR;              // New roll  trig. values
+static int cosR;              // New roll  trig. values
+static int StreetCoor[6 * 3]; // Street surface coordinates.
+static int x1 = -CarWidth;    // Position of front left  contact point.
+static int y1 = 0;
+static int z1 = CarLength;
+static int x2 = CarWidth; // Position of front right contact point.
+static int y2 = 0;
+static int z2 = CarLength;
+static int x3 = -CarWidth; // Position of rear  left  contact point.
+static int y3 = 0;
+static int z3 = -CarLength;
+static int x4 = CarWidth; // Position of rear  right contact point.
+static int y4 = 0;
+static int z4 = -CarLength;
+static int CarNormX; // Car normal vector.
+static int CarNormY;
+static int CarNormZ;
+static int height1; // Relative height of wheel 1.
+static int height2; // Relative height of wheel 2.
+static int height3; // Relative height of wheel 3.
+static int height4; // Relative height of wheel 4.
+static int nx;      // Normal vector to connection between face1 and face2.
+static int nz;      // Normal vector to connection between face1 and face2.
+static int dx11;    // Vector1 of face1.
+static int dy11;    // Vector1 of face1.
+static int dz11;    // Vector1 of face1.
+static int dx12;    // Vector2 of face1.
+static int dy12;    // Vector2 of face1.
+static int dz12;    // Vector2 of face1.
+static int dx13;    // Vector3 of face1.
+static int dy13;    // Vector3 of face1.
+static int dz13;    // Vector3 of face1.
+static int dx14;    // Vector4 of face1.
+static int dy14;    // Vector4 of face1.
+static int dz14;    // Vector4 of face1.
+static int dx21;    // Vector1 of face2.
+static int dy21;    // Vector1 of face2.
+static int dz21;    // Vector1 of face2.
+static int dx22;    // Vector2 of face2.
+static int dy22;    // Vector2 of face2.
+static int dz22;    // Vector2 of face2.
+static int dx23;    // Vector3 of face2.
+static int dy23;    // Vector3 of face2.
+static int dz23;    // Vector3 of face2.
+static int dx24;    // Vector4 of face2.
+static int dy24;    // Vector4 of face2.
+static int dz24;    // Vector4 of face2.
 
 //		FUNCTIONS :
 //              ===========
@@ -127,8 +147,11 @@ TurnPitch(int deltaPitch)
 static void
 TurnYaw(int deltaYaw)
 {
-  int deltaPitch, deltaRoll, delta;
-  int sinR, sinP, cosP;
+  int deltaPitch;
+  int deltaRoll, delta;
+  int sinR;
+  int sinP;
+  int cosP;
 
   // ROTATION AROUND Y-AXIS IN THE EYE-CS.
 
@@ -156,7 +179,12 @@ TurnYaw(int deltaYaw)
 static void
 SetNormalVector(void)
 {
-  int sinY, cosY, sinP, cosP, sinR, cosR;
+  int sinY;
+  int cosY;
+  int sinP;
+  int cosP;
+  int sinR;
+  int cosR;
   int h;
 
   // USE NEGATIVE VIEW DIRECTION ANGLES.
@@ -210,7 +238,9 @@ PlayerControl(void)
 
     if (car.WheelFlags & FrontSide)
     {
-      int h, turn, maxturn;
+      int h;
+      int turn;
+      int maxturn;
 
       h = (SteerX - 320) / 30;
 
@@ -334,7 +364,9 @@ CarMotion(void)
 static void
 CarEngine(void)
 {
-  int h, *r, *q;
+  int h;
+  int* r;
+  int* q;
   static int gearRatio[] = {
     0,
     800,
@@ -348,16 +380,16 @@ CarEngine(void)
     450,
   };
 
-  int resistance,
-    brake,
-    gravity,
-    deltaSpeed,
-    newRPM,
-    deltaRPM;
+  int resistance;
+  int brake;
+  int gravity;
+  int deltaSpeed;
+  int newRPM;
+  int deltaRPM;
 
-  unsigned int power,
-    speed,
-    acceleration;
+  unsigned int power;
+  unsigned int speed;
+  unsigned int acceleration;
 
 #define TopSpeed 5 * 100
 #define TopMPH 140
@@ -585,10 +617,27 @@ CheckCollision(void)
   s_priority* p;
   s_vehicle* vh;
   char NoCollision;
-  unsigned int x1, z1, x2, z2, min, max, newX;
-  int x, y, z, streetlength, carspeed;
-  int crashX, crashY, crashZ, dx, dz, dbx, dbz;
-  long a1, a2;
+  unsigned int x1;
+  unsigned int z1;
+  unsigned int x2;
+  unsigned int z2;
+  unsigned int min;
+  unsigned int max;
+  unsigned int newX;
+  int x;
+  int y;
+  int z;
+  int streetlength;
+  int carspeed;
+  int crashX;
+  int crashY;
+  int crashZ;
+  int dx;
+  int dz;
+  int dbx;
+  int dbz;
+  long a1;
+  long a2;
 
   if (AccidentFlag)
     return (FALSE);
@@ -897,11 +946,17 @@ CheckCollision(void)
 static void
 GetNearestStreetSegments(void)
 {
-  int i, d, *p;
+  int i;
+  int d;
+  int* p;
   s_track* tr;
-  int buf[5 * 2 * 3], distance;
-  int dx, dz, *nearest;
-  s_track *end, *start;
+  int buf[5 * 2 * 3];
+  int distance;
+  int dx;
+  int dz;
+  int* nearest;
+  s_track* end;
+  s_track* start;
 
   // SET TRACK POINTER
 
@@ -1033,11 +1088,33 @@ static int
 CompDistance(int x, int y, int z, char set1)
 {
   char flag;
-  int s1x1, s1y1, s1z1, s1x2, s1y2, s1z2;
-  int s2x1, s2y1, s2z1, s2x2, s2y2, s2z2;
-  int x1, y1, z1, dx1, dy1, dz1, dx2, dy2, dz2;
-  int dx, dz;
-  long a1, a2, b1, b2;
+  int s1x1;
+  int s1y1;
+  int s1z1;
+  int s1x2;
+  int s1y2;
+  int s1z2;
+  int s2x1;
+  int s2y1;
+  int s2z1;
+  int s2x2;
+  int s2y2;
+  int s2z2;
+  int x1;
+  int y1;
+  int z1;
+  int dx1;
+  int dy1;
+  int dz1;
+  int dx2;
+  int dy2;
+  int dz2;
+  int dx;
+  int dz;
+  long a1;
+  long a2;
+  long b1;
+  long b2;
 
   // COMPUTE HEIGHT OVER STREET SEGMENTS.
 
@@ -1155,9 +1232,21 @@ CompDistance(int x, int y, int z, char set1)
 static int
 CompHeight(int x, int y, int z)
 {
-  int x1, y1, z1, dx1, dy1, dz1, dx2, dy2, dz2;
-  int dx, dz;
-  long a1, a2, b1, b2;
+  int x1;
+  int y1;
+  int z1;
+  int dx1;
+  int dy1;
+  int dz1;
+  int dx2;
+  int dy2;
+  int dz2;
+  int dx;
+  int dz;
+  long a1;
+  long a2;
+  long b1;
+  long b2;
 
   // COMPUTE HEIGHT OVER OBJECT SURFACE.
 
@@ -1201,7 +1290,10 @@ OnTheRoad(void)
 
 #if (0)
   {
-    int h1, h2, h3, h4;
+    int h1;
+    int h2;
+    int h3;
+    int h4;
 
     /*
     h1 = CompDistance(x1,y1,z1,0);
@@ -1331,16 +1423,16 @@ CarOnObject(void)
 static void
 InteractionModel(void)
 {
-  char flags,     // WHEEL FLAGS
-    wheelsOnRoad; // NUMBER OF WHEELS ON THE ROAD.
+  char flags;        // WHEEL FLAGS
+  char wheelsOnRoad; // NUMBER OF WHEELS ON THE ROAD.
 
-  int pitchBalance,
-    rollBalance,
-    averageHeight, // JUST WHAT THE NAME SAYS.
-    deltaPitch,    // DELTA PITCH ANGLE.
-    deltaRoll,     // DELTA ROLL  ANGLE.
-    fall,
-    h1;
+  int pitchBalance;
+  int rollBalance;
+  int averageHeight; // JUST WHAT THE NAME SAYS.
+  int deltaPitch;    // DELTA PITCH ANGLE.
+  int deltaRoll;     // DELTA ROLL  ANGLE.
+  int fall;
+  int h1;
 
   // CHECK CAR'S HEIGHT RELATIVE TO THE ROAD.
 

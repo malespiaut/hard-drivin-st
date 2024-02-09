@@ -513,14 +513,24 @@ GotoReturnPoint(void)
 static void
 ShowSlowMotion(void)
 {
-  int i, j, frames, *p;
+  int i;
+  int j;
+  int frames;
+  int* p;
   s_playback* fr;
   s_vehicle* vh;
   s_object* obj;
   s_BitImage* expl;
   char soundFlag;
-  int ysin, ycos, psin, pcos, dx, dy, dz;
-  char count1, count2;
+  int ysin;
+  int ycos;
+  int psin;
+  int pcos;
+  int dx;
+  int dy;
+  int dz;
+  char count1;
+  char count2;
 
   if (!SloMoFlag)
     return;
@@ -818,9 +828,14 @@ GameRun(void)
 static void
 ChampPlayBack(void)
 {
-  s_frame *redpos, *bluepos;
+  s_frame* redpos;
+  s_frame* bluepos;
   s_object* winner;
-  int yaw, dx, dz, distance, lastdistance;
+  int yaw;
+  int dx;
+  int dz;
+  int distance;
+  int lastdistance;
 
   StopSound();
 
@@ -931,8 +946,16 @@ ChampPlayBack(void)
 static void
 ChampTitle(void)
 {
-  int i, ysin, ycos, psin, pcos;
-  int dx, dy, dz, yaw, pitch;
+  int i;
+  int ysin;
+  int ycos;
+  int psin;
+  int pcos;
+  int dx;
+  int dy;
+  int dz;
+  int yaw;
+  int pitch;
 
 #define deltaYaw -4 * 152
 #define deltaPitch 4
