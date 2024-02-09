@@ -1,5 +1,6 @@
-
-
+#include "data.h"
+#include "ibm.h"
+#include "main.h"
 #include "proto.h"
 
 /*
@@ -21,9 +22,8 @@
 
 */
 
-/*		LOCAL VARIABLES :
-                =================
-*/
+//		LOCAL VARIABLES :
+//              =================
 
 #define step 3
 #define wait 100 * step
@@ -34,12 +34,12 @@
 #define LineHeight 8
 #define TextX 1
 
-static char TextSelect, /* Used to select text 1..3. */
-  EndFlag,              /* Flag indicates end of the selected text. */
-  *text,                /* Pointer to current text selection. */
-  *cursor,              /* Pointer to current line position. */
+static char TextSelect, // Used to select text 1..3.
+  EndFlag,              // Flag indicates end of the selected text.
+  *text,                // Pointer to current text selection.
+  *cursor,              // Pointer to current line position.
 
-  startline[4] = /* First line of a given text. */
+  startline[4] = // First line of a given text.
 
   {
     0,
@@ -48,7 +48,7 @@ static char TextSelect, /* Used to select text 1..3. */
     11,
 },
 
-  line[81], /* Text line. */
+  line[81], // Text line.
 
   /*	ORIGINAL SCRIPT OF THE COINOP
           LEGEND:		\\ : .
@@ -90,7 +90,7 @@ static char TextSelect, /* Used to select text 1..3. */
                "The red flag on the course marks the last point passed\\ Race to the",
                "checkpoint for extra time[ and the finish line for extended play\\#"};
 
-static int StartY, /* Text start line.		*/
+static int StartY, // Text start line.
 
   starty[] = {
     111 - LineHeight,
@@ -99,25 +99,19 @@ static int StartY, /* Text start line.		*/
     111 + LineHeight,
 },
 
-  y; /* Cursor position. */
+  y; // Cursor position.
 
-/*		FUNCTIONS :
-                ===========
-*/
+//		FUNCTIONS :
+//              ===========
 
-/*
-
-**********************************************************************
-********  T I T L E    S C R E E N  **********************************
-**********************************************************************
-
-*/
+// **********************************************************************
+// ********  T I T L E    S C R E E N  **********************************
+// **********************************************************************
 
 void
 ScaleLogo(int factor)
 {
-  extern int coordinate[], HardLogo[], LogoY;
-  register int i, y, *s, *d;
+  int i, y, *s, *d;
 
   if (factor < start)
     return;
@@ -150,9 +144,7 @@ ScaleLogo(int factor)
 static void
 DrawBackground(int time)
 {
-  extern void *Buffer2, *MapScreen;
-  extern int ScreenX, OrgY, LogoY, HardLogo[];
-  register int y, dy;
+  int y, dy;
 
   if (time > scale + 2 * step)
     return;
@@ -166,8 +158,7 @@ DrawBackground(int time)
 void
 DrawLogo(void)
 {
-  extern int coordinate[], PolyVertex[];
-  register int i, *p;
+  int i, *p;
   int koor[4];
 
   SolidColor(darkred);
@@ -201,7 +192,7 @@ DrawLogo(void)
 static void
 TypeText(int time)
 {
-  register char ch;
+  char ch;
   static char halt;
 
   if ((time < scale) || EndFlag)
@@ -234,8 +225,7 @@ TypeText(int time)
 static void
 TitleScreen(void)
 {
-  extern char DemoMode;
-  register int i;
+  int i;
 
   for (i = start - wait; (i < scale + stay) && DemoMode; i += step)
   {
@@ -254,11 +244,7 @@ TitleScreen(void)
 void
 ShowTitle(void)
 {
-  extern void *MapScreen, *ScreenBuffer, *Buffer2;
-  extern char TimeFlag;
-  extern int ScreenX, ScreenY, OrgY, MaxY;
-  extern long Time, Score;
-  register int height;
+  int height;
 
   SetTextColor(yellow);
 
@@ -291,13 +277,9 @@ ShowTitle(void)
 #undef start
 #undef stay
 
-/*
-
-**********************************************************************
-********  L A S T   L A P  *******************************************
-**********************************************************************
-
-*/
+// **********************************************************************
+// ********  L A S T   L A P  *******************************************
+// **********************************************************************
 
 #define duration 5
 
@@ -307,12 +289,9 @@ static int max1;
 static void
 DisplayFlags(int time)
 {
-  extern int NumOfT1controls, NumOfT2controls;
-  extern s_BitImage FlagRed, FlagYellow;
-  extern s_control *T1ContPoints, *T2ContPoints;
-  register int i, h, max;
-  register s_control* cp;
-  register s_BitImage flag;
+  int i, h, max;
+  s_control* cp;
+  s_BitImage* flag;
 
   if ((time < 0) || (time >= max1))
     return;
@@ -352,9 +331,7 @@ DisplayFlags(int time)
 static void
 ShowFlags(void)
 {
-  extern char ExitWait;
-  extern int button;
-  register int i, max2;
+  int i, max2;
 
   max2 = max1 + 400;
   ClearButtons();
@@ -379,13 +356,7 @@ ShowFlags(void)
 void
 ShowRestOfLap(void)
 {
-  extern void *MapScreen, *ScreenBuffer, *Buffer2;
-  extern char TimeFlag, OnTrack;
-  extern int NumOfT1controls, NumOfT2controls;
-  extern int ScreenX, ScreenY, OrgY, MaxY;
-  extern s_control *T1ContPoints, *T2ContPoints;
-  extern s_control *NextCtr1, *NextCtr2;
-  register int height, color, h;
+  int height, color, h;
 
   SetTextColor(yellow);
 
@@ -420,19 +391,14 @@ ShowRestOfLap(void)
 
 #undef duration
 
-/*
-
-**********************************************************************
-********  C H O O S E   T R A N S M I S S I O N  *********************
-**********************************************************************
-
-*/
+// **********************************************************************
+// ********  C H O O S E   T R A N S M I S S I O N  *********************
+// **********************************************************************
 
 static int
 DrawArrowAndBox(void)
 {
-  extern int SteerX, OrgX;
-  register int x;
+  int x;
 
 #define y -37
 
@@ -491,10 +457,6 @@ DrawArrowAndBox(void)
 static void
 Choose(void)
 {
-  extern void* SelectScreen;
-  extern char TimeFlag, GameMode, ExitWait;
-  extern long Time;
-  extern s_car car;
   char sec, string[] = "00.";
   int x;
   long TimeOut, wait, h;
@@ -523,7 +485,7 @@ Choose(void)
     for (wait = 0; wait < 1000; wait++)
       ;
 
-    /* RESET BACKGROUND */
+    // RESET BACKGROUND
 
     CopySmallScreen(0, WindowY - 1, SelectScreen, Buffer2);
 
@@ -531,16 +493,16 @@ Choose(void)
     SetTextColor(darkgreen);
     TypeString(40 - (24 / 2), 25, "Press O for Option Screen#");
 
-    /* PRINT ARROW */
+    // PRINT ARROW
 
     x = DrawArrowAndBox();
 
-    /* PRINT SECONDS LEFT */
+    // PRINT SECONDS LEFT
 
     SetTextColor(darkred);
     PrintString(19, 45, string);
 
-    /* CHECK PLAYER'S CHOICE */
+    // CHECK PLAYER'S CHOICE
 
     car.autoFlag = (x < 0);
 
@@ -562,9 +524,6 @@ Choose(void)
 void
 ChooseTransmission(void)
 {
-  extern void *SelectScreen, *ScreenBuffer, *Buffer2;
-  extern char DemoMode;
-  extern int ScreenX, ScreenY, OrgY, MaxY;
   int height;
 
   height = OrgY + MaxY;
@@ -581,13 +540,9 @@ ChooseTransmission(void)
   Choose();
 }
 
-/*
-
-**********************************************************************
-********  O P T I O N S    S C R E E N  ******************************
-**********************************************************************
-
-*/
+// **********************************************************************
+// ********  O P T I O N S    S C R E E N  ******************************
+// **********************************************************************
 
 static void
 DrawBox(int x1, int y1, int x2, int y2, int color)
@@ -606,10 +561,6 @@ static char xpos, ypos, saveflag;
 static int
 PrintSelectScreen(void)
 {
-  extern char SteerSelect, GearSelect, MouseFlag;
-  extern char Difficulty, DirtyFlag, UK_Flag, MouseDriverFlag;
-  extern char SoundEnabled, OrgDriverFlag;
-  extern int OrgY1;
   char key;
 
 #define y1 -24 - 22
@@ -673,71 +624,71 @@ PrintSelectScreen(void)
   if (ypos == 1)
   {
     if (xpos == 1)
-      /* STEERING: JOYSTICK 0 BOX */
+      // STEERING: JOYSTICK 0 BOX
       DrawBox(-124, y1, -88, y1 + 11, red);
     if (xpos == 2)
-      /* STEERING: JOYSTICK 1 BOX */
+      // STEERING: JOYSTICK 1 BOX
       DrawBox(-88, y1, -52, y1 + 11, red);
     if (xpos == 3)
-      /* STEERING: MOUSE BOX */
+      // STEERING: MOUSE BOX
       DrawBox(-48, y1, -20, y1 + 11, red);
     if (xpos == 4)
-      /* STEERING: KEYBOARD */
+      // STEERING: KEYBOARD
       DrawBox(-8, y1, 16, y1 + 11, red);
   }
 
   if (ypos == 2)
   {
     if (xpos == 1)
-      /* GEAR SHIFT: JOYSTICK 0 BOX */
+      // GEAR SHIFT: JOYSTICK 0 BOX
       DrawBox(-124, y2, -88, y2 + 11, red);
     if (xpos == 2)
-      /* GEAR SHIFT: JOYSTICK 1 BOX */
+      // GEAR SHIFT: JOYSTICK 1 BOX
       DrawBox(-88, y2, -52, y2 + 11, red);
     if (xpos == 3)
-      /* GEAR SHIFT: KEYBOARD BOX */
+      // GEAR SHIFT: KEYBOARD BOX
       DrawBox(-48, y2, -8, y2 + 11, red);
   }
 
   if (ypos == 3)
   {
     if (xpos == 1)
-      /* DIFFICULTY: EASY */
+      // DIFFICULTY: EASY
       DrawBox(-124, y3, -100, y3 + 11, red);
     if (xpos == 2)
-      /* DIFFICULTY: MEDIUM */
+      // DIFFICULTY: MEDIUM
       DrawBox(-88, y3, -56, y3 + 11, red);
     if (xpos == 3)
-      /* DIFFICULTY: HARD */
+      // DIFFICULTY: HARD
       DrawBox(-48, y3, -24, y3 + 11, red);
   }
 
   if (ypos == 4)
   {
     if (xpos == 1)
-      /* SAVE GAME: YES */
+      // SAVE GAME: YES
       DrawBox(-124, y4, -104, y4 + 11, red);
     if (xpos == 2)
-      /* SAVE GAME: NO */
+      // SAVE GAME: NO
       DrawBox(-88, y4, -72, y4 + 11, red);
     if (xpos == 3)
-      /* LHD/RHD */
+      // LHD/RHD
       DrawBox(-48, y4, -8, y4 + 11, (UK_Flag) ? brown : orange);
   }
 
   if (ypos == 5)
-  { /* SOUND FX */
+  { // SOUND FX
 
     if (xpos == 1)
-      /* SOUND: ON */
+      // SOUND: ON
       DrawBox(-124, y5, -104, y5 + 11, red);
     if (xpos == 2)
-      /* SOUND: OFF */
+      // SOUND: OFF
       DrawBox(-88, y5, -72, y5 + 11, red);
   }
 
   if (ypos == 6)
-  { /* RESUME BOX */
+  { // RESUME BOX
     DrawBox(-98, ye, -65, ye + 11, blue);
   }
 
@@ -840,9 +791,6 @@ PrintSelectScreen(void)
 void
 SetOptions(void)
 {
-  extern char TimeFlag, GameMode, SloMoFlag;
-  extern int ScreenX, ScreenY;
-  extern void *Buffer2, *ScreenBuffer;
   char end;
 
   if (!GameMode || SloMoFlag)

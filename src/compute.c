@@ -1,7 +1,6 @@
-
-
 #include <stdio.h>
 
+#include "main.h"
 #include "proto.h"
 
 /*
@@ -22,25 +21,24 @@
 
 */
 
-/*		LOCAL VARIABLES :
-                =================
-*/
+//		LOCAL VARIABLES :
+//              =================
 
 #define NormalLength 2048
 #define ClipZ 8
 
-static int ClipVert[3 * MaxVertex], /* 3D clipping coordinates. */
-  MidPts1[3 * MaxSegments],         /* mid points on track 1. */
-  MidPts2[3 * MaxSegments],         /* mid points on track 2. */
-  Coll_Height,                      /* Height of the collision coordinate. */
-  Coll_Visibility;                  /* Visibility of the collision face. */
+static int ClipVert[3 * MaxVertex], // 3D clipping coordinates.
+  MidPts1[3 * MaxSegments],         // mid points on track 1.
+  MidPts2[3 * MaxSegments],         // mid points on track 2.
+  Coll_Height,                      // Height of the collision coordinate.
+  Coll_Visibility;                  // Visibility of the collision face.
 
-/*		FUNCTIONS :
-                ===========
-*/
+// FUNCTIONS :
+//              ===========
 
-static void CompCoordinates(s_object*);
-static uchar ClipProjectPoly(uchar, uchar, s_object*);
+static void
+CompCoordinates(s_object*);
+static unsigned char ClipProjectPoly(unsigned char, unsigned char, s_object*);
 static void ClipCoordinates(s_object*);
 static int* ClipStreet(int*, int*, int);
 static void MakeStreetElements(void);
@@ -48,10 +46,10 @@ static void StreetProject(void);
 static void CompTrack(void);
 static void CompFields(void);
 
-uint
-Sqrt(ulong n)
+unsigned int
+Sqrt(unsigned long n)
 {
-  ulong s1, s2, s3;
+  unsigned long s1, s2, s3;
 
   if (n <= 0)
     return (0);
@@ -63,7 +61,7 @@ Sqrt(ulong n)
     s1 = (n / s2 + s2) >> 1;
 
     if (s1 == s2 || s1 == s3)
-      return ((uint)s1);
+      return ((unsigned int)s1);
 
     s3 = s2;
     s2 = s1;
@@ -75,7 +73,7 @@ CompNormal(int* p1, int* p2, int* p3, int* normal)
 {
   long x2, y2, z2, x3, y3, z3;
   long nx, ny, nz;
-  uint len;
+  unsigned int len;
 
   x2 = p2[0] - p1[0];
   y2 = p2[1] - p1[1];
@@ -104,8 +102,8 @@ CompNormal(int* p1, int* p2, int* p3, int* normal)
 int
 CompRadius(s_object* obj)
 {
-  register int i, *p;
-  register long quad, h;
+  int i, *p;
+  long quad, h;
 
   quad = 0;
   p = obj->model;
@@ -124,10 +122,7 @@ CompRadius(s_object* obj)
 void
 CompVertices(s_object* obj)
 {
-  extern int yawSIN, yawCOS, pitchSIN, pitchCOS, rollSIN, rollCOS;
-  extern int* VertIndex;
-  extern s_car car;
-  register int i, h, sin, cos, *s, *d;
+  int i, h, sin, cos, *s, *d;
   int count;
 
   s = obj->model;
@@ -138,7 +133,7 @@ CompVertices(s_object* obj)
   if (!obj->pre_rotated)
   {
     if (obj->roll)
-    { /* IF NECESSARY, ROTATE AROUND OBJECT Z-AXIS. */
+    { // IF NECESSARY, ROTATE AROUND OBJECT Z-AXIS.
 
       sin = sinus(obj->roll);
       cos = cosinus(obj->roll);
@@ -147,7 +142,7 @@ CompVertices(s_object* obj)
     }
 
     if (obj->pitch)
-    { /* IF NECESSARY, ROTATE AROUND OBJECT X-AXIS. */
+    { // IF NECESSARY, ROTATE AROUND OBJECT X-AXIS.
 
       sin = sinus(obj->pitch);
       cos = cosinus(obj->pitch);
@@ -156,7 +151,7 @@ CompVertices(s_object* obj)
     }
 
     if (obj->yaw)
-    { /* IF NECESSARY, ROTATE AROUND OBJECT Y-AXIS. */
+    { // IF NECESSARY, ROTATE AROUND OBJECT Y-AXIS.
 
       sin = sinus(obj->yaw);
       cos = cosinus(obj->yaw);
@@ -165,13 +160,13 @@ CompVertices(s_object* obj)
     }
   }
 
-  /* GET ORIGIN OF THE OBJECT, IN EYE COORDINATE SYSTEM. */
+  // GET ORIGIN OF THE OBJECT, IN EYE COORDINATE SYSTEM.
 
   h = obj->eyeX;
   sin = obj->eyeY;
   cos = obj->eyeZ;
 
-  /* TRANSLATE TO THE NEW ORIGIN. */
+  // TRANSLATE TO THE NEW ORIGIN.
 
   if (obj->pre_rotated || !(obj->yaw | obj->pitch))
   {
@@ -199,40 +194,40 @@ CompVertices(s_object* obj)
   cos = obj->eyeZ;
 
   if (car.yaw)
-  { /* ROTATE AROUND VIEWPOINT Y-AXIS. */
+  { // ROTATE AROUND VIEWPOINT Y-AXIS.
 
     RotXZ(count, yawCOS, yawSIN, obj->vert, obj->vert);
 
-    /* ROTATE OBJECT ORIGIN AROUND VIEWPOINT Y-AXIS. */
+    // ROTATE OBJECT ORIGIN AROUND VIEWPOINT Y-AXIS.
 
     h = rot1(obj->eyeX, cos, yawSIN, yawCOS);
     cos = rot2(obj->eyeX, cos, yawSIN, yawCOS);
   }
 
   if (car.pitch)
-  { /* ROTATE AROUND VIEWPOINT X-AXIS. */
+  { // ROTATE AROUND VIEWPOINT X-AXIS.
 
     RotYZ(count, pitchCOS, pitchSIN, obj->vert, obj->vert);
 
-    /* ROTATE OBJECT ORIGIN AROUND VIEWPOINT X-AXIS. */
+    // ROTATE OBJECT ORIGIN AROUND VIEWPOINT X-AXIS.
 
     sin = rot1(obj->eyeY, cos, pitchSIN, pitchCOS);
     cos = rot2(obj->eyeY, cos, pitchSIN, pitchCOS);
   }
 
   if (car.roll)
-  { /* ROTATE AROUND VIEWPOINT Z-AXIS. */
+  { // ROTATE AROUND VIEWPOINT Z-AXIS.
 
     RotXY(count, rollCOS, rollSIN, obj->vert, obj->vert);
 
-    /* ROTATE OBJECT ORIGIN AROUND VIEWPOINT Z-AXIS. */
+    // ROTATE OBJECT ORIGIN AROUND VIEWPOINT Z-AXIS.
 
     i = h;
     h = rot1(i, sin, rollSIN, rollCOS);
     sin = rot2(i, sin, rollSIN, rollCOS);
   }
 
-  /* SUBTRACT ROTATED ORIGIN FROM NORMAL VECTORS. */
+  // SUBTRACT ROTATED ORIGIN FROM NORMAL VECTORS.
 
   i = obj->vertices;
   d = &obj->vert[i + i + i];
@@ -248,29 +243,24 @@ CompVertices(s_object* obj)
 static void
 CompCoordinates(s_object* obj)
 {
-  extern int* CoorIndex;
 
   obj->koor = CoorIndex;
   CoorIndex = ProjectSmall(obj->vertices, obj->koor, obj->vert);
 }
 
-static uchar
-ClipProjectPoly(uchar n,
-                uchar visible,
+static unsigned char
+ClipProjectPoly(unsigned char n,
+                unsigned char visible,
                 s_object* obj)
 {
-  extern char ExtendedClip, CheckOffRoad, OnObject;
-  extern char CollisionFlag;
-  extern int ObjFace[];
-  extern s_car car;
-  register int h, c, test1, test2, *v1, *v2;
+  int h, c, test1, test2, *v1, *v2;
   int x, y, z, dx, dy, dz, k;
   int auxbuf[3 * MaxVertex];
   char CopyFlag;
 
   CopyFlag = FALSE;
 
-  /* CLIP TO VIEWANGLE IN X DIMENSION. */
+  // CLIP TO VIEWANGLE IN X DIMENSION.
 
   v1 = ClipVert;
   v2 = auxbuf;
@@ -377,7 +367,7 @@ ClipProjectPoly(uchar n,
       *v2++ = z + ClipZ;
       n++;
 
-      if (!x) /* VIEWPOINT DIRECTLY ON POLYGON ! */
+      if (!x) // VIEWPOINT DIRECTLY ON POLYGON !
       {
         if (obj->class & (c_hill + c_chicane))
         {
@@ -394,12 +384,12 @@ ClipProjectPoly(uchar n,
           {
             if (y < Coll_Height)
             {
-              if (obj->large == 10 /* BARN */)
+              if (obj->large == 10) // BARN
                 visible = FALSE;
               Coll_Height = y;
               Coll_Visibility = visible;
             }
-            else /* SPECIAL CASE: CROSS OVER */
+            else // SPECIAL CASE: CROSS OVER
             {
               if (visible && (y < Coll_Height + 5))
               {
@@ -415,7 +405,7 @@ ClipProjectPoly(uchar n,
     v1 += 3;
   }
 
-  /* CLIP TO VIEWANGLE IN Y DIMENSION. */
+  // CLIP TO VIEWANGLE IN Y DIMENSION.
 
   if (ExtendedClip)
   {
@@ -533,7 +523,7 @@ ClipProjectPoly(uchar n,
   }
 
   if (CopyFlag)
-  { /* SAVE SURFACE VECTORS FOR USE IN SIMULATION MODEL. */
+  { // SAVE SURFACE VECTORS FOR USE IN SIMULATION MODEL.
 
     ObjFace[0] = ClipVert[0];
     ObjFace[1] = ClipVert[1];
@@ -552,12 +542,9 @@ ClipProjectPoly(uchar n,
 static void
 ClipCoordinates(s_object* obj)
 {
-  extern char CollisionFlag;
-  extern int* CoorIndex;
-  extern s_car car;
-  register uchar* p;
-  register int j, i, h, z, *d, *s, *coor;
-  uchar edges, normal, NoSign, visible;
+  unsigned char* p;
+  int j, i, h, z, *d, *s, *coor;
+  unsigned char edges, normal, NoSign, visible;
   int minZ, maxZ;
 
   obj->koor = coor = CoorIndex;
@@ -575,7 +562,7 @@ ClipCoordinates(s_object* obj)
     normal = *p++;
     visible = TRUE;
 
-    /* IS THE POLYGON INVISIBLE ? */
+    // IS THE POLYGON INVISIBLE ?
 
     if (NoSign && (edges > 2))
       visible = IsVisible((int)p[0], normal, obj->vert);
@@ -584,7 +571,7 @@ ClipCoordinates(s_object* obj)
     minZ = MaxInt;
     maxZ = -MaxInt;
 
-    /* COPY ALL VECTORS OF THE POLYGON TO AN ARRAY. */
+    // COPY ALL VECTORS OF THE POLYGON TO AN ARRAY.
 
     for (j = edges + 1; --j;)
     {
@@ -599,7 +586,7 @@ ClipCoordinates(s_object* obj)
         minZ = z;
     }
 
-    /* IS THE POLYGON BEHIND THE VIEWPOINT ? */
+    // IS THE POLYGON BEHIND THE VIEWPOINT ?
 
     if (maxZ < 0)
     {
@@ -608,7 +595,7 @@ ClipCoordinates(s_object* obj)
       continue;
     }
 
-    /* CLIP AND PROJECT THE POLYGON. */
+    // CLIP AND PROJECT THE POLYGON.
 
     if (minZ < 100)
     {
@@ -632,8 +619,8 @@ ClipCoordinates(s_object* obj)
   }
 
   if (!Coll_Visibility)
-  { /* THE VIEWPOINT IS INSIDE THE OBJECT IF THE LOWEST
-       COLLISION FACE IS INVISIBLE. */
+  { // THE VIEWPOINT IS INSIDE THE OBJECT IF THE LOWEST
+    // COLLISION FACE IS INVISIBLE.
 
     obj->collision = TRUE;
     CollisionFlag = TRUE;
@@ -643,19 +630,17 @@ ClipCoordinates(s_object* obj)
 }
 
 static int*
-ClipStreet(int* vert,   /* pointer to 3D coordinates */
-           int* coor,   /* pointer to 2D coordinates */
-           int distance /* distance of midpoint */
+ClipStreet(int* vert,   // pointer to 3D coordinates
+           int* coor,   // pointer to 2D coordinates
+           int distance // distance of midpoint
 )
 {
-  extern char CheckOffRoad, ExtendedClip;
-  extern s_car car;
-  register uchar h, n;
-  register int test1, test2, c, *v1, *v2;
+  unsigned char h, n;
+  int test1, test2, c, *v1, *v2;
   int x, y, z, k, dx, dy, dz;
   int auxbuf[3 * MaxVertex];
 
-  /* RETURN, IF STREET ELEMENT IS BEHIND VIEWPOINT. */
+  // RETURN, IF STREET ELEMENT IS BEHIND VIEWPOINT.
 
   if (distance < -RoadLength)
   {
@@ -663,7 +648,7 @@ ClipStreet(int* vert,   /* pointer to 3D coordinates */
     return (coor);
   }
 
-  /* PROJECT AND RETURN, IF STREET ELEMENT IS FAR AWAY. */
+  // PROJECT AND RETURN, IF STREET ELEMENT IS FAR AWAY.
 
   if (distance > (3 * RoadLength / 2))
   {
@@ -671,7 +656,7 @@ ClipStreet(int* vert,   /* pointer to 3D coordinates */
     return (ProjectSmall(4, coor, vert));
   }
 
-  /* CLIP AND PROJECT STREET ELEMENT. */
+  // CLIP AND PROJECT STREET ELEMENT.
 
   for (v2 = ClipVert, n = 4 + 1; --n;)
   {
@@ -790,7 +775,7 @@ ClipStreet(int* vert,   /* pointer to 3D coordinates */
       n++;
 
       if (!x)
-      { /* CAR IS ON THE ROAD */
+      { // CAR IS ON THE ROAD
 
         if (y < 0)
         {
@@ -802,7 +787,7 @@ ClipStreet(int* vert,   /* pointer to 3D coordinates */
     v1 += 3;
   }
 
-  /* CLIP TO VIEWING ANGLE IN Y - DIRECTION. */
+  // CLIP TO VIEWING ANGLE IN Y - DIRECTION.
 
   if (ExtendedClip)
   {
@@ -926,18 +911,15 @@ ClipStreet(int* vert,   /* pointer to 3D coordinates */
 static void
 MakeStreetElements(void)
 {
-  extern uchar VisiStr1, VisiStr2, VisiLns1, VisiLns2;
-  extern int *Flags1, *Flags2;
-  extern int *First1, *First2, *VertIndex;
-  register uchar i;
-  register int *flag, *p, *d, *mid, dx, dy, dz;
-  uchar flip;
+  unsigned char i;
+  int *flag, *p, *d, *mid, dx, dy, dz;
+  unsigned char flip;
   int *lanes1, *lanes2;
 
   d = VertIndex;
   flip = 0;
 
-  /* GENERATE STREET ELEMENTS OF TRACK 1. */
+  // GENERATE STREET ELEMENTS OF TRACK 1.
 
   p = First1;
   mid = MidPts1;
@@ -974,7 +956,7 @@ MakeStreetElements(void)
     p += 2 * 3;
   }
 
-  /* GENERATE STREET ELEMENTS OF TRACK 2. */
+  // GENERATE STREET ELEMENTS OF TRACK 2.
 
   p = First2;
   mid = MidPts2;
@@ -1010,7 +992,7 @@ MakeStreetElements(void)
     p += 2 * 3;
   }
 
-  /* GENERATE LANE MARKERS OF TRACK 1. */
+  // GENERATE LANE MARKERS OF TRACK 1.
 
   if (VisiStr1 > 0)
   {
@@ -1059,7 +1041,7 @@ MakeStreetElements(void)
   else
     VisiLns1 = 0;
 
-  /* GENERATE LANE MARKERS OF TRACK 2. */
+  // GENERATE LANE MARKERS OF TRACK 2.
 
   if (VisiStr2 > 0)
   {
@@ -1114,17 +1096,13 @@ MakeStreetElements(void)
 static void
 StreetProject(void)
 {
-  extern uchar VisiStr1, VisiStr2, VisiLns1, VisiLns2;
-  extern int *Flags1, *Flags2;
-  extern int *CoorIndex, *LaneM1, *LaneM2;
-  extern int vertex[];
-  register uchar i;
-  register int *flag, *d, *p, *mid;
+  unsigned char i;
+  int *flag, *d, *p, *mid;
 
-  d = CoorIndex; /* d POINTS TO 2D COORDINATE BUFFER */
-  p = vertex;    /* p POINTS TO 3D VERTEX BUFFER */
+  d = CoorIndex; // d POINTS TO 2D COORDINATE BUFFER
+  p = vertex;    // p POINTS TO 3D VERTEX BUFFER
 
-  /* PROJECT ALL STREET ELEMENTS OF TRACK 1. */
+  // PROJECT ALL STREET ELEMENTS OF TRACK 1.
 
   if (VisiStr1)
   {
@@ -1143,7 +1121,7 @@ StreetProject(void)
     p += 2 * 3;
   }
 
-  /* PROJECT ALL STREET ELEMENTS OF TRACK 2. */
+  // PROJECT ALL STREET ELEMENTS OF TRACK 2.
 
   if (VisiStr2)
   {
@@ -1162,7 +1140,7 @@ StreetProject(void)
     p += 2 * 3;
   }
 
-  /* PROJECT LANE MARKERS OF TRACK 1. */
+  // PROJECT LANE MARKERS OF TRACK 1.
 
   if (VisiLns1)
   {
@@ -1181,7 +1159,7 @@ StreetProject(void)
     }
   }
 
-  /* PROJECT LANE MARKERS OF TRACK 2. */
+  // PROJECT LANE MARKERS OF TRACK 2.
 
   if (VisiLns2)
   {
@@ -1205,11 +1183,11 @@ StreetProject(void)
 
 static void
 CompTrack(void)
-{ /* GENERATE STREET ELEMENT VERTICES. */
+{ // GENERATE STREET ELEMENT VERTICES.
 
   MakeStreetElements();
 
-  /* PUT ALL VISIBLE STREET ELEMENTS THROUGH PERSPECTIVE. */
+  // PUT ALL VISIBLE STREET ELEMENTS THROUGH PERSPECTIVE.
 
   StreetProject();
 }
@@ -1217,10 +1195,8 @@ CompTrack(void)
 static void
 CompFields(void)
 {
-  extern int NumOfFields;
-  extern s_object* field;
-  register int i;
-  register s_object* obj;
+  int i;
+  s_object* obj;
 
   obj = field;
 
@@ -1242,16 +1218,8 @@ CompFields(void)
 void
 CompAllObjects(void)
 {
-  extern char CheckOffRoad, CollisionFlag, OnObject;
-  extern char SloMoFlag;
-  extern int coordinate[], vertex[];
-  extern int *CoorIndex, *VertIndex, NumOfObjects;
-  extern int OffRoadOut;
-  extern long Time;
-  extern s_object* object;
-  extern s_car car;
-  register int i;
-  register s_object* obj;
+  int i;
+  s_object* obj;
 
   CheckOffRoad = FALSE;
   CollisionFlag = FALSE;
@@ -1279,12 +1247,12 @@ CompAllObjects(void)
     obj++;
   }
 
-  /* IS THE CAR STILL ON THE STREET ? */
+  // IS THE CAR STILL ON THE STREET ?
 
   if (!CheckOffRoad && !SloMoFlag)
   {
     if (OnObject || (car.y < 5 * 5))
-    { /* MakeSound( s_offroad); */
+    { // MakeSound( s_offroad);
 
       if (!OffRoadOut)
       {

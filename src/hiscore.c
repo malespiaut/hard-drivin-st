@@ -1,5 +1,4 @@
-
-
+#include "main.h"
 #include "proto.h"
 
 /*
@@ -21,30 +20,24 @@
 
 */
 
-/*		LOCAL VARIABLES :
-                =================
-*/
+//		LOCAL VARIABLES :
+//              =================
 
-static char EndFlag;  /* Flag indicates name finished.	*/
-static char cursor;   /* Character position.			*/
-static char* CharPos; /* Position in HiscoreList.		*/
+static char EndFlag;  // Flag indicates name finished.
+static char cursor;   // Character position.
+static char* CharPos; // Position in HiscoreList.
 
-static int choosen; /* ASCII code of choosen character.	*/
+static int choosen; // ASCII code of choosen character.
 static int TableX1,
   TableX2,
-  TableX3; /* Score Table start positions.		*/
+  TableX3; // Score Table start positions.
 
-/*		FUNCTIONS :
-                ===========
-*/
+//		FUNCTIONS :
+//              ===========
 
-/*
-
-**********************************************************************
-********  H I G H   S C O R E  ***************************************
-**********************************************************************
-
-*/
+// **********************************************************************
+// ********  H I G H   S C O R E  ***************************************
+// **********************************************************************
 
 static void EditString(s_score* sc);
 static void PrintTable(int num);
@@ -56,8 +49,6 @@ static void GetChampName(s_score* champ);
 static void
 EditString(s_score* sc)
 {
-  extern char ExitWait, CharNum, SteerSelect;
-  extern int button, SteerX;
   char ch;
 
   if (SteerSelect != 4)
@@ -115,11 +106,8 @@ EditString(s_score* sc)
 static void
 PrintTable(int num)
 {
-  extern char ScoreList[];
-  extern int CharWidth, CharHeight, LineHeight, SteerX;
-  extern int MinX, OrgX, OrgY;
-  register char* p;
-  register int x, y, BoxY, BoxX;
+  char* p;
+  int x, y, BoxY, BoxX;
 
   SetTextColor(white);
   PrintString(TableX1, 0, "ENTER YOUR NAME TO THE HIGH SCORES.");
@@ -169,8 +157,6 @@ PrintTable(int num)
 static void
 GetNewName(int num, s_score* sc)
 {
-  extern char CharNum;
-  extern int CharWidth, ScreenX;
 
   TableX1 = (ScreenX - 34 * CharWidth) / (2 * CharWidth);
   TableX2 = (ScreenX - 38 * CharWidth) / (2 * CharWidth);
@@ -194,12 +180,9 @@ GetNewName(int num, s_score* sc)
 void
 ScoreUpdate(void)
 {
-  extern char DirtyFlag, TimeFlag;
-  extern long Score;
-  extern s_score HiScoreList[];
-  register char *p, *chPos;
-  register int i, j;
-  register s_score *sc, *sc2;
+  char *p, *chPos;
+  int i, j;
+  s_score *sc, *sc2;
 
   TimeFlag = FALSE;
 
@@ -238,19 +221,13 @@ ScoreUpdate(void)
   ReadScoreList();
 }
 
-/*
-
-**********************************************************************
-********  B E S T   L A P   T I M E  *********************************
-**********************************************************************
-
-*/
+// **********************************************************************
+// ********  B E S T   L A P   T I M E  *********************************
+// **********************************************************************
 
 static void
 ShowNewScoreList(int player)
 {
-  extern char ScoreList[];
-  extern int LineHeight;
   char* p;
   int i, j, y;
 
@@ -284,10 +261,7 @@ ShowNewScoreList(int player)
 static void
 ChampTable(s_score* champ)
 {
-  extern char ScoreList[], BestTime[];
-  extern int CharWidth, CharHeight, LineHeight;
-  extern int MinX, OrgX, OrgY;
-  register int x, y, BoxY, BoxX;
+  int x, y, BoxY, BoxX;
 
   SetTextColor(white);
   PrintString(TableX1, LineHeight, "ENTER YOUR NAME AS THE NEW.");
@@ -335,11 +309,8 @@ ChampTable(s_score* champ)
 static void
 GetChampName(s_score* champ)
 {
-  extern int CharWidth, ScreenX;
-  extern char BestTime[], BestName[];
-  extern long Time;
-  register char *p, *d;
-  register int i;
+  char *p, *d;
+  int i;
 
   ClearButtons();
 
@@ -378,13 +349,8 @@ GetChampName(s_score* champ)
 void
 LapUpdate(void)
 {
-  extern char DirtyFlag, TimeFlag, QualifyFlag;
-  extern char BestTime[], BestName[];
-  extern int BestLength;
-  extern long Score;
-  extern s_score HiScoreList[];
-  register int i;
-  register s_score *sc, *sc2;
+  int i;
+  s_score *sc, *sc2;
   s_score NewChamp;
 
   TimeFlag = FALSE;

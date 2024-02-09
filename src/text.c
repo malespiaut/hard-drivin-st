@@ -1,10 +1,9 @@
-
-
-#include "proto.h"
-
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
+
+#include "main.h"
+#include "proto.h"
 
 /*
 
@@ -24,17 +23,15 @@
 
 */
 
-/*		LOCAL VARIABLES :
-                =================
-*/
+//		LOCAL VARIABLES :
+//              =================
 
-/*		FUNCTIONS :
-                ===========
-*/
+//		FUNCTIONS :
+//              ===========
 
 /*
-        int	SpaceLength,		// Length of a blank.
-CharLength, // Length of a character.
+int SpaceLength, // Length of a blank.
+  CharLength,    // Length of a character.
   x0, x1, x2, x3, x4, x5, x6,
   y0, y1, y2, y3, y4, y5, y6;
 
@@ -44,8 +41,7 @@ CharLength, // Length of a character.
 void
 ScaleFont(void)
 {
-  extern int ScreenX, ScreenY;
-  register int x, y;
+  int x, y;
 
   x = ScreenX;
   y = ScreenY;
@@ -110,7 +106,7 @@ PrintZiffer(int x, int y, int ziffer)
 static void
 PrintText(int x, int y, char* text, int color)
 {
-  register int ch;
+  int ch;
 
   NewColor(color);
 
@@ -256,10 +252,8 @@ TypeValue(int x, int y, long value, int color)
 void
 PrintScore(void)
 {
-  extern int ScoreY, ScoreX, DigitLength;
-  extern long Score;
-  register int x;
-  register unsigned long h;
+  int x;
+  unsigned long h;
 
   x = ScoreX;
   h = Score;
@@ -275,12 +269,8 @@ PrintScore(void)
 void
 PrintTime(void)
 {
-  extern char RaceIsOn;
-  extern int TimeX, TimeY, DigitLength;
-  extern long Time;
-  extern s_object *YellowLight, *GreenLight;
-  register int i, x;
-  register ulong h;
+  int i, x;
+  unsigned long h;
 
   x = TimeX;
   h = Time;
@@ -313,18 +303,14 @@ PrintTime(void)
 void
 PrintQualify(void)
 {
-  extern char QualifyFlag, LapMode, DemoMode;
-  extern void *Buffer2, *ScreenBuffer;
-  extern int LastX, LastY, BestX, BestY, DigitLength;
-  extern long TimeToQualify, LastLapTime;
-  register int i, x;
-  register ulong h;
+  int i, x;
+  unsigned long h;
 
   if (LapMode)
     return;
 
   if (QualifyFlag && !DemoMode)
-  { /* YOU ARE QUALIFIED */
+  { // YOU ARE QUALIFIED
 
     x = LastX;
     h = LastLapTime;
@@ -347,7 +333,7 @@ PrintQualify(void)
     VidToVid(0, 188, 65, 188 + 7, Buffer2, ScreenBuffer);
   }
   else
-  { /* BEAT X:XX:XX TO QUALIFY */
+  { // BEAT X:XX:XX TO QUALIFY
 
     x = BestX;
     h = TimeToQualify;
@@ -374,7 +360,6 @@ PrintQualify(void)
 void
 PrintMessage(void)
 {
-  extern char MessageTime, MessageCode;
 
   if (!MessageTime)
     return;
@@ -429,13 +414,8 @@ PrintMessage(void)
 void
 PrintCountDown(void)
 {
-  extern char TimeOutFlag, StartMessage;
-  extern char LapMode, RaceIsOn;
-  extern int SecondsX, SecondsY;
-  extern long TimeOut, Time, Duration;
-  extern s_object *RedLight, *YellowLight;
-  register int sec;
-  register ulong h;
+  int sec;
+  unsigned long h;
 
   static char number[] = {0, 10, 0, 0, '.'};
   static char countdown[] = {0, '.'};
@@ -451,7 +431,7 @@ PrintCountDown(void)
   }
 
   if (!RaceIsOn)
-  { /* START COUNTDOWN. */
+  { // START COUNTDOWN.
 
     h = Time;
 
@@ -464,14 +444,14 @@ PrintCountDown(void)
     sec = 0x09 - ((int)(h >> 8) & 0xFF);
 
     if (sec < 0)
-    { /* COUNT DOWN IS OVER, RACE STARTS. */
+    { // COUNT DOWN IS OVER, RACE STARTS.
 
       RaceIsOn = TRUE;
       Time = 0x000000L;
       TimeOut = Duration;
     }
     else
-    { /* DISPLAY COUNTDOWN. */
+    { // DISPLAY COUNTDOWN.
 
       countdown[0] = sec;
 
@@ -504,12 +484,7 @@ PrintCountDown(void)
 void
 PrintOffRoad(void)
 {
-  extern char ReturnFlag, WrongDirection, LapMode;
-  extern char AccidentFlag, MessageTime, MessageCode;
-  extern char TimeOutFlag, LapFinished, SloMoFlag;
-  extern int OffRoadX, OffRoadY, OffRoadOut;
-  extern long Time;
-  register char sec;
+  char sec;
   static char string[] = "OFF ROAD 00.";
 
   if (AccidentFlag)
@@ -554,10 +529,8 @@ PrintOffRoad(void)
 void
 PrintHiscoreList(void)
 {
-  extern char ScoreList[];
-  extern int ListX, LineHeight, MessageY;
-  register char* string;
-  register int i, y;
+  char* string;
+  int i, y;
 
   y = MessageY--;
 
@@ -589,9 +562,7 @@ PrintHiscoreList(void)
 void
 PrintChampion(void)
 {
-  extern char BestName[], BestTime[];
-  extern int LineHeight, MessageY, BestLength;
-  register int y, dy;
+  int y, dy;
 
   dy = LineHeight << 1;
   y = MessageY--;

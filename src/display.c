@@ -1,5 +1,5 @@
-
-
+#include "data.h"
+#include "main.h"
 #include "proto.h"
 
 /*
@@ -21,13 +21,11 @@
 
 */
 
-/*		LOCAL VARIABLES :
-                =================
-*/
+//		LOCAL VARIABLES :
+//              =================
 
-/*		FUNCTIONS :
-                ===========
-*/
+//		FUNCTIONS :
+//              ===========
 
 static void PrintMountains(int);
 static void ClearCockpit(void);
@@ -40,10 +38,7 @@ static void CarInDip(void);
 static void
 PrintMountains(int y)
 {
-  extern int MntPositions[], MinX, MaxX;
-  extern s_car car;
-  extern s_BitImage Mountain[];
-  register int i, h, x, *p;
+  int i, h, x, *p;
 
   x = -(6 * car.yaw) / 5;
 
@@ -64,22 +59,18 @@ PrintMountains(int y)
 void
 PrintBackground(void)
 {
-  extern char GraphMode;
-  extern int pitchSIN, pitchCOS, MinX, MaxX, MinY, MaxY;
-  extern int rollSIN, rollCOS, PolyVertex[];
-  extern s_car car;
-  register int y, z, HoriY;
+  int y, z, HoriY;
   long h;
 
 #define max 10000
 
-  /* ROTATE HORIZON. */
+  // ROTATE HORIZON.
 
   HoriY = -car.y;
   y = rot1(HoriY, horizon, pitchSIN, pitchCOS);
   z = rot2(HoriY, horizon, pitchSIN, pitchCOS);
 
-  /* PROJECT HORIZON. */
+  // PROJECT HORIZON.
 
   h = ((long)-y << 8) / ((z) ? z : -1);
 
@@ -175,16 +166,9 @@ PrintBackground(void)
 static void
 ClearCockpit(void)
 {
-  extern char LapMode, QualifyFlag, DemoMode;
-  extern void *Buffer2, *ScreenBuffer, *AuxScreen;
-  extern s_block ScoreRect, TimeRect, MessageRect[], AmpRect;
-  extern s_block TmpRect, MidRect, OilRect, GasRect;
-  extern s_block WarnRect, OK_Rect[], AutoRect, ManualRect;
-  extern s_block BarRect, GearARect[], GearMRect[];
-  extern s_car car;
-  register s_block* b;
+  s_block* b;
 
-  /* DRAW ALL NECESSARY RECTANGLES. */
+  // DRAW ALL NECESSARY RECTANGLES.
 
   if (DemoMode)
     b = &MessageRect[0];
@@ -210,7 +194,7 @@ ClearCockpit(void)
   b = &BarRect;
   CopyBlock(b->sx1, b->sy1, b->sx2, b->sy2, b->dx1, b->dy1, AuxScreen, Buffer2);
 
-  /* HILITE THE CHOOSEN GEAR. */
+  // HILITE THE CHOOSEN GEAR.
 
   b = car.gearBlock;
   CopyBlock(b->sx1, b->sy1, b->sx2, b->sy2, b->dx1, b->dy1, AuxScreen, Buffer2);
@@ -219,17 +203,7 @@ ClearCockpit(void)
 void
 PrintCockpit(void)
 {
-  extern char SloMoFlag, DemoMode;
-  extern void *Buffer2, *AuxScreen;
-  extern int MinY, MaxY, OrgY;
-  extern int MinY1, MaxY1, OrgY1;
-  extern int MinY2, MaxY2, OrgY2;
-  extern int mphX, mphY, rpmX, rpmY, ampX, ampY;
-  extern int tmpX, tmpY, oilX, oilY, gasX, gasY;
-  extern int largePointer, smallPointer, SteerX;
-  extern int PolyVertex[];
-  extern s_car car;
-  register int x, y, x1, y1;
+  int x, y, x1, y1;
   char inactive;
   int angle;
   static int OldRpm;
@@ -247,7 +221,7 @@ PrintCockpit(void)
   SolidColor(red);
   NewColor(yellow);
 
-  /* DRAW RPM GAUGE. */
+  // DRAW RPM GAUGE.
 
   if (inactive)
     angle = -4 * 135;
@@ -271,7 +245,7 @@ PrintCockpit(void)
   PolyVertex[5] = rpmY + x1;
   Polygon(3);
 
-  /* DRAW MPH GAUGE. */
+  // DRAW MPH GAUGE.
 
   if (inactive)
     angle = -4 * 135;
@@ -293,7 +267,7 @@ PrintCockpit(void)
   Polygon(3);
 
   if (!inactive)
-  { /* DRAW HORIZONTAL STEERING INDICATOR. */
+  { // DRAW HORIZONTAL STEERING INDICATOR.
 
     NewColor(blue);
     x = (SteerX - 320) / 30 - 2;
@@ -303,7 +277,7 @@ PrintCockpit(void)
     MoveTo(x, -22);
     DrawTo(x, -20);
 
-    /* DRAW VERTICAL THROTTLE INDICATOR. */
+    // DRAW VERTICAL THROTTLE INDICATOR.
 
     NewColor(red);
     x = -car.throttle / 13 - 10;
@@ -316,7 +290,7 @@ PrintCockpit(void)
     PrintTime();
   }
 
-  /* DISPLAY QUALIFY MESSAGE. */
+  // DISPLAY QUALIFY MESSAGE.
 
   PrintQualify();
 
@@ -330,14 +304,12 @@ PrintCockpit(void)
 static void
 ShowAllCarsInTheLoop(s_object* loop)
 {
-  extern int VisibleObjects;
-  extern s_priority PrioList[];
-  register s_object* obj;
+  s_object* obj;
   s_priority* pr;
-  register uchar i;
-  register int radius, x, z;
+  unsigned char i;
+  int radius, x, z;
 
-  /* DISPLAY ALL CARS IN THE LOOP. */
+  // DISPLAY ALL CARS IN THE LOOP.
 
   pr = PrioList;
   x = loop->worldX;
@@ -364,10 +336,9 @@ ShowAllCarsInTheLoop(s_object* loop)
 void
 PrintLoop(s_object* obj)
 {
-  extern int PolyVertex[];
-  register uchar *p, i, j, norm;
-  register long *k, *pv, *q;
-  uchar stripes[20], *ps, FullDetails;
+  unsigned char *p, i, j, norm;
+  long *k, *pv, *q;
+  unsigned char stripes[20], *ps, FullDetails;
   int para[2];
 
   FullDetails = (obj->eyeZ < 1500);
@@ -386,7 +357,7 @@ PrintLoop(s_object* obj)
       norm = *p++;
 
       if ((*ps++ = IsVisible(p[0], norm, obj->vert)) == FALSE)
-      { /* TRANSPARENT ROAD PARTS */
+      { // TRANSPARENT ROAD PARTS
 
         pv = (long*)PolyVertex;
         *pv++ = k[*p++];
@@ -397,7 +368,7 @@ PrintLoop(s_object* obj)
         SolidColor(hatchedblack);
         Polygon(4);
 
-        /* YELLOW STRIPES */
+        // YELLOW STRIPES
 
         if (FullDetails)
         {
@@ -419,7 +390,7 @@ PrintLoop(s_object* obj)
       }
     }
 
-    /* DISPLAY ALL CARS. */
+    // DISPLAY ALL CARS.
 
     ShowAllCarsInTheLoop(obj);
 
@@ -458,7 +429,7 @@ PrintLoop(s_object* obj)
       norm = *p++;
 
       if ((*ps++ = IsVisible(p[0], norm, obj->vert)) == FALSE)
-      { /* HATCHED SEGMENTS */
+      { // HATCHED SEGMENTS
 
         pv = (long*)PolyVertex;
         for (j = para[0] + 1; --j;)
@@ -466,7 +437,7 @@ PrintLoop(s_object* obj)
         SolidColor(hatchedblack);
         Polygon(para[0]);
 
-        /* LANE MARKERS */
+        // LANE MARKERS
 
         *(long*)para = *q++;
         pv = (long*)PolyVertex;
@@ -484,7 +455,7 @@ PrintLoop(s_object* obj)
       p += 5;
     }
 
-    /* DISPLAY ALL CARS. */
+    // DISPLAY ALL CARS.
 
     ShowAllCarsInTheLoop(obj);
 
@@ -509,16 +480,13 @@ PrintLoop(s_object* obj)
   }
 }
 
-/*
-**********************************************************************
-*/
+// **********************************************************************
 
 void
 PrintSign(s_object* obj)
 {
-  extern int PolyVertex[];
-  register uchar *p, i, j, h;
-  register long *pv, *k;
+  unsigned char *p, i, j, h;
+  long *pv, *k;
   int para[2];
 
   p = obj->faces;
@@ -579,9 +547,8 @@ PrintSign(s_object* obj)
 void
 PrintBridge(s_object* obj)
 {
-  extern int PolyVertex[];
-  register uchar *p, i, j, h;
-  register long *pv, *k;
+  unsigned char *p, i, j, h;
+  long *pv, *k;
   int para[2];
 
   p = obj->faces;
@@ -643,14 +610,13 @@ PrintBridge(s_object* obj)
 void
 PrintCar(s_object* obj)
 {
-  extern int PolyVertex[];
-  register uchar *p, i, j, h;
-  register long *pv, *k;
+  unsigned char *p, i, j, h;
+  long *pv, *k;
   char PhantomPhoton;
   int para[2];
 
-  /* CHECK, IF CAR IS ALREADY DISPLAYED (LOOP).
-     IF NOT, MARK AS DISPLAYED. */
+  // CHECK, IF CAR IS ALREADY DISPLAYED (LOOP).
+  // IF NOT, MARK AS DISPLAYED.
 
   if (!obj->visible)
     return;
@@ -731,9 +697,8 @@ PrintCar(s_object* obj)
 void
 PrintUnderpass(s_object* obj)
 {
-  extern int PolyVertex[];
-  register uchar *p, i, j, h;
-  register long *pv, *k;
+  unsigned char *p, i, j, h;
+  long *pv, *k;
   int para[2];
 
   p = obj->faces;
@@ -782,9 +747,8 @@ PrintUnderpass(s_object* obj)
 void
 PrintObject(s_object* obj)
 {
-  extern int PolyVertex[];
-  register uchar *p, i, j, h;
-  register long *pv, *k;
+  unsigned char *p, i, j, h;
+  long *pv, *k;
   int para[2];
 
   p = obj->faces;
@@ -826,37 +790,36 @@ PrintObject(s_object* obj)
 void
 PrintBrokenWindow(void)
 {
-  extern int Debris[];
 
   NewColor(white);
 
 #define MoveP(n) MoveTo(Debris[n + n - 2], Debris[n + n - 1]);
 #define DrawP(n) DrawTo(Debris[n + n - 2], Debris[n + n - 1]);
 
-  /* CENTER */
+  // CENTER
 
   MoveP(1) DrawP(2) DrawP(3) DrawP(5)
     DrawP(6) DrawP(1)
 
-    /* RIGHT UP */
+    // RIGHT UP
 
     MoveP(6) DrawP(11) MoveP(5) DrawP(12)
       MoveP(7) DrawP(8) MoveP(9) DrawP(10)
 
-    /* RIGHT */
+    // RIGHT
 
     MoveP(4) DrawP(13) DrawP(14) DrawP(15)
 
-    /* RIGHT DOWN */
+    // RIGHT DOWN
 
     MoveP(3) DrawP(19) MoveP(16) DrawP(20)
       MoveP(17) DrawP(18)
 
-    /* LEFT DOWN */
+    // LEFT DOWN
 
     MoveP(2) DrawP(21)
 
-    /* LEFT UP */
+    // LEFT UP
 
     MoveP(24) DrawP(1) DrawP(25)
       MoveP(22) DrawP(23)
@@ -868,13 +831,9 @@ PrintBrokenWindow(void)
 static void
 PrintHillRoads(int type)
 {
-  extern uchar VisiStr1, VisiStr2, VisiLns1, VisiLns2;
-  extern int *Flags1, *Flags2;
-  extern int coordinate[], PolyVertex[];
-  extern int *LaneM1, *LaneM2;
-  register char i, j;
-  register int h, *flag, *p, *l;
-  register long* d;
+  char i, j;
+  int h, *flag, *p, *l;
+  long* d;
 
   p = coordinate;
 
@@ -885,23 +844,23 @@ PrintHillRoads(int type)
   {
     h = *flag++;
     if (!(h & f_invisible) && (h & type))
-    { /* DISPLAY LOW STREET SEGMENT. */
+    { // DISPLAY LOW STREET SEGMENT.
 
       SolidColor((h & f_color) ? grey2 : grey12);
       h = *p++;
       d = (long*)PolyVertex;
-      for (j = (uchar)h + 1; --j;)
+      for (j = (unsigned char)h + 1; --j;)
         *d++ = *((long*)p)++;
       Polygon(h);
 
-      /* DISPLAY LANE MARKER */
+      // DISPLAY LANE MARKER
 
       if (i <= VisiLns1)
       {
         SolidColor(orange);
         h = *l++;
         d = (long*)PolyVertex;
-        for (j = (uchar)h + 1; --j;)
+        for (j = (unsigned char)h + 1; --j;)
           *d++ = *((long*)l)++;
         Polygon(h);
       }
@@ -921,23 +880,23 @@ PrintHillRoads(int type)
   {
     h = *flag++;
     if (!(h & f_invisible) && (h & type))
-    { /* DISPLAY LOW STREET SEGMENT. */
+    { // DISPLAY LOW STREET SEGMENT.
 
       SolidColor((h & f_color) ? grey2 : grey12);
       h = *p++;
       d = (long*)PolyVertex;
-      for (j = (uchar)h + 1; --j;)
+      for (j = (unsigned char)h + 1; --j;)
         *d++ = *((long*)p)++;
       Polygon(h);
 
-      /* DISPLAY LANE MARKER */
+      // DISPLAY LANE MARKER
 
       if (i <= VisiLns2)
       {
         SolidColor(orange);
         h = *l++;
         d = (long*)PolyVertex;
-        for (j = (uchar)h + 1; --j;)
+        for (j = (unsigned char)h + 1; --j;)
           *d++ = *((long*)l)++;
         Polygon(h);
       }
@@ -954,13 +913,9 @@ PrintHillRoads(int type)
 static void
 PrintLowStreets(void)
 {
-  extern uchar VisiStr1, VisiStr2, VisiLns1, VisiLns2;
-  extern int *Flags1, *Flags2;
-  extern int coordinate[], PolyVertex[];
-  extern int *LaneM1, *LaneM2;
-  register char i, j;
-  register int h, *flag, *p, *l;
-  register long* d;
+  char i, j;
+  int h, *flag, *p, *l;
+  long* d;
 
 #define wire FALSE
 
@@ -979,12 +934,12 @@ PrintLowStreets(void)
   {
     h = *flag++;
     if (!(h & mask))
-    { /* DISPLAY LOW STREET SEGMENT. */
+    { // DISPLAY LOW STREET SEGMENT.
 
       SolidColor((h & f_color) ? grey2 : grey12);
       h = *p++;
       d = (long*)PolyVertex;
-      for (j = (uchar)h + 1; --j;)
+      for (j = (unsigned char)h + 1; --j;)
         *d++ = *((long*)p)++;
 #if (wire)
       FramePoly(h);
@@ -992,14 +947,14 @@ PrintLowStreets(void)
       Polygon(h);
 #endif
 
-      /* DISPLAY LANE MARKER */
+      // DISPLAY LANE MARKER
 
       if (i <= VisiLns1)
       {
         SolidColor(orange);
         h = *l++;
         d = (long*)PolyVertex;
-        for (j = (uchar)h + 1; --j;)
+        for (j = (unsigned char)h + 1; --j;)
           *d++ = *((long*)l)++;
 #if (wire)
         FramePoly(h);
@@ -1023,12 +978,12 @@ PrintLowStreets(void)
   {
     h = *flag++;
     if (!(h & mask))
-    { /* DISPLAY LOW STREET SEGMENT. */
+    { // DISPLAY LOW STREET SEGMENT.
 
       SolidColor((h & f_color) ? grey2 : grey12);
       h = *p++;
       d = (long*)PolyVertex;
-      for (j = (uchar)h + 1; --j;)
+      for (j = (unsigned char)h + 1; --j;)
         *d++ = *((long*)p)++;
 #if (wire)
       FramePoly(h);
@@ -1036,14 +991,14 @@ PrintLowStreets(void)
       Polygon(h);
 #endif
 
-      /* DISPLAY LANE MARKER */
+      // DISPLAY LANE MARKER
 
       if (i <= VisiLns2)
       {
         SolidColor(orange);
         h = *l++;
         d = (long*)PolyVertex;
-        for (j = (uchar)h + 1; --j;)
+        for (j = (unsigned char)h + 1; --j;)
           *d++ = *((long*)l)++;
 #if (wire)
         FramePoly(h);
@@ -1066,18 +1021,14 @@ PrintLowStreets(void)
 static void
 CarOnRoad(void)
 {
-  extern int VisibleObjects, NumOfFields;
-  extern s_object* field;
-  extern s_priority PrioList[];
-  register s_object* obj;
-  register s_priority* p;
-  register uchar i, hills;
+  s_object* obj;
+  s_priority* p;
+  unsigned char i, hills;
 
-  /*	DISPLAY PRIORITY :
-          ==================
-  */
+  //	DISPLAY PRIORITY :
+  //      ==================
 
-  /* DISPLAY ALL FIELDS. */
+  // DISPLAY ALL FIELDS.
 
   obj = field;
   for (i = NumOfFields + 1; --i;)
@@ -1089,7 +1040,7 @@ CarOnRoad(void)
     obj++;
   }
 
-  /* DISPLAY ALL DIPs AND CHECK FOR HILLS. */
+  // DISPLAY ALL DIPs AND CHECK FOR HILLS.
 
   p = PrioList;
   hills = FALSE;
@@ -1097,7 +1048,7 @@ CarOnRoad(void)
   for (i = VisibleObjects + 1; --i;)
   {
     obj = (p++)->obj;
-    if (obj->large == 57 /* DIP */)
+    if (obj->large == 57) // DIP
     {
       (obj->DisplayProc)(obj);
       obj->visible = FALSE;
@@ -1109,7 +1060,7 @@ CarOnRoad(void)
     }
   }
 
-  /* DISPLAY ALL CARS IN DIPs. */
+  // DISPLAY ALL CARS IN DIPs.
 
   p = PrioList;
   for (i = VisibleObjects + 1; --i;)
@@ -1125,11 +1076,11 @@ CarOnRoad(void)
     }
   }
 
-  /* DISPLAY ALL LOW STREET ELEMENTS. */
+  // DISPLAY ALL LOW STREET ELEMENTS.
 
   PrintLowStreets();
 
-  /* DISPLAY ALL OBJECTS ON TOP OF THE HILLS. */
+  // DISPLAY ALL OBJECTS ON TOP OF THE HILLS.
 
   if (hills)
   {
@@ -1184,24 +1135,20 @@ CarOnRoad(void)
 static void
 CarInDip(void)
 {
-  extern int VisibleObjects;
-  extern s_object* field;
-  extern s_priority PrioList[];
-  register s_object* obj;
-  register s_priority* p;
-  register uchar i;
+  s_object* obj;
+  s_priority* p;
+  unsigned char i;
 
-  /*	DISPLAY PRIORITY :
-          ==================
-  */
+  //	DISPLAY PRIORITY :
+  //      ==================
 
-  /* DISPLAY ALL OBJECTS EXCEPT DIPs AND CARs IN DIPs. */
+  // DISPLAY ALL OBJECTS EXCEPT DIPs AND CARs IN DIPs.
 
   p = PrioList;
   for (i = VisibleObjects + 1; --i;)
   {
     obj = (p++)->obj;
-    if (obj->large != 57 /* DIP */)
+    if (obj->large != 57) // DIP
     {
       if (obj->class != c_car)
       {
@@ -1216,20 +1163,20 @@ CarInDip(void)
     }
   }
 
-  /* DISPLAY ALL DIPs. */
+  // DISPLAY ALL DIPs.
 
   p = PrioList;
   for (i = VisibleObjects + 1; --i;)
   {
     obj = (p++)->obj;
-    if (obj->visible && (obj->large == 57 /* DIP */))
+    if (obj->visible && (obj->large == 57)) // DIP
     {
       (obj->DisplayProc)(obj);
       obj->visible = FALSE;
     }
   }
 
-  /* DISPLAY ALL CARs IN DIPs. */
+  // DISPLAY ALL CARs IN DIPs.
 
   p = PrioList;
   for (i = VisibleObjects + 1; --i;)
@@ -1245,7 +1192,6 @@ CarInDip(void)
 void
 PrintAllObjects(void)
 {
-  extern s_car car;
 
   if (car.y < 0)
     CarInDip();

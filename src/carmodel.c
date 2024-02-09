@@ -1,5 +1,5 @@
-
-
+#include "main.h"
+#include "missing.h"
 #include "proto.h"
 
 /*
@@ -37,62 +37,60 @@
 #define gravityConstant 5
 #define ImpulseDuration 30
 
-#define CarWidth 5 * 6  /* Half width of the car */
-#define CarLength 5 * 9 /* Half length of the car */
+#define CarWidth 5 * 6  // Half width of the car
+#define CarLength 5 * 9 // Half length of the car
 
-#define s_OnTheRoad 1 /* car status */
+#define s_OnTheRoad 1 // car status
 #define s_Offroad 2
 #define s_OnObject 3
 
-#define Limit 4 * 13000L /* Maximal allowed acceleration, measured in (DeltaAngle * Speed). */
-#define FallLimit 45     /* Crash limit for landing. */
-#define SpeedLimit 45    /* Crash limit for object collision. */
+#define Limit 4 * 13000L // Maximal allowed acceleration, measured in (DeltaAngle * Speed).
+#define FallLimit 45     // Crash limit for landing.
+#define SpeedLimit 45    // Crash limit for object collision.
 
-#define NormLength 16384 /* Normal vector length */
+#define NormLength 16384 // Normal vector length
 
-/*		LOCAL VARIABLES :
-                =================
-*/
+//		LOCAL VARIABLES :
+//              =================
 
-static char OnSameSide, /* Auxiliary Flag, used by CompHeight(). */
-  status;               /* Status indicates car's position. */
+static char OnSameSide, // Auxiliary Flag, used by CompHeight().
+  status;               // Status indicates car's position.
 
-static int sinY, cosY, /* New yaw   trig. values */
-  sinP, cosP,          /* New pitch trig. values */
-  sinR, cosR,          /* New roll  trig. values */
-  StreetCoor[6 * 3],   /* Street surface coordinates. */
-  x1 = -CarWidth,      /* Position of front left  contact point. */
+static int sinY, cosY, // New yaw   trig. values
+  sinP, cosP,          // New pitch trig. values
+  sinR, cosR,          // New roll  trig. values
+  StreetCoor[6 * 3],   // Street surface coordinates.
+  x1 = -CarWidth,      // Position of front left  contact point.
   y1 = 0,
   z1 = CarLength,
-  x2 = CarWidth, /* Position of front right contact point. */
+  x2 = CarWidth, // Position of front right contact point.
   y2 = 0,
   z2 = CarLength,
-  x3 = -CarWidth, /* Position of rear  left  contact point. */
+  x3 = -CarWidth, // Position of rear  left  contact point.
   y3 = 0,
   z3 = -CarLength,
-  x4 = CarWidth, /* Position of rear  right contact point. */
+  x4 = CarWidth, // Position of rear  right contact point.
   y4 = 0,
   z4 = -CarLength,
-  CarNormX, /* Car normal vector. */
+  CarNormX, // Car normal vector.
   CarNormY,
   CarNormZ,
-  height1,          /* Relative height of wheel 1. */
-  height2,          /* Relative height of wheel 2. */
-  height3,          /* Relative height of wheel 3. */
-  height4,          /* Relative height of wheel 4. */
-  nx, nz,           /* Normal vector to connection between face1 and face2. */
-  dx11, dy11, dz11, /* Vector1 of face1. */
-  dx12, dy12, dz12, /* Vector2 of face1. */
-  dx13, dy13, dz13, /* Vector3 of face1. */
-  dx14, dy14, dz14, /* Vector4 of face1. */
-  dx21, dy21, dz21, /* Vector1 of face2. */
-  dx22, dy22, dz22, /* Vector2 of face2. */
-  dx23, dy23, dz23, /* Vector3 of face2. */
-  dx24, dy24, dz24; /* Vector4 of face2. */
+  height1,          // Relative height of wheel 1.
+  height2,          // Relative height of wheel 2.
+  height3,          // Relative height of wheel 3.
+  height4,          // Relative height of wheel 4.
+  nx, nz,           // Normal vector to connection between face1 and face2.
+  dx11, dy11, dz11, // Vector1 of face1.
+  dx12, dy12, dz12, // Vector2 of face1.
+  dx13, dy13, dz13, // Vector3 of face1.
+  dx14, dy14, dz14, // Vector4 of face1.
+  dx21, dy21, dz21, // Vector1 of face2.
+  dx22, dy22, dz22, // Vector2 of face2.
+  dx23, dy23, dz23, // Vector3 of face2.
+  dx24, dy24, dz24; // Vector4 of face2.
 
-/*		FUNCTIONS :
-                ===========
-*/
+//		FUNCTIONS :
+//              ===========
 
 static void TurnPitch(int);
 static void TurnYaw(int);
@@ -112,10 +110,9 @@ static void InteractionModel(void);
 static void
 TurnPitch(int deltaPitch)
 {
-  extern s_car car;
   int cosR;
 
-  /* ROTATION AROUND X-AXIS IN THE EYE-CS. */
+  // ROTATION AROUND X-AXIS IN THE EYE-CS.
 
   if (!deltaPitch)
     return;
@@ -130,11 +127,10 @@ TurnPitch(int deltaPitch)
 static void
 TurnYaw(int deltaYaw)
 {
-  extern s_car car;
-  register int deltaPitch, deltaRoll, delta;
+  int deltaPitch, deltaRoll, delta;
   int sinR, sinP, cosP;
 
-  /* ROTATION AROUND Y-AXIS IN THE EYE-CS. */
+  // ROTATION AROUND Y-AXIS IN THE EYE-CS.
 
   if (!deltaYaw)
     return;
@@ -160,11 +156,10 @@ TurnYaw(int deltaYaw)
 static void
 SetNormalVector(void)
 {
-  extern s_car car;
   int sinY, cosY, sinP, cosP, sinR, cosR;
-  register int h;
+  int h;
 
-  /* USE NEGATIVE VIEW DIRECTION ANGLES. */
+  // USE NEGATIVE VIEW DIRECTION ANGLES.
 
   h = -car.newYaw;
   sinY = sinus(h);
@@ -176,9 +171,9 @@ SetNormalVector(void)
   sinR = sinus(h);
   cosR = cosinus(h);
 
-  /* SET NORMAL VECTOR IN THE EYE COORDINATE SYSTEM. */
+  // SET NORMAL VECTOR IN THE EYE COORDINATE SYSTEM.
 
-  /* PERFORM INVERSE ROTATION ON THE NORMAL VECTOR. */
+  // PERFORM INVERSE ROTATION ON THE NORMAL VECTOR.
 
   h = NormLength;
   CarNormX = rotate(h, -sinR);
@@ -192,30 +187,26 @@ SetNormalVector(void)
   CarNormX = rot1(h, CarNormZ, sinY, cosY);
   CarNormZ = rot2(h, CarNormZ, sinY, cosY);
 
-  /* RESULT: NORMAL VECTOR IN THE WORLD COORDINATE SYSTEM. */
+  // RESULT: NORMAL VECTOR IN THE WORLD COORDINATE SYSTEM.
 }
 
 static void
 PlayerControl(void)
 {
-  extern char SpinFlag, SkidFlag, AccidentFlag, CarInLoop;
-  extern int SteerX;
-  extern s_car car;
-
   if (!AccidentFlag)
   {
-    /* SIMULATE MOMENT OF INERTIA. */
+    // SIMULATE MOMENT OF INERTIA.
 
     car.newRoll = car.roll + car.deltaRoll;
     car.newPitch = car.pitch;
     TurnPitch(car.deltaPitch);
-    /* TurnYaw( car.deltaSpin); */
+    // TurnYaw( car.deltaSpin);
 
-    /* SIMULATE SPIN OFF. */
+    // SIMULATE SPIN OFF.
 
     SkidFlag = FALSE;
 
-    /* STEERING WHEELS: READ INPUT. */
+    // STEERING WHEELS: READ INPUT.
 
     if (car.WheelFlags & FrontSide)
     {
@@ -250,7 +241,7 @@ PlayerControl(void)
     }
   }
 
-  /* NORMALIZE ANGLES */
+  // NORMALIZE ANGLES
 
   if (car.newYaw > 4 * 180)
     car.newYaw -= 4 * 360;
@@ -267,7 +258,7 @@ PlayerControl(void)
   else if (car.newRoll < -4 * 180)
     car.newRoll += 4 * 360;
 
-  /* COMPUTE TEMPORARY TRIG. VALUES FOR SIMULATION MODEL. */
+  // COMPUTE TEMPORARY TRIG. VALUES FOR SIMULATION MODEL.
 
   sinY = sinus(car.newYaw);
   cosY = cosinus(car.newYaw);
@@ -280,14 +271,12 @@ PlayerControl(void)
 static void
 CarMotion(void)
 {
-  extern char SpinFlag, AccidentFlag;
-  extern s_car car;
   int h;
 
-  /* MOVE FORWARD. */
+  // MOVE FORWARD.
 
   if (!AccidentFlag)
-  { /* PERFORM INVERSE ROTATION ON (0,0,speed) VECTOR. */
+  { // PERFORM INVERSE ROTATION ON (0,0,speed) VECTOR.
 
     if (!SpinFlag)
     {
@@ -299,14 +288,14 @@ CarMotion(void)
       car.vz = rotate(car.vz, cosY);
     }
 
-    /* MOVE CAR FORWARD. */
+    // MOVE CAR FORWARD.
 
     car.preciseX += car.vx;
     car.preciseY += car.vy;
     car.preciseZ += car.vz;
   }
 
-  /* APPLY IMPULSE VECTOR, IF NECESSARY. */
+  // APPLY IMPULSE VECTOR, IF NECESSARY.
 
   if (car.ImpulseFlag)
   {
@@ -316,17 +305,17 @@ CarMotion(void)
     car.preciseZ += multdiv(car.ImpulseZ, h, ImpulseDuration);
   }
 
-  /* SIMULATE GRAVITY. */
+  // SIMULATE GRAVITY.
 
   car.preciseY -= car.GravityY;
 
-  /* SCALE 32 BIT POSITION TO 16 BIT. */
+  // SCALE 32 BIT POSITION TO 16 BIT.
 
-  car.newX = (uint)(car.preciseX >> 3);
+  car.newX = (unsigned int)(car.preciseX >> 3);
   car.newY = (int)(car.preciseY >> 3);
-  car.newZ = (uint)(car.preciseZ >> 3);
+  car.newZ = (unsigned int)(car.preciseZ >> 3);
 
-  /* SIMULATE SPIN OFF. */
+  // SIMULATE SPIN OFF.
 
   if (SpinFlag)
   {
@@ -345,13 +334,7 @@ CarMotion(void)
 static void
 CarEngine(void)
 {
-  extern char CheckOffRoad, SpinFlag, SkidFlag;
-  extern char AccidentFlag, ManualShift, CarInLoop;
-  extern char EngineOn;
-  extern int EnginePitch, hh1;
-  extern s_block GearARect[], GearMRect[];
-  extern s_car car;
-  register int h, *r, *q;
+  int h, *r, *q;
   static int gearRatio[] = {
     0,
     800,
@@ -372,7 +355,7 @@ CarEngine(void)
     newRPM,
     deltaRPM;
 
-  uint power,
+  unsigned int power,
     speed,
     acceleration;
 
@@ -387,7 +370,7 @@ CarEngine(void)
   if (AccidentFlag)
     return;
 
-  /* NO BRAKING, IF ALL WHEELS ARE IN THE AIR. */
+  // NO BRAKING, IF ALL WHEELS ARE IN THE AIR.
 
   if (!car.WheelFlags)
     car.BrakeFlag = FALSE;
@@ -407,11 +390,11 @@ CarEngine(void)
     }
   }
 
-  speed = (uint)((car.speed > 0) ? car.speed : 0);
+  speed = (unsigned int)((car.speed > 0) ? car.speed : 0);
 
   if ((car.gear == 0) || (!car.WheelFlags))
   {
-    /* NEUTRAL OR REAR WHEELS SPINNING IN THE AIR. */
+    // NEUTRAL OR REAR WHEELS SPINNING IN THE AIR.
 
     newRPM = multdiv((int)car.throttle, TopRPM, MaxThrottle);
     deltaRPM = newRPM - car.rpm;
@@ -426,16 +409,16 @@ CarEngine(void)
   else
   {
     if (SpinFlag || (abs(car.wheelSpeed - car.speed) > 10))
-    { /* SPINNING WHEELS */
+    { // SPINNING WHEELS
 
-      /* MakeSound( s_squeal); DOESN'T SOUND WELL. */
+      // MakeSound( s_squeal); DOESN'T SOUND WELL.
 
       power >>= 1;
     }
 
     resistance = (car.speed < 0) ? -1 : 1;
 
-    resistance += (car.speed / 32); /* ROLLRESISTANCE ON STREET */
+    resistance += (car.speed / 32); // ROLLRESISTANCE ON STREET
 
     if (SkidFlag)
       resistance += (resistance >> 1);
@@ -465,10 +448,10 @@ CarEngine(void)
     h = (speed + speed + speed) >> 1;
     acceleration = Sqrt(mult(h, h) + power) - h;
 
-    deltaSpeed = acceleration; /* ACCELERATION BY ENGINE POWER. */
-    deltaSpeed -= resistance;  /* ROLL RESISTANCE */
-    deltaSpeed -= brake;       /* BRAKE FORCE */
-    deltaSpeed -= gravity;     /* GRAVITY FORCE */
+    deltaSpeed = acceleration; // ACCELERATION BY ENGINE POWER.
+    deltaSpeed -= resistance;  // ROLL RESISTANCE
+    deltaSpeed -= brake;       // BRAKE FORCE
+    deltaSpeed -= gravity;     // GRAVITY FORCE
 
     if (deltaSpeed > MaxAcceleration)
       deltaSpeed = MaxAcceleration;
@@ -495,15 +478,15 @@ CarEngine(void)
       car.rpm = 0;
   }
 
-  /* UPPER REV LIMIT. */
+  // UPPER REV LIMIT.
 
   if (car.rpm > 6500)
     car.rpm = 6500;
 
-  /* CHECK GEARS. */
+  // CHECK GEARS.
 
   if (car.autoFlag)
-  { /* AUTOMATIC */
+  { // AUTOMATIC
 
     if (car.rpm < 2000)
     {
@@ -535,7 +518,7 @@ CarEngine(void)
     }
   }
   else
-  { /* MANUAL GEAR SHIFT */
+  { // MANUAL GEAR SHIFT
 
     if (car.ShiftFlag || ManualShift)
     {
@@ -563,9 +546,9 @@ CarEngine(void)
         h = multdiv(h, q[1], q[0]);
 
       if (newgear < car.gear)
-        /* DOWNSHIFT: ENGINE SLOWS DOWN. */
+        // DOWNSHIFT: ENGINE SLOWS DOWN.
         car.rpm = (h + car.rpm) >> 1;
-      else /* UPSHIFT: NO SLOW DOWN. */
+      else // UPSHIFT: NO SLOW DOWN.
         car.rpm = h;
 
       car.gear = newgear;
@@ -596,21 +579,13 @@ CarEngine(void)
 static char
 CheckCollision(void)
 {
-  extern char CollisionFlag, LapMode, AccidentFlag;
-  extern int VisibleObjects, NumOfBarriers;
-  extern int *Barriers, EnginePitch, NumOfVehicles;
-  extern int yawSIN, yawCOS, pitchSIN, pitchCOS;
-  extern int OffRoadOut;
-  extern s_priority PrioList[];
-  extern s_vehicle* vehicle;
-  extern s_car car;
-  register uchar i;
-  register uint* b;
-  register s_object* obj;
-  register s_priority* p;
-  register s_vehicle* vh;
+  unsigned char i;
+  unsigned int* b;
+  s_object* obj;
+  s_priority* p;
+  s_vehicle* vh;
   char NoCollision;
-  uint x1, z1, x2, z2, min, max, newX;
+  unsigned int x1, z1, x2, z2, min, max, newX;
   int x, y, z, streetlength, carspeed;
   int crashX, crashY, crashZ, dx, dz, dbx, dbz;
   long a1, a2;
@@ -618,13 +593,13 @@ CheckCollision(void)
   if (AccidentFlag)
     return (FALSE);
 
-  /* DIMENSIONS OF THE CAR CRASH BOX. */
+  // DIMENSIONS OF THE CAR CRASH BOX.
 
   crashX = 30 + (car.mph >> 3);
   crashY = 30 + (car.mph >> 3);
   crashZ = 40 + (car.mph / 3);
 
-  /* COLLISION WITH A CAR ? */
+  // COLLISION WITH A CAR ?
 
   p = PrioList;
 
@@ -646,7 +621,7 @@ CheckCollision(void)
       z = rot2(obj->eyeY, z, pitchSIN, pitchCOS);
 
       if (z > crashZ)
-        /* IGNORE CARS FAR AWAY. */
+        // IGNORE CARS FAR AWAY.
         continue;
 
       if (abs(x) > crashX)
@@ -656,13 +631,13 @@ CheckCollision(void)
         continue;
 
       if (obj->large == 94 + 1)
-      { /* NAUGHTY, YOU HIT A COW. */
+      { // NAUGHTY, YOU HIT A COW.
 
         MakeSound(fx_moo);
         return (FALSE);
       }
 
-      /* WHICH CAR ? */
+      // WHICH CAR ?
 
       vh = vehicle;
       NoCollision = FALSE;
@@ -670,24 +645,24 @@ CheckCollision(void)
       for (i = NumOfVehicles + 1; --i;)
       {
         if (vh->obj == obj)
-        { /* THAT'S THE CAR. */
+        { // THAT'S THE CAR.
 
           a1 = mult(car.vx, vh->dx) + mult(car.vy, vh->dy) + mult(car.vz, vh->dz);
 
           if (a1 > 0L)
-          { /* BOTH CARS IN SAME DIRECTION. */
+          { // BOTH CARS IN SAME DIRECTION.
 
             streetlength = (int)Sqrt(mult(vh->dx, vh->dx) + mult(vh->dy, vh->dy) + mult(vh->dz, vh->dz));
             carspeed = multdiv(streetlength, vh->speed, MaxRoadPos);
 
             if (carspeed > car.speed)
-            { /* CAR CAME FROM BEHIND ! */
+            { // CAR CAME FROM BEHIND !
 
               NoCollision = TRUE;
             }
           }
           else
-          { /* BOTH CARS IN OPPOSITE DIRECTION. */
+          { // BOTH CARS IN OPPOSITE DIRECTION.
 
             if (car.speed > 0)
             {
@@ -704,7 +679,7 @@ CheckCollision(void)
       if (NoCollision)
         break;
 
-      /* SET IMPULSE VECTOR. */
+      // SET IMPULSE VECTOR.
 
       car.ImpulseX = -(car.vx);
       car.ImpulseY = -(car.vy);
@@ -712,17 +687,17 @@ CheckCollision(void)
 
       car.ImpulseFlag = ImpulseDuration;
 
-      /* RESET TO SAVE POSITION. */
+      // RESET TO SAVE POSITION.
 
       car.preciseX += (car.ImpulseX << 1);
       car.preciseY += (car.ImpulseY << 1);
       car.preciseZ += (car.ImpulseZ << 1);
 
-      car.newX = (uint)(car.preciseX >> 3);
+      car.newX = (unsigned int)(car.preciseX >> 3);
       car.newY = (int)(car.preciseY >> 3);
-      car.newZ = (uint)(car.preciseZ >> 3);
+      car.newZ = (unsigned int)(car.preciseZ >> 3);
 
-      /* CANCEL SPEED VECTOR */
+      // CANCEL SPEED VECTOR
 
       car.speed = 0;
 
@@ -746,7 +721,7 @@ CheckCollision(void)
     }
   }
 
-  /* COLLISION WITH AN OBJECT ? */
+  // COLLISION WITH AN OBJECT ?
 
   p = PrioList;
 
@@ -759,7 +734,7 @@ CheckCollision(void)
       {
         obj->collision = FALSE;
 
-        /* SET IMPULSE VECTOR. */
+        // SET IMPULSE VECTOR.
 
         car.ImpulseX = -(car.vx);
         car.ImpulseY = -(car.vy);
@@ -767,17 +742,17 @@ CheckCollision(void)
 
         car.ImpulseFlag = ImpulseDuration;
 
-        /* RESET TO SAVE POSITION. */
+        // RESET TO SAVE POSITION.
 
         car.preciseX += (car.ImpulseX << 1);
         car.preciseY += (car.ImpulseY << 1);
         car.preciseZ += (car.ImpulseZ << 1);
 
-        car.newX = (uint)(car.preciseX >> 3);
+        car.newX = (unsigned int)(car.preciseX >> 3);
         car.newY = (int)(car.preciseY >> 3);
-        car.newZ = (uint)(car.preciseZ >> 3);
+        car.newZ = (unsigned int)(car.preciseZ >> 3);
 
-        /* CANCEL SPEED VECTOR */
+        // CANCEL SPEED VECTOR
 
         car.speed = 0;
 
@@ -801,13 +776,13 @@ CheckCollision(void)
     }
   }
 
-  /* COLLISION WITH BARRIERS ? */
+  // COLLISION WITH BARRIERS ?
 
   if (OffRoadOut)
   {
-    b = (uint*)Barriers;
+    b = (unsigned int*)Barriers;
 
-    /* EXAMINE CAR MOVEMENT VECTOR. */
+    // EXAMINE CAR MOVEMENT VECTOR.
 
     if (car.mx < car.newX)
     {
@@ -836,9 +811,9 @@ CheckCollision(void)
 
     for (i = 0; i < NumOfBarriers; i++, b += 4)
     {
-      /* CAR RECTANGLE AND BARRIER RECTANGLE OVERLAP ? */
+      // CAR RECTANGLE AND BARRIER RECTANGLE OVERLAP ?
 
-      /* CHECK IN X-DIMENSION. */
+      // CHECK IN X-DIMENSION.
 
       if (b[0] < b[2])
       {
@@ -854,7 +829,7 @@ CheckCollision(void)
       if (x1 > max || x2 < min)
         continue;
 
-      /* CHECK IN Z-DIMENSION. */
+      // CHECK IN Z-DIMENSION.
 
       if (b[1] < b[3])
       {
@@ -878,33 +853,33 @@ CheckCollision(void)
 
       if (a2)
       {
-        newX = b[0] + (uint)(a1 * dbx / a2);
+        newX = b[0] + (unsigned int)(a1 * dbx / a2);
 
         if (x1 <= newX && newX <= x2)
         {
-          /* COLLISION WITH A BARRIER ! */
+          // COLLISION WITH A BARRIER !
 
-          /* CLEAR SPIN. */
+          // CLEAR SPIN.
 
           car.deltaPitch = 0;
           car.deltaRoll = 0;
 
-          /* SET IMPULSE VECTOR. */
+          // SET IMPULSE VECTOR.
 
           car.ImpulseX = -car.vx;
           car.ImpulseY = -car.vy;
           car.ImpulseZ = -car.vz;
           car.ImpulseFlag = ImpulseDuration;
 
-          /* SAVE POSITION. */
+          // SAVE POSITION.
 
           car.preciseX += (car.ImpulseX << 1);
           car.preciseY += (car.ImpulseY << 1);
           car.preciseZ += (car.ImpulseZ << 1);
 
-          car.newX = (uint)(car.preciseX >> 3);
+          car.newX = (unsigned int)(car.preciseX >> 3);
           car.newY = (int)(car.preciseY >> 3);
-          car.newZ = (uint)(car.preciseZ >> 3);
+          car.newZ = (unsigned int)(car.preciseZ >> 3);
 
           AccidentFlag = AccidentDelay;
           car.throttle = 1;
@@ -922,21 +897,17 @@ CheckCollision(void)
 static void
 GetNearestStreetSegments(void)
 {
-  extern char OnTrack;
-  extern s_track *NextStreet, *track1, *track2;
-  extern s_track *End1, *End2, *Junct1, *Junct2;
-  extern s_car car;
-  register int i, d, *p;
-  register s_track* tr;
+  int i, d, *p;
+  s_track* tr;
   int buf[5 * 2 * 3], distance;
   int dx, dz, *nearest;
   s_track *end, *start;
 
-  /* SET TRACK POINTER */
+  // SET TRACK POINTER
 
   tr = NextStreet - 2;
 
-  /* MAKE SURE TO STAY INSIDE THE TRACK ARRAY */
+  // MAKE SURE TO STAY INSIDE THE TRACK ARRAY
 
   if (OnTrack == 0)
   {
@@ -959,7 +930,7 @@ GetNearestStreetSegments(void)
 
   p = buf;
 
-  /* GET RAW COORDINATES. */
+  // GET RAW COORDINATES.
 
   for (i = 0; i < 5; i++)
   {
@@ -971,7 +942,7 @@ GetNearestStreetSegments(void)
     *p++ = tr->y2 - car.newY;
     *p++ = tr->z2 - car.newZ;
 
-    /* CHECK AGAINST BOUNDARIES. */
+    // CHECK AGAINST BOUNDARIES.
 
     if (++tr >= end)
     {
@@ -985,7 +956,7 @@ GetNearestStreetSegments(void)
     }
   }
 
-  /* ROTATE COORDINATES OF FACE1 AND FACE2. */
+  // ROTATE COORDINATES OF FACE1 AND FACE2.
 
   RotXZ(2 * 5, cosY, sinY, buf, buf);
   RotYZ(2 * 5, cosP, sinP, buf, buf);
@@ -998,7 +969,7 @@ GetNearestStreetSegments(void)
   {
     d = abs(p[0] + p[3]) + abs(p[1] + p[4]) + abs(p[2] + p[5]);
 
-    /* FIND NEAREST 2 STREET SEGMENTS. */
+    // FIND NEAREST 2 STREET SEGMENTS.
 
     if (d < distance)
     {
@@ -1011,19 +982,19 @@ GetNearestStreetSegments(void)
 
   movewords(nearest - 2 * 3, StreetCoor, 6 * 3);
 
-  /* 2D-NORMALVECTOR OF CONNECTION LINE BETWEEN FACE1 AND FACE2. */
+  // 2D-NORMALVECTOR OF CONNECTION LINE BETWEEN FACE1 AND FACE2.
 
   nx = StreetCoor[3 * 3 + 2] - StreetCoor[2 * 3 + 2];
   nz = StreetCoor[2 * 3 + 0] - StreetCoor[3 * 3 + 0];
 
-  /* FLAG INDICATES ORIENTATION OF FACE1. */
+  // FLAG INDICATES ORIENTATION OF FACE1.
 
   dx = StreetCoor[0 * 3 + 0] - StreetCoor[2 * 3 + 0];
   dz = StreetCoor[0 * 3 + 2] - StreetCoor[2 * 3 + 2];
 
   OnSameSide = (mult(dx, nx) + mult(dz, nz) > 0);
 
-  /* SET SURFACE VECTORS OF FACE1 AND FACE2. */
+  // SET SURFACE VECTORS OF FACE1 AND FACE2.
 
   dx11 = StreetCoor[1 * 3 + 0] - StreetCoor[0 * 3 + 0];
   dy11 = StreetCoor[1 * 3 + 1] - StreetCoor[0 * 3 + 1];
@@ -1068,7 +1039,7 @@ CompDistance(int x, int y, int z, char set1)
   int dx, dz;
   long a1, a2, b1, b2;
 
-  /* COMPUTE HEIGHT OVER STREET SEGMENTS. */
+  // COMPUTE HEIGHT OVER STREET SEGMENTS.
 
   switch (set1)
   {
@@ -1184,12 +1155,11 @@ CompDistance(int x, int y, int z, char set1)
 static int
 CompHeight(int x, int y, int z)
 {
-  extern int ObjFace[];
   int x1, y1, z1, dx1, dy1, dz1, dx2, dy2, dz2;
   int dx, dz;
   long a1, a2, b1, b2;
 
-  /* COMPUTE HEIGHT OVER OBJECT SURFACE. */
+  // COMPUTE HEIGHT OVER OBJECT SURFACE.
 
   x1 = ObjFace[0];
   y1 = ObjFace[1];
@@ -1223,15 +1193,15 @@ OnTheRoad(void)
 {
   status = s_OnTheRoad;
 
-  /* DETERMINE NEW POSITION OF NEAREST STREET SEGMENTS. */
+  // DETERMINE NEW POSITION OF NEAREST STREET SEGMENTS.
 
   GetNearestStreetSegments();
 
-  /* COMPUTE HEIGHT ABOVE THE STREET SURFACE FOR ALL CONNECTION POINTS. */
+  // COMPUTE HEIGHT ABOVE THE STREET SURFACE FOR ALL CONNECTION POINTS.
 
 #if (0)
   {
-    register int h1, h2, h3, h4;
+    int h1, h2, h3, h4;
 
     /*
     h1 = CompDistance(x1,y1,z1,0);
@@ -1314,7 +1284,7 @@ OnTheGreen(void)
 
   status = s_Offroad;
 
-  /* ROTATE/TRANSLATE WHEEL COORDINATES. */
+  // ROTATE/TRANSLATE WHEEL COORDINATES.
 
   k[0] = x1;
   k[1] = y1;
@@ -1332,7 +1302,7 @@ OnTheGreen(void)
   RotYZ(4, cosP, -sinP, k, k);
   RotXY(4, cosR, -sinR, k, k);
 
-  /* COMPUTE HEIGHT OF ALL WHEELS ABOVE THE GROUND. */
+  // COMPUTE HEIGHT OF ALL WHEELS ABOVE THE GROUND.
 
   height1 = car.newY + k[1];
   height2 = car.newY + k[4];
@@ -1347,7 +1317,7 @@ CarOnObject(void)
 
   status = s_OnObject;
 
-  /* COMPUTE HEIGHT OF ALL WHEELS ABOVE THE GROUND. */
+  // COMPUTE HEIGHT OF ALL WHEELS ABOVE THE GROUND.
 
   Correction = rotate(CarHeight - 5, cosP);
   Correction = rotate(Correction, cosR);
@@ -1361,22 +1331,18 @@ CarOnObject(void)
 static void
 InteractionModel(void)
 {
-  extern char AccidentFlag, LapMode, CarInLoop;
-  extern int EnginePitch;
-  extern s_car car;
-
-  char flags,     /* WHEEL FLAGS */
-    wheelsOnRoad; /* NUMBER OF WHEELS ON THE ROAD. */
+  char flags,     // WHEEL FLAGS
+    wheelsOnRoad; // NUMBER OF WHEELS ON THE ROAD.
 
   int pitchBalance,
     rollBalance,
-    averageHeight, /* JUST WHAT THE NAME SAYS. */
-    deltaPitch,    /* DELTA PITCH ANGLE. */
-    deltaRoll,     /* DELTA ROLL  ANGLE. */
+    averageHeight, // JUST WHAT THE NAME SAYS.
+    deltaPitch,    // DELTA PITCH ANGLE.
+    deltaRoll,     // DELTA ROLL  ANGLE.
     fall,
     h1;
 
-  /* CHECK CAR'S HEIGHT RELATIVE TO THE ROAD. */
+  // CHECK CAR'S HEIGHT RELATIVE TO THE ROAD.
 
   car.WheelFlags = wheelsOnRoad = 0;
 
@@ -1402,30 +1368,30 @@ InteractionModel(void)
   }
   flags = car.WheelFlags;
 
-  /* CHECK CAR'S BALANCE RELATIVE TO THE STREET SURFACE. */
+  // CHECK CAR'S BALANCE RELATIVE TO THE STREET SURFACE.
 
   pitchBalance = ((height1 - height3) + (height2 - height4));
   rollBalance = ((height1 - height2) + (height3 - height4));
 
-  /* COMPUTE AVERAGE HEIGHT. */
+  // COMPUTE AVERAGE HEIGHT.
 
   averageHeight = (height1 + height2 + height3 + height4) >> 2;
 
   if (wheelsOnRoad >= 3 || flags == Diagonal1 || flags == Diagonal2)
-  { /* CAR IS COMPLETELY ON THE ROAD. */
+  { // CAR IS COMPLETELY ON THE ROAD.
 
     car.deltaPitch = 0;
     car.deltaRoll = 0;
 
     if (rollBalance)
-    { /* ADJUST CAR'S ROLL ANGLE. */
+    { // ADJUST CAR'S ROLL ANGLE.
 
       deltaRoll = arcsin(rollBalance, 4 * CarWidth);
       car.newRoll -= deltaRoll;
     }
 
     if (pitchBalance)
-    { /* ADJUST CAR'S PITCH ANGLE. */
+    { // ADJUST CAR'S PITCH ANGLE.
 
       deltaPitch = arcsin(pitchBalance, 4 * CarLength);
       TurnPitch(-deltaPitch >> 1);
@@ -1433,7 +1399,7 @@ InteractionModel(void)
 
     if (averageHeight < 0)
     {
-      /* COMPUTE NORMAL VECTOR */
+      // COMPUTE NORMAL VECTOR
 
       SetNormalVector();
 
@@ -1441,14 +1407,14 @@ InteractionModel(void)
       car.preciseY += multdiv(CarNormY, averageHeight, -NormLength >> 3);
       car.preciseZ += multdiv(CarNormZ, averageHeight, -NormLength >> 3);
 
-      car.newX = (uint)(car.preciseX >> 3);
+      car.newX = (unsigned int)(car.preciseX >> 3);
       car.newY = (int)(car.preciseY >> 3);
-      car.newZ = (uint)(car.preciseZ >> 3);
+      car.newZ = (unsigned int)(car.preciseZ >> 3);
 
-      /* IMPULSE TOO STRONG ? */
+      // IMPULSE TOO STRONG ?
 
       if (averageHeight < -5 || (cosP < 0) || (cosR < 0))
-      { /* SOUND EFFECT: CLONK */
+      { // SOUND EFFECT: CLONK
 
         if (car.GravityY > FallLimit)
         {
@@ -1485,10 +1451,10 @@ InteractionModel(void)
   else
   {
     if (flags)
-    { /* SOME OF THE WHEELS ARE ON THE STREET. */
+    { // SOME OF THE WHEELS ARE ON THE STREET.
 
       if (flags == LeftSide || flags == RightSide)
-      { /* ADJUST CAR'S ROLL ANGLE. */
+      { // ADJUST CAR'S ROLL ANGLE.
 
         h1 = -arcsin(rollBalance, 4 * CarWidth) / 4;
         car.newRoll += h1;
@@ -1496,9 +1462,9 @@ InteractionModel(void)
       }
 
       if (flags == FrontSide)
-      { /* ADJUST CAR'S PITCH ANGLE. */
+      { // ADJUST CAR'S PITCH ANGLE.
 
-        /* HAS TO BE FAIRLY HIGH TO GET THROUGH THE LOOP ! */
+        // HAS TO BE FAIRLY HIGH TO GET THROUGH THE LOOP !
 
         h1 = -arcsin(pitchBalance, 4 * CarLength) / 4;
         TurnPitch(h1);
@@ -1508,20 +1474,20 @@ InteractionModel(void)
       }
 
       if (flags == RearSide)
-      { /* ADJUST CAR'S PITCH ANGLE. */
+      { // ADJUST CAR'S PITCH ANGLE.
 
         h1 = -arcsin(pitchBalance, 4 * CarLength) / 6;
         car.deltaPitch = h1;
       }
     }
     else
-    { /* CAR IS FLYING */
+    { // CAR IS FLYING
 
       car.GravityY += gravityConstant;
     }
   }
 
-  /* SPECIAL CASE : SUPPRESS VERY SMALL ROLL ANGLES. */
+  // SPECIAL CASE : SUPPRESS VERY SMALL ROLL ANGLES.
 
   if ((!car.deltaRoll) && (abs(car.newRoll) < 3))
     car.newRoll = 0;
@@ -1530,39 +1496,37 @@ InteractionModel(void)
 void
 CarModel(void)
 {
-  extern char OnObject, ReturnFlag, CheckOffRoad;
-
   if (ReturnFlag)
-  { /* CAR IS SET BACK TO THE RETURN POINT. */
+  { // CAR IS SET BACK TO THE RETURN POINT.
     return;
   }
 
-  PlayerControl(); /* READ STEERING INPUT. */
-  CarEngine();     /* SIMULATE ENGINE AND DRIVETRAIN. */
-  CarMotion();     /* MOVE CAR. */
+  PlayerControl(); // READ STEERING INPUT.
+  CarEngine();     // SIMULATE ENGINE AND DRIVETRAIN.
+  CarMotion();     // MOVE CAR.
 
   if (CheckOffRoad)
-  { /* CAR IS ON THE ROAD */
+  { // CAR IS ON THE ROAD
 
     OnTheRoad();
   }
   else
-  { /* CAR IS OFF ROAD */
+  { // CAR IS OFF ROAD
 
     if (!OnObject)
-    { /* CAR IS ON THE GREEN */
+    { // CAR IS ON THE GREEN
 
       OnTheGreen();
     }
     else
-    { /* CAR IS PROBABLY ON A OBJECT */
+    { // CAR IS PROBABLY ON A OBJECT
 
       CarOnObject();
     }
   }
 
-  /* CHECK FOR COLLISION. MOVE CAR OUT OF OBJECT,
-     IF NECESSARY. */
+  // CHECK FOR COLLISION. MOVE CAR OUT OF OBJECT,
+  // IF NECESSARY.
 
   if (CheckCollision())
   {

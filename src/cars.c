@@ -1,5 +1,4 @@
-
-
+#include "main.h"
 #include "proto.h"
 
 /*
@@ -24,11 +23,8 @@
 void
 InitVehicles(void)
 {
-  extern int NumOfVehicles;
-  extern s_vehicle* vehicle;
-  extern s_track *track1, *track2;
-  register int i;
-  register s_vehicle* vh;
+  int i;
+  s_vehicle* vh;
 
   vh = vehicle;
 
@@ -53,13 +49,10 @@ InitVehicles(void)
 void
 SetVehicle(s_vehicle* vh)
 {
-  extern char UK_Flag;
-  extern s_track *track1, *track2;
-  extern s_track *End1, *End2, *Junct1, *Junct2;
-  register int sub, h1, h2, angle1, angle2;
-  register s_track *st1, *st2;
-  register s_object* obj;
-  uchar side;
+  int sub, h1, h2, angle1, angle2;
+  s_track *st1, *st2;
+  s_object* obj;
+  unsigned char side;
 
 #define swing 35
 
@@ -72,13 +65,13 @@ SetVehicle(s_vehicle* vh)
     obj->message = FALSE;
   }
 
-  sub = vh->position; /* SUB POSITION ON STREET SEGMENT. */
+  sub = vh->position; // SUB POSITION ON STREET SEGMENT.
 
   if (!vh->NextStreet)
     vh->NextStreet = vh->StreetUnderCar + vh->direction;
 
-  st1 = vh->StreetUnderCar; /* CURRENTLY USED SEGMENT. */
-  st2 = vh->NextStreet;     /* NEXT STREET SEGMENT. */
+  st1 = vh->StreetUnderCar; // CURRENTLY USED SEGMENT.
+  st2 = vh->NextStreet;     // NEXT STREET SEGMENT.
 
   if (!vh->OnStreet)
   {
@@ -118,16 +111,16 @@ SetVehicle(s_vehicle* vh)
       vh->NextStreet = st2;
     }
 
-    /* GET START- AND ENDVECTOR. */
+    // GET START- AND ENDVECTOR.
 
     if (vh->lane == 0)
-    { /* SLOW LANE */
+    { // SLOW LANE
 
       h1 = 1;
       h2 = 7;
     }
     else
-    { /* FAST LANE */
+    { // FAST LANE
 
       h1 = 3;
       h2 = 5;
@@ -139,26 +132,26 @@ SetVehicle(s_vehicle* vh)
 
     if (side == 1)
     {
-      vh->mx1 = (uint)((h2 * (ulong)st1->x1 + h1 * (ulong)st1->x2) >> 3);
-      vh->my1 = (uint)((h2 * (ulong)st1->y1 + h1 * (ulong)st1->y2) >> 3);
-      vh->mz1 = (uint)((h2 * (ulong)st1->z1 + h1 * (ulong)st1->z2) >> 3);
+      vh->mx1 = (unsigned int)((h2 * (unsigned long)st1->x1 + h1 * (unsigned long)st1->x2) >> 3);
+      vh->my1 = (unsigned int)((h2 * (unsigned long)st1->y1 + h1 * (unsigned long)st1->y2) >> 3);
+      vh->mz1 = (unsigned int)((h2 * (unsigned long)st1->z1 + h1 * (unsigned long)st1->z2) >> 3);
 
-      vh->mx2 = (uint)((h2 * (ulong)st2->x1 + h1 * (ulong)st2->x2) >> 3);
-      vh->my2 = (uint)((h2 * (ulong)st2->y1 + h1 * (ulong)st2->y2) >> 3);
-      vh->mz2 = (uint)((h2 * (ulong)st2->z1 + h1 * (ulong)st2->z2) >> 3);
+      vh->mx2 = (unsigned int)((h2 * (unsigned long)st2->x1 + h1 * (unsigned long)st2->x2) >> 3);
+      vh->my2 = (unsigned int)((h2 * (unsigned long)st2->y1 + h1 * (unsigned long)st2->y2) >> 3);
+      vh->mz2 = (unsigned int)((h2 * (unsigned long)st2->z1 + h1 * (unsigned long)st2->z2) >> 3);
     }
     else
     {
-      vh->mx1 = (uint)((h2 * (ulong)st1->x2 + h1 * (ulong)st1->x1) >> 3);
-      vh->my1 = (uint)((h2 * (ulong)st1->y2 + h1 * (ulong)st1->y1) >> 3);
-      vh->mz1 = (uint)((h2 * (ulong)st1->z2 + h1 * (ulong)st1->z1) >> 3);
+      vh->mx1 = (unsigned int)((h2 * (unsigned long)st1->x2 + h1 * (unsigned long)st1->x1) >> 3);
+      vh->my1 = (unsigned int)((h2 * (unsigned long)st1->y2 + h1 * (unsigned long)st1->y1) >> 3);
+      vh->mz1 = (unsigned int)((h2 * (unsigned long)st1->z2 + h1 * (unsigned long)st1->z1) >> 3);
 
-      vh->mx2 = (uint)((h2 * (ulong)st2->x2 + h1 * (ulong)st2->x1) >> 3);
-      vh->my2 = (uint)((h2 * (ulong)st2->y2 + h1 * (ulong)st2->y1) >> 3);
-      vh->mz2 = (uint)((h2 * (ulong)st2->z2 + h1 * (ulong)st2->z1) >> 3);
+      vh->mx2 = (unsigned int)((h2 * (unsigned long)st2->x2 + h1 * (unsigned long)st2->x1) >> 3);
+      vh->my2 = (unsigned int)((h2 * (unsigned long)st2->y2 + h1 * (unsigned long)st2->y1) >> 3);
+      vh->mz2 = (unsigned int)((h2 * (unsigned long)st2->z2 + h1 * (unsigned long)st2->z1) >> 3);
     }
 
-    /* GET MOVEMENT VECTOR. */
+    // GET MOVEMENT VECTOR.
 
     vh->dx = vh->mx2 - vh->mx1;
     vh->dy = vh->my2 - vh->my1;
@@ -167,13 +160,13 @@ SetVehicle(s_vehicle* vh)
     vh->OnStreet = TRUE;
   }
 
-  /* INTERPOLATE VEHICLE'S POSITION. */
+  // INTERPOLATE VEHICLE'S POSITION.
 
   obj->worldX = vh->mx1 + multdiv(vh->dx, sub, MaxRoadPos);
   obj->worldY = vh->my1 + multdiv(vh->dy, sub, MaxRoadPos);
   obj->worldZ = vh->mz1 + multdiv(vh->dz, sub, MaxRoadPos);
 
-  /* INTERPOLATE YAW AND ROLL ANGLES. */
+  // INTERPOLATE YAW AND ROLL ANGLES.
 
   angle1 = multdiv(sub, st2->yaw, MaxRoadPos) + multdiv(MaxRoadPos - sub, st1->yaw, MaxRoadPos);
   angle2 = multdiv(sub, st2->roll, MaxRoadPos) + multdiv(MaxRoadPos - sub, st1->roll, MaxRoadPos);
@@ -212,13 +205,13 @@ SetVehicle(s_vehicle* vh)
   }
   */
 
-  /* LAST SUBPOSITION ON THIS SEGMENT ? */
+  // LAST SUBPOSITION ON THIS SEGMENT ?
 
   vh->position += vh->speed;
 
   if (vh->position >= MaxRoadPos)
   {
-    /* PROCEDE TO NEXT STREET SEGMENT. */
+    // PROCEDE TO NEXT STREET SEGMENT.
 
     vh->position -= MaxRoadPos;
     vh->StreetUnderCar = vh->NextStreet;
@@ -230,7 +223,7 @@ SetVehicle(s_vehicle* vh)
 
     if (vh->position < 0)
   {
-    /* GO BACK TO LAST STREET SEGMENT. */
+    // GO BACK TO LAST STREET SEGMENT.
 
     vh->position += MaxRoadPos;
     vh->NextStreet = vh->StreetUnderCar;
@@ -244,11 +237,8 @@ SetVehicle(s_vehicle* vh)
 void
 MoveVehicles(void)
 {
-  extern char RaceIsOn;
-  extern int NumOfVehicles;
-  extern s_vehicle* vehicle;
-  register s_vehicle* vh;
-  register int i;
+  s_vehicle* vh;
+  int i;
 
   if (!RaceIsOn)
     return;
@@ -266,10 +256,8 @@ MoveVehicles(void)
 void
 RevertVehicleMovement(void)
 {
-  extern int NumOfVehicles;
-  extern s_vehicle* vehicle;
-  register s_vehicle* vh;
-  register int i;
+  s_vehicle* vh;
+  int i;
 
   vh = vehicle;
 
@@ -290,11 +278,8 @@ RevertVehicleMovement(void)
 void
 EnableVehicles(void)
 {
-  extern int NumOfVehicles;
-  extern s_track *track1, *track2;
-  extern s_vehicle* vehicle;
-  register s_vehicle* vh;
-  register int i;
+  s_vehicle* vh;
+  int i;
 
   vh = vehicle;
 
@@ -321,10 +306,8 @@ EnableVehicles(void)
 void
 DisableVehicles(void)
 {
-  extern int NumOfVehicles;
-  extern s_vehicle* vehicle;
-  register s_vehicle* vh;
-  register int i;
+  s_vehicle* vh;
+  int i;
 
   vh = vehicle;
 

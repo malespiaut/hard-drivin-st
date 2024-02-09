@@ -9,6 +9,7 @@
 #include <string.h>
 #include <sys/stat.h>
 
+#include "main.h"
 #include "proto.h"
 
 /*
@@ -31,40 +32,39 @@
 
 */
 
-/*		LOCAL VARIABLES :
-                =================
-*/
+//		LOCAL VARIABLES :
+//              =================
 
 #define BigChunk (0x48000L)
 
 #define verbose FALSE
 
-int GamePalette[] = /* Game color palette */
+int GamePalette[] = // Game color palette
 
-  /*RGB*/ /* Range: 0..7 for each color */
+  // RGB // Range: 0..7 for each color
 
   {
-    0x0000, /* Black */
-    0x0020, /* Dark Green */
-    0x0130, /* Green */
-    0x0346, /* Sky Blue */
-    0x0760, /* Yellow */
-    0x0630, /* Orange */
-    0x0700, /* Red */
-    0x0127, /* Dark Blue */
-    0x0400, /* Dark Red */
-    0x0321, /* Brown */
-    0x0222, /* Grey 2 */
-    0x0333, /* Grey 3 */
-    0x0444, /* Grey 4 */
-    0x0555, /* Grey 5 */
-    0x0422, /* Redbrown */
-    0x0777, /* Gray 7, White */
+    0x0000, // Black
+    0x0020, // Dark Green
+    0x0130, // Green
+    0x0346, // Sky Blue
+    0x0760, // Yellow
+    0x0630, // Orange
+    0x0700, // Red
+    0x0127, // Dark Blue
+    0x0400, // Dark Red
+    0x0321, // Brown
+    0x0222, // Grey 2
+    0x0333, // Grey 3
+    0x0444, // Grey 4
+    0x0555, // Grey 5
+    0x0422, // Redbrown
+    0x0777, // Gray 7, White
 };
 
-int LoadPalette[] = /* Game color palette */
+int LoadPalette[] = // Game color palette
 
-  /*RGB*/
+  // RGB
 
   {
     0x0000,
@@ -86,7 +86,7 @@ int LoadPalette[] = /* Game color palette */
 };
 
 static char *chunk,
-  *chunk1; /* Aux. pointer for memory management. */
+  *chunk1; // Aux. pointer for memory management.
 
 static void (*OldTimer)(void);
 static void (*OldBreak)(void);
@@ -97,31 +97,28 @@ static void (*OldBreak)(void);
 static void (*OldNMI)(void);
 static void (*OldTRAP)(void);
 
-char BlockButtons;    /* Mouse button control bits. */
-char JoyCode;         /* Direction flags of both joysticks. */
-char OverflowFlag;    /* TRUE after division overflow. */
-char MouseDriverFlag; /* TRUE if mouse driver is existent. */
-char OrgDriverFlag;   /* Same as above. */
-char CPUspeed;        /* 1-4 depending on cpu speed. */
-char TuneSpeed;       /* Tune speed 0-3. */
-int latch0,           /* Joystick buttons: J0: bits 0,1  J1: bits 2,3 */
-  latch1,             /* Joystick 0:  X-axis */
-  latch2,             /* Joystick 0:  Y-axis */
-  latch3,             /* Joystick 1:  X-axis */
-  latch4;             /* Joystick 1:  Y-axis */
-int PlaneSize;        /* Size of a bitplane to move. */
-int ibutton;          /* Used to hold button flags. */
-int* PokePitch;       /* Pointer to pitch variable. */
+char BlockButtons;    // Mouse button control bits.
+char JoyCode;         // Direction flags of both joysticks.
+char OverflowFlag;    // TRUE after division overflow.
+char MouseDriverFlag; // TRUE if mouse driver is existent.
+char OrgDriverFlag;   // Same as above.
+char CPUspeed;        // 1-4 depending on cpu speed.
+char TuneSpeed;       // Tune speed 0-3.
+int latch0;           // Joystick buttons: J0: bits 0,1  J1: bits 2,3
+int latch1;           // Joystick 0:  X-axis
+int latch2;           // Joystick 0:  Y-axis
+int latch3;           // Joystick 1:  X-axis
+int latch4;           // Joystick 1:  Y-axis
+int PlaneSize;        // Size of a bitplane to move.
+int ibutton;          // Used to hold button flags.
+int* PokePitch;       // Pointer to pitch variable.
 
-/*		FUNCTIONS :
-                ===========
-*/
+//		FUNCTIONS :
+//              ===========
 
 void
 SystemSpeed(void)
 {
-  extern int PolyVertex[];
-  extern volatile uint frames;
   int i, buf[3 * 100];
 
   frames = 0;
@@ -144,38 +141,35 @@ SystemSpeed(void)
   CPUspeed = frames;
 
   if (CPUspeed < 12)
-    TuneSpeed = 2; /* 32 MHZ */
+    TuneSpeed = 2; // 32 MHZ
   else if (CPUspeed < 19)
-    TuneSpeed = 1; /* 16 MHZ */
+    TuneSpeed = 1; // 16 MHZ
   else if (CPUspeed < 30)
-    TuneSpeed = 0; /*  8 MHZ */
+    TuneSpeed = 0; //  8 MHZ
   else
-    TuneSpeed = 3; /*  5 MHZ */
+    TuneSpeed = 3; //  5 MHZ
 }
 
 void
 CenterMouse(void)
 {
-  extern char MouseDriverFlag;
-  extern int SteerX, SteerY;
-  union REGS reg;
+  /*
+    union REGS reg;
 
-  reg.x.cx = SteerX = 320;
-  reg.x.dx = SteerY = 200;
-  reg.x.ax = 4;
+    reg.x.cx = SteerX = 320;
+    reg.x.dx = SteerY = 200;
+    reg.x.ax = 4;
 
-  if (!MouseDriverFlag)
-    return;
+    if (!MouseDriverFlag)
+      return;
 
-  int86(0x33, &reg, &reg);
+    int86(0x33, &reg, &reg);
+  */
 }
 
 void
 ClearButtons(void)
 {
-  extern char ExitWait;
-  extern volatile uint button;
-
   ExitWait = FALSE;
   button = 0;
   BlockButtons = 1 + 4;
@@ -184,29 +178,26 @@ ClearButtons(void)
 void
 StopEngine(void)
 {
-  extern char EngineKilled;
-  union REGS regs;
+  // union REGS regs;
 
   EngineKilled = TRUE;
-  regs.h.ah = 0x01;
-  int86(0x81, &regs, &regs);
+  // regs.h.ah = 0x01;
+  // int86(0x81, &regs, &regs);
 }
 
 void
 StartEngine(void)
 {
-  extern char EngineKilled, SoundEnabled;
-  extern int EnginePitch;
-  union REGS regs;
+  // union REGS regs;
 
   if (!SoundEnabled)
     return;
 
   if (EngineKilled)
   {
-    regs.h.ah = 3;
-    regs.h.al = 23;
-    int86(0x81, &regs, &regs);
+    // regs.h.ah = 3;
+    // regs.h.al = 23;
+    // int86(0x81, &regs, &regs);
     EngineKilled = FALSE;
   }
 
@@ -216,36 +207,33 @@ StartEngine(void)
 void
 DisableMouse(void)
 {
-  extern char MouseFlag;
-
   MouseFlag = FALSE;
 }
 
 void
 EnableMouse(void)
 {
-  extern char MouseFlag;
-
   MouseFlag = TRUE;
 }
 
-static void
+void
 CreditsScreen(void)
 {
-  extern volatile uint frames;
-  union REGS regs;
-  char code;
+  /*
+    union REGS regs;
+    char code;
 
-  regs.h.ah = 0x0F;
-  int86(0x10, &regs, &regs);
-  code = regs.h.al;
-
-  if ((code != 2) && (code != 3) && (code != 7))
-  {
-    regs.h.ah = 0x00;
-    regs.h.al = 0x02;
+    regs.h.ah = 0x0F;
     int86(0x10, &regs, &regs);
-  }
+    code = regs.h.al;
+
+    if ((code != 2) && (code != 3) && (code != 7))
+    {
+      regs.h.ah = 0x00;
+      regs.h.al = 0x02;
+      int86(0x10, &regs, &regs);
+    }
+  */
 
   return;
 
@@ -263,9 +251,7 @@ CreditsScreen(void)
   printf("             Graphics   : Juergen Friedrich,\n");
   printf("                          Richard Browne\n");
   printf("\n");
-  /*
-  printf("             Management : John Kavanagh\n");
-  */
+  // printf("             Management : John Kavanagh\n");
   printf("\n");
   printf("\n\n\n");
 
@@ -276,7 +262,6 @@ CreditsScreen(void)
 static void
 SelectGraphMode(void)
 {
-  extern char GraphMode;
   char key;
 
   GraphMode = 4;
@@ -330,8 +315,6 @@ SelectGraphMode(void)
 void
 Switch(void)
 {
-  extern volatile uint frames;
-
   while (frames < 9)
     ;
   frames = 0;
@@ -347,29 +330,26 @@ StopSound(void)
 void
 MakeSound(char sound)
 {
-  extern char SloMoFlag, AccidentFlag, DemoMode;
-  extern char ReturnFlag, EngineKilled, SoundEnabled;
-  static char /*
-              lastsound,
-              lastprio,
-              */
+  // static char lastsound;
+  // static char lastprio;
+  static char
     ts[] = {
-      0,  /* Tune 0 */
-      0,  /* Tune 1 */
-      0,  /* VOID */
-      0,  /* VOID */
-      0,  /* VOID */
-      13, /* Finish */
-      11, /* ExtraTime */
-      15, /* Squeal */
-      6,  /* Flag */
-      1,  /* Crash */
-      0,  /* Clonk */
-      13, /* Moo */
-      20, /* Ignition */
-      10, /* Offroad */
+      0,  // Tune 0
+      0,  // Tune 1
+      0,  // VOID
+      0,  // VOID
+      0,  // VOID
+      13, // Finish
+      11, // ExtraTime
+      15, // Squeal
+      6,  // Flag
+      1,  // Crash
+      0,  // Clonk
+      13, // Moo
+      20, // Ignition
+      10, // Offroad
     };
-  union REGS regs;
+  // union REGS regs;
 
   if (DemoMode | ReturnFlag || !SoundEnabled)
   {
@@ -380,16 +360,16 @@ MakeSound(char sound)
   if (AccidentFlag && (sound != s_crash))
     return;
 
-  regs.h.ah = 3;
-  regs.h.al = ts[sound];
-  int86(0x81, &regs, &regs);
+  // regs.h.ah = 3;
+  // regs.h.al = ts[sound];
+  // int86(0x81, &regs, &regs);
 
   EngineKilled = TRUE;
 }
 
 int
 Random(void)
-{ /* Random 16 bit number -32768..32767. */
+{ // Random 16 bit number -32768..32767.
 
   static long rand;
 
@@ -438,13 +418,12 @@ CopySmallScreen(int y1, int y2, void* source, void* dest)
 static long
 FileLength(char* name)
 {
-  extern int _fmode;
   int handle;
   long size;
 
-  _fmode = O_BINARY;
+  //_fmode = O_BINARY;
 
-  handle = open(name, O_RDONLY | O_BINARY);
+  handle = open(name, O_RDONLY); // | O_BINARY);
 
   if (handle > 0)
   {
@@ -468,78 +447,93 @@ FileLength(char* name)
 static int
 DOS_open(char* name)
 {
-  int handle;
-  union REGS regs;
+  /*
+    int handle;
+    union REGS regs;
 
-  regs.h.ah = 0x3D;
-  regs.h.al = 0x12;
-  regs.x.dx = (uint)name;
+    regs.h.ah = 0x3D;
+    regs.h.al = 0x12;
+    regs.x.dx = (unsigned int)name;
 
-  handle = intdos(&regs, &regs);
+    handle = intdos(&regs, &regs);
 
-  if (regs.x.cflag)
-    handle = 0;
+    if (regs.x.cflag)
+      handle = 0;
 
-  return (handle);
+    return (handle);
+  */
+  return 0;
 }
 
 static int
 DOS_create(char* name)
 {
-  int handle;
-  union REGS regs;
+  /*
+    int handle;
+    union REGS regs;
 
-  regs.h.ah = 0x3C;
-  regs.x.cx = 0x00;
-  regs.x.dx = (uint)name;
+    regs.h.ah = 0x3C;
+    regs.x.cx = 0x00;
+    regs.x.dx = (unsigned int)name;
 
-  handle = intdos(&regs, &regs);
+    handle = intdos(&regs, &regs);
 
-  if (regs.x.cflag)
-    handle = 0;
+    if (regs.x.cflag)
+      handle = 0;
 
-  return (handle);
+    return (handle);
+  */
+  return 0;
 }
 
 static void
-DOS_read(int handle, void* addr, uint size)
+DOS_read(int handle, void* addr, unsigned int size)
 {
-  union REGS regs;
-  struct SREGS sregs;
+  /*
+    union REGS regs;
+    struct SREGS sregs;
 
-  regs.h.ah = 0x3F;
-  regs.x.bx = handle;
-  regs.x.cx = size;
-  regs.x.dx = FP_OFF(addr);
-  sregs.ds = FP_SEG(addr);
+    regs.h.ah = 0x3F;
+    regs.x.bx = handle;
+    regs.x.cx = size;
+    regs.x.dx = FP_OFF(addr);
+    sregs.ds = FP_SEG(addr);
 
-  intdosx(&regs, &regs, &sregs);
+    intdosx(&regs, &regs, &sregs);
+  */
+  return 0;
 }
 
 static void
-DOS_write(int handle, void* addr, uint size)
+DOS_write(int handle, void* addr, unsigned int size)
 {
-  union REGS regs;
-  struct SREGS sregs;
+  /*
+    union REGS regs;
+    struct SREGS sregs;
 
-  regs.h.ah = 0x40;
-  regs.x.bx = handle;
-  regs.x.cx = size;
-  regs.x.dx = FP_OFF(addr);
-  sregs.ds = FP_SEG(addr);
+    regs.h.ah = 0x40;
+    regs.x.bx = handle;
+    regs.x.cx = size;
+    regs.x.dx = FP_OFF(addr);
+    sregs.ds = FP_SEG(addr);
 
-  intdosx(&regs, &regs, &sregs);
+    intdosx(&regs, &regs, &sregs);
+  */
+  return 0;
 }
 
 static void
 DOS_close(int handle)
 {
-  union REGS regs;
+  /*
+    union REGS regs;
 
-  regs.h.ah = 0x3E;
-  regs.x.bx = handle;
+    regs.h.ah = 0x3E;
+    regs.x.bx = handle;
 
-  intdos(&regs, &regs);
+    intdos(&regs, &regs);
+  */
+  return 0;
 }
 
 int
@@ -556,7 +550,7 @@ FileRead(char* name, void* addr)
 
     if (handle)
     {
-      DOS_read(handle, addr, (uint)size);
+      DOS_read(handle, addr, (unsigned int)size);
       DOS_close(handle);
 #if (verbose)
       printf(" FILE %s IS READ.\n", name);
@@ -578,16 +572,15 @@ FileRead(char* name, void* addr)
 int
 FixedRead(char* name, void* addr, long size)
 {
-  extern int _fmode;
   int handle;
 
-  _fmode = O_BINARY;
+  //_fmode = O_BINARY;
 
   handle = DOS_open(name);
 
   if (handle > 0)
   {
-    DOS_read(handle, addr, (uint)size);
+    DOS_read(handle, addr, (unsigned int)size);
     DOS_close(handle);
 #if (verbose)
     printf(" FILE %s IS READ.\n", name);
@@ -607,25 +600,23 @@ FixedRead(char* name, void* addr, long size)
 void
 FileWrite(char* name, void* addr, long size)
 {
-  extern int _fmode;
   int handle;
 
-  _fmode = O_BINARY;
+  //_fmode = O_BINARY;
 
   handle = DOS_create(name);
 
   if (handle > 0)
   {
-    DOS_write(handle, addr, (uint)size);
+    DOS_write(handle, addr, (unsigned int)size);
     DOS_close(handle);
   }
 }
 
 int
-ReadBlockFile(s_BitImage* bi, char* name)
+ReadBlockFile(s_BitImage** bi, char* name)
 {
-  extern void* AuxBuffer;
-  register int *p, ok;
+  int *p, ok;
   int width, height, words, size;
 
   ok = FileRead(name, AuxBuffer);
@@ -640,16 +631,16 @@ ReadBlockFile(s_BitImage* bi, char* name)
     size = 4 * words * height;
     size = preshift * size + 2 + 10;
     *bi = GetPieceOfChunk(size * sizeof(int));
-    movewords(AuxBuffer, *bi, size);
+    movewords(AuxBuffer, bi, size);
   }
 
   return (ok);
 }
 
 int
-ReadShapeFile(s_BitImage* shape, char* FileName)
+ReadShapeFile(s_BitImage** shape, char* FileName)
 {
-  int* buffer;
+  s_BitImage* buffer;
   long size;
 
   size = FileLength(FileName);
@@ -696,7 +687,7 @@ void*
 GetPieceOfChunk(long amount)
 {
   void* save;
-  uint segment, offset;
+  unsigned int segment, offset;
 
   amount += 16;
 
@@ -723,12 +714,6 @@ GetPieceOfChunk(long amount)
 static void
 Allocate(void)
 {
-  extern void *AuxScreen, *SoundModule;
-  extern void *MapScreen, *SelectScreen, *AuxBuffer;
-  extern int *BitMask, *PolyLeft, *PolyRight, *ObjDataBase;
-  extern void *Marcus, *Tim;
-  extern s_frame *OldChampLap, *NewChampLap;
-
   chunk = chunk1 = GetBuffer(BigChunk);
 
   Marcus = GetPieceOfChunk(0x08000L);
@@ -770,21 +755,6 @@ SetBlock(int x1, int y1, int x2, int y2, int both, s_block* bl)
 void
 GetResolution(void)
 {
-  extern int ScoreX, ScoreY, TimeX, TimeY;
-  extern int BestX, BestY, LastX, LastY, DigitLength;
-  extern int SecondsX, SecondsY, OffRoadX, OffRoadY;
-  extern int OrgX, OrgY, MinX, MaxX, MinY, MaxY;
-  extern int ScreenX, ScreenY;
-  extern int mphX, mphY, rpmX, rpmY, ampX, ampY;
-  extern int tmpX, tmpY, oilX, oilY, gasX, gasY;
-  extern int MinY1, MaxY1, OrgY1;
-  extern int MinY2, MaxY2, OrgY2, ListX, LogoY;
-  extern int largePointer, smallPointer, MaxLine;
-  extern int CharWidth, CharHeight, LineHeight;
-  extern s_block ScoreRect, TimeRect, MessageRect[];
-  extern s_block AutoRect, ManualRect, BarRect, MidRect;
-  extern s_block GearARect[], GearMRect[];
-
   OrgX = 160;
   OrgY1 = WindowY / 2;
   OrgY2 = WindowY + PanelY / 2;
@@ -879,11 +849,8 @@ GetResolution(void)
 int
 SystemInit(void)
 {
-  extern char MouseFlag, GraphMode, SteerSelect, GearSelect;
-  extern char MapName[], SelectName[], PanelName[], LoadName[];
-  extern int resolution;
   void (*mouse)(void);
-  union REGS regs;
+  // union REGS regs;
 
   PlaneSize = 8000;
   MouseFlag = FALSE;
@@ -891,7 +858,7 @@ SystemInit(void)
   SteerSelect = 4;
   GearSelect = 3;
 
-  /* INSTALL INTERRUPT FUNCTIONS. */
+  // INSTALL INTERRUPT FUNCTIONS.
 
   OldBreak = getvect(0x1B);
   OldTimer = getvect(0x1C);
@@ -926,22 +893,24 @@ SystemInit(void)
       MouseDriverFlag = FALSE;
   }
 
-  if (MouseDriverFlag)
-  { /* INITIALIZE MOUSE */
+  /*
+    if (MouseDriverFlag)
+    { // INITIALIZE MOUSE
 
-    regs.x.ax = 0x00;
-    int86(0x33, &regs, &regs);
-    if (!regs.x.ax)
-      MouseDriverFlag = FALSE;
-  }
+      regs.x.ax = 0x00;
+      int86(0x33, &regs, &regs);
+      if (!regs.x.ax)
+        MouseDriverFlag = FALSE;
+    }
+  */
 
   OrgDriverFlag = MouseDriverFlag;
 
-  /* ALLOCATE ALL NECESSARY BUFFERS. */
+  // ALLOCATE ALL NECESSARY BUFFERS.
 
   Allocate();
 
-  /* SET GRAPHICS MODE. */
+  // SET GRAPHICS MODE.
 
   GetResolution();
   SelectGraphMode();
@@ -950,33 +919,33 @@ SystemInit(void)
   CalibrateJoystick();
   SetAudioVector();
 
-  strcpy(PanelName, "Files\\Panel.");
-  strcpy(MapName, "Files\\Map.");
-  strcpy(SelectName, "Files\\Select.");
-  strcpy(LoadName, "Files\\Loading.");
+  strcpy(PanelName, "data/panel.");
+  strcpy(MapName, "data/map.");
+  strcpy(SelectName, "data/select.");
+  strcpy(LoadName, "data/loading.");
 
   switch (GraphMode)
   {
     case 1:
     case 2:
-      strcat(PanelName, "CPX");
-      strcat(MapName, "CPX");
-      strcat(SelectName, "CPX");
-      strcat(LoadName, "CPX");
+      strcat(PanelName, "cpx");
+      strcat(MapName, "cpx");
+      strcat(SelectName, "cpx");
+      strcat(LoadName, "cpx");
       break;
     case 0:
     case 3:
-      strcat(PanelName, "EPX");
-      strcat(MapName, "EPX");
-      strcat(SelectName, "EPX");
-      strcat(LoadName, "EPX");
+      strcat(PanelName, "epx");
+      strcat(MapName, "epx");
+      strcat(SelectName, "epx");
+      strcat(LoadName, "epx");
       break;
 
     case 4:
-      strcat(PanelName, "VPX");
-      strcat(MapName, "VPX");
-      strcat(SelectName, "VPX");
-      strcat(LoadName, "EPX");
+      strcat(PanelName, "vpx");
+      strcat(MapName, "vpx");
+      strcat(SelectName, "vpx");
+      strcat(LoadName, "vpx"); // XXX: was originally set to "epx"... error?...
       break;
   }
 
@@ -989,13 +958,13 @@ SystemInit(void)
 void
 SystemExit(char* message)
 {
-  union REGS regs;
+  // union REGS regs;
 
   StopSound();
 
   FreeMemory();
 
-  /* RE-INSTALL INTERRUPTS. */
+  // RE-INSTALL INTERRUPTS.
 
   ClearVecs();
 
@@ -1008,9 +977,9 @@ SystemExit(char* message)
   setvect(0x03, OldBreak);
   setvect(0x1C, OldTimer);
 
-  regs.h.ah = 0x00;
-  regs.h.al = 0x03;
-  int86(0x10, &regs, &regs);
+  // regs.h.ah = 0x00;
+  // regs.h.al = 0x03;
+  // int86(0x10, &regs, &regs);
 
   ;
 #if (0)

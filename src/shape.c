@@ -1,5 +1,5 @@
-
-
+#include "main.h"
+#include "missing.h"
 #include "proto.h"
 
 /*
@@ -32,8 +32,8 @@
 static void
 Shift(int* source, int* dest, int shift, s_BitImage* shape)
 {
-  register int x, y;
-  register unsigned long chunk;
+  int x, y;
+  unsigned long chunk;
   int buf[2];
 
   for (y = shape->height + 1; --y;)
@@ -53,7 +53,7 @@ Shift(int* source, int* dest, int shift, s_BitImage* shape)
 void
 PreShift(s_BitImage* shape, int* buf, int* dest)
 {
-  register int i, length;
+  int i, length;
 
   length = shape->size;
 
@@ -67,16 +67,13 @@ PreShift(s_BitImage* shape, int* buf, int* dest)
 #define C_code FALSE /* Use C routine or Assembly routine */
 
 void
-DrawBitBlock(register int x, int y, s_BitImage* shape)
+DrawBitBlock(int x, int y, s_BitImage* shape)
 {
-  extern int MinY, MaxY, MinX, MaxX;
 
 #if (C_code)
 
-  extern void *Buffer2, *AuxScreen;
-  extern int bytesInLine, OrgX, OrgY;
-  register int mod1, mod2, *data, *pict;
-  register long mask;
+  int mod1, mod2, *data, *pict;
+  long mask;
 
 #else
   char parameter[14];
@@ -206,10 +203,8 @@ DrawBitBlock(register int x, int y, s_BitImage* shape)
 void
 DrawShape(int x, int y, s_BitImage* shape)
 {
-  extern void* Buffer2;
-  extern int MinY, MaxY, MinX, MaxX, OrgX, OrgY;
-  register int shift, h, words, height, offset, size;
-  register int* mask;
+  int shift, h, words, height, offset, size;
+  int* mask;
 
   x -= shape->hotX;
   y -= shape->hotY;

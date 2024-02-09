@@ -1,7 +1,7 @@
-
-
-#include "proto.h"
 #include <stdio.h>
+
+#include "main.h"
+#include "proto.h"
 
 /*
 
@@ -24,13 +24,8 @@
 void
 SetNearestElement(void)
 {
-  extern uchar OnTrack;
-  extern s_track *NextStreet, *track1, *track2;
-  extern s_track* StreetUnderCar;
-  extern int Streets1, Streets2;
-  extern s_car car;
-  register uint i, h, distance;
-  register s_track* p;
+  unsigned int i, h, distance;
+  s_track* p;
 
   NextStreet = p = track1;
   distance = MaxInt;

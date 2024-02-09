@@ -1,6 +1,6 @@
-
 #include <stdio.h>
 
+#include "main.h"
 #include "proto.h"
 
 /*
@@ -22,54 +22,50 @@
 
 */
 
-/*		LOCAL VARIABLES :
-                =================
-*/
+//		LOCAL VARIABLES :
+//              =================
 
-/*
-***************************************************************************
-*/
+// ***************************************************************************
 
-/*		FUNCTIONS :
-                ===========
-*/
+//		FUNCTIONS :
+//              ===========
 
-static uchar Filter(uchar n, s_object* obj);
+static unsigned char Filter(unsigned char n, s_object* obj);
 
-static uchar
-Filter(uchar n, s_object* obj)
+static unsigned char
+Filter(unsigned char n, s_object* obj)
 {
-  uchar result;
+  unsigned char result;
 
   switch (n)
   {
-    case 8: /* HILLS */
+    case 8: // HILLS
     case 9:
     case 48:
     case 61:
-    case 146: /* undefined hill, for future use */
-    case 147: /* undefined hill, for future use */
+    case 146: // undefined hill, for future use
+    case 147: // undefined hill, for future use
 
       obj->class = c_hill;
       obj->DisplayProc = PrintObject;
       result = TRUE;
       break;
 
-    case 4: /* HOUSE, BARN, COW, STORE */
+    case 4: // HOUSE, BARN, COW, STORE
     case 7:
     case 10:
     case 94:
     case 95:
-    case 148: /* undefined building, for future use */
-    case 149: /* undefined building, for future use */
+    case 148: // undefined building, for future use
+    case 149: // undefined building, for future use
 
       obj->class = c_building;
       obj->DisplayProc = PrintObject;
       result = TRUE;
       break;
 
-    case 70: /* STRTPOST, TRAFFICLIGHT */
-    case 71: /* FINISH */
+    case 70: // STRTPOST, TRAFFICLIGHT
+    case 71: // FINISH
     case 72:
     case 73:
     case 112:
@@ -78,10 +74,10 @@ Filter(uchar n, s_object* obj)
       result = TRUE;
       break;
 
-    case 14: /* DIP, LCURVE, RCURVE, TURNOFF */
-    case 42: /* SORS, FLOAT40, FLOAT60, FLOAT90 */
-    case 44: /* SIGNPOST, NEW60M, CHECKPOINT */
-    case 46: /* GRDARROW */
+    case 14: // DIP, LCURVE, RCURVE, TURNOFF
+    case 42: // SORS, FLOAT40, FLOAT60, FLOAT90
+    case 44: // SIGNPOST, NEW60M, CHECKPOINT
+    case 46: // GRDARROW
     case 77:
     case 78:
     case 79:
@@ -92,59 +88,59 @@ Filter(uchar n, s_object* obj)
     case 126:
     case 144:
     case 145:
-    case 150: /* undefined sign, for future use */
-    case 151: /* undefined sign, for future use */
+    case 150: // undefined sign, for future use
+    case 151: // undefined sign, for future use
 
       obj->class = c_sign;
       obj->DisplayProc = PrintSign;
       result = TRUE;
       break;
 
-    case 115: /* BARRIER */
+    case 115: // BARRIER
 
       obj->class = c_building;
       obj->DisplayProc = PrintSign;
       result = TRUE;
       break;
 
-    case 31: /* OVERPASS */
+    case 31: // OVERPASS
     case 32:
-    case 36: /* EZJUMP */
+    case 36: // EZJUMP
     case 37:
-    case 81:  /* XOVER */
-    case 110: /* BANKED CURVE */
+    case 81:  // XOVER
+    case 110: // BANKED CURVE
     case 111:
-    case 152: /* undefined chicane, for future use */
-    case 153: /* undefined chicane, for future use */
+    case 152: // undefined chicane, for future use
+    case 153: // undefined chicane, for future use
 
       obj->class = c_chicane;
       obj->DisplayProc = PrintObject;
       result = TRUE;
       break;
 
-    case 57: /* UNDERPASS */
+    case 57: // UNDERPASS
     case 58:
       obj->class = c_chicane;
       obj->DisplayProc = PrintUnderpass;
       result = TRUE;
       break;
 
-    case 39: /* SUSPENSION BRIDGE */
+    case 39: // SUSPENSION BRIDGE
     case 40:
       obj->class = c_chicane;
       obj->DisplayProc = PrintBridge;
       result = TRUE;
       break;
 
-    case 28: /* LOOP */
+    case 28: // LOOP
 
       obj->class = c_loop;
       obj->DisplayProc = PrintLoop;
       result = TRUE;
       break;
 
-    case 62: /* CAR1, CAR2, VAN, TRUCK */
-    case 20: /* PORSCHE, CORVETTE, PICKUP */
+    case 62: // CAR1, CAR2, VAN, TRUCK
+    case 20: // PORSCHE, CORVETTE, PICKUP
     case 1:
     case 21:
     case 12:
@@ -158,8 +154,8 @@ Filter(uchar n, s_object* obj)
     case 104:
     case 136:
     case 137:
-    case 154: /* undefined car, for future use */
-    case 155: /* undefined car, for future use */
+    case 154: // undefined car, for future use
+    case 155: // undefined car, for future use
 
       obj->class = c_car;
       obj->DisplayProc = PrintCar;
@@ -177,15 +173,12 @@ Filter(uchar n, s_object* obj)
 void
 InitObjects(void)
 {
-  extern int NumOfObjects, NumOfFields;
-  extern s_object *object, *field;
-  extern s_object *GreenLight, *YellowLight, *RedLight,
-    *RedCar, *BlueCar;
-  register int i, j, max;
-  register s_object *obj, *obj2;
+  *RedCar, *BlueCar;
+  int i, j, max;
+  s_object *obj, *obj2;
   int n, *s, sin, cos;
 
-  /* INITIALIZE FIELDS. */
+  // INITIALIZE FIELDS.
 
   obj = field;
   max = NumOfFields;
@@ -205,7 +198,7 @@ InitObjects(void)
     }
   }
 
-  /* INITIALIZE OBJECTS. */
+  // INITIALIZE OBJECTS.
 
   obj = object;
   max = NumOfObjects;
@@ -227,7 +220,7 @@ InitObjects(void)
     }
   }
 
-  /* FIND ALL OBJECTS TO PRE_ROTATE. */
+  // FIND ALL OBJECTS TO PRE_ROTATE.
 
   obj = object;
 
@@ -292,14 +285,14 @@ InitObjects(void)
     obj++;
   }
 
-  /* SET POINTER TO TRAFFIC LIGHTS. */
+  // SET POINTER TO TRAFFIC LIGHTS.
 
   GreenLight = SearchObject(72);
   YellowLight = SearchObject(71);
   RedLight = SearchObject(70);
   GreenLight->active = TRUE;
 
-  /* SET POINTER TO RED AND BLUE CAR. */
+  // SET POINTER TO RED AND BLUE CAR.
 
   RedCar = SearchObject(103);
   RedCar->color = red1;
@@ -310,15 +303,11 @@ InitObjects(void)
 void
 InitCar(void)
 {
-  extern int StartSegment, StartLane, StartRow;
-  extern s_car car;
-  extern s_block GearARect[], GearMRect[];
 
   SetCar(StartSegment, StartLane, StartRow, 1);
 
 #if (0)
   {
-    extern s_track *track1, *track2;
     s_track* swap;
 
     swap = track1;
@@ -355,17 +344,13 @@ InitCar(void)
 void
 InitPhantomPhoton(void)
 {
-  extern char BlueSample, DirtyFlag, PhantomLane;
-  extern int StartSegment;
-  extern s_track* track1;
-  extern s_frame* OldChampLap;
   s_vehicle phantom;
   s_object dummy;
-  register uchar sample;
-  register s_frame *fr, *end;
+  unsigned char sample;
+  s_frame *fr, *end;
 
   if (!DirtyFlag)
-    /* PHANTOM PHOTON IS ALREADY READ FROM DISK. */
+    // PHANTOM PHOTON IS ALREADY READ FROM DISK.
     return;
 
   phantom.StreetUnderCar = track1 + StartSegment;
@@ -409,18 +394,13 @@ InitPhantomPhoton(void)
 void
 InitControlPoints(void)
 {
-  extern int NumOfT1controls, NumOfT2controls;
-  extern int CheckP1_segment, CheckP2_segment;
-  extern int FinishSegment;
-  extern s_control *T1ContPoints, *T2ContPoints;
-  extern s_track *track1, *track2;
-  register int i;
-  register s_track* tr;
-  register s_control* ct;
+  int i;
+  s_track* tr;
+  s_control* ct;
 
-  /* INIT CONTROL POINTS. */
+  // INIT CONTROL POINTS.
 
-  /* SPEED TRACK. */
+  // SPEED TRACK.
 
   ct = T1ContPoints;
   tr = track1;
@@ -433,7 +413,7 @@ InitControlPoints(void)
   (tr + CheckP1_segment)->flags |= f_checkpoint;
   (tr + FinishSegment)->flags |= f_finish;
 
-  /* STUNT TRACK. */
+  // STUNT TRACK.
 
   ct = T2ContPoints;
   tr = track2;

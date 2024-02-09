@@ -1,10 +1,12 @@
-
-
-#include "proto.h"
-
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
+
+#include "data.h"
+#include "ibm.h"
+#include "main.h"
+#include "missing.h"
+#include "proto.h"
 
 /*
 ----------------------------------------------------------------------
@@ -23,13 +25,11 @@
 
 */
 
-/*		LOCAL VARIABLES :
-                =================
-*/
+//		LOCAL VARIABLES :
+//              =================
 
-/*		FUNCTIONS :
-                ===========
-*/
+//		FUNCTIONS :
+//              ===========
 
 static void ClearControlPoints(void);
 static int ReadShapeFiles(void);
@@ -40,14 +40,10 @@ static void ReadAllFiles(void);
 static void
 ClearControlPoints(void)
 {
-  extern int NumOfT1controls, NumOfT2controls;
-  extern s_control *T1ContPoints, *T2ContPoints;
-  extern s_control *NextCtr1, *NextCtr2;
-  extern s_track *track1, *track2;
-  register int i;
-  register s_control* ct;
+  int i;
+  s_control* ct;
 
-  /* RESET ALL RETURNPOINTS. */
+  // RESET ALL RETURNPOINTS.
 
   for (ct = T1ContPoints, i = 0; i < NumOfT1controls; i++)
   {
@@ -70,19 +66,6 @@ ClearControlPoints(void)
 void
 GetPlayerInput(void)
 {
-  extern char GameMode, DemoMode, TimeFlag, RaceIsOn;
-  extern char SloMoFlag, StartFlag, EngineOn, CharNum;
-  extern char TimeOutFlag, GearSelect, SteerSelect, ExitWait;
-  extern char StartMessage, AccidentFlag, LapMode;
-  extern int button, EnginePitch, SteerX, SteerY;
-  extern int BonusCheckpoint, OffRoadOut;
-  extern long Time, TimeOut;
-  extern s_object *RedLight, *YellowLight;
-
-  extern char QualifyFlag, ReturnFlag;
-  extern long TimeOut;
-
-  extern s_car car;
   int key, key2;
 
 #define st_add 30
@@ -152,7 +135,7 @@ GetPlayerInput(void)
         key = _tolower(key);
 
       switch (key)
-      { /* STANDARD KEYBOARD COMMANDOS */
+      { // STANDARD KEYBOARD COMMANDOS
 
         case 'p':
         case 'P':
@@ -186,7 +169,7 @@ GetPlayerInput(void)
             ReturnFlag = TRUE;
           break;
 
-          /* KEYBOARD MOUSE EMULATION: IBM PC ONLY */
+          // KEYBOARD MOUSE EMULATION: IBM PC ONLY
 
 #define st_add (45 - 16)
 
@@ -219,7 +202,7 @@ GetPlayerInput(void)
           car.BrakeFlag = TRUE;
           break;
 
-          /* DEBUGGING */
+          // DEBUGGING
 
         case ESC:
           GameMode = FALSE;
@@ -279,20 +262,20 @@ GetPlayerInput(void)
   }
 
   if (button && !AccidentFlag && !SloMoFlag)
-  { /* MOUSE/JOYSTICK BUTTONS PRESSED. */
+  { // MOUSE/JOYSTICK BUTTONS PRESSED.
 
     ExitWait = TRUE;
 
     if (DemoMode)
-    { /* END DEMO MODE. */
+    { // END DEMO MODE.
 
       DemoMode = FALSE;
     }
     else
-    { /* ACCELERATE/DECELERATE. */
+    { // ACCELERATE/DECELERATE.
 
       if (button == 4)
-      { /* ACCELERATING. */
+      { // ACCELERATING.
 
         if (EngineOn)
         {
@@ -302,7 +285,7 @@ GetPlayerInput(void)
         }
       }
       if (button & 1)
-      { /* DECELERATING. */
+      { // DECELERATING.
 
         car.throttle -= 2;
         if (car.throttle < 0)
@@ -310,7 +293,7 @@ GetPlayerInput(void)
       }
 
       if (StartMessage)
-      { /* ENGINE STARTED. */
+      { // ENGINE STARTED.
 
         StartMessage = FALSE;
 
@@ -322,33 +305,33 @@ GetPlayerInput(void)
       }
 
       if (!StartFlag)
-      { /* START RACE. */
+      { // START RACE.
 
         MakeSound(fx_ignition);
         RaceIsOn = TRUE;
         StartFlag = 1;
       }
 
-      /* BRAKE */
+      // BRAKE
 
       switch (SteerSelect)
       {
-        case 1: /* JOYSTICK 0 */
+        case 1: // JOYSTICK 0
 
           if (button & 4)
             car.BrakeFlag = TRUE;
           break;
 
-        case 2: /* JOYSTICK 1 */
+        case 2: // JOYSTICK 1
 
           if (button & 1)
             car.BrakeFlag = TRUE;
           break;
 
-        case 3: /* MOUSE */
+        case 3: // MOUSE
 
           if (button == 4 + 1)
-          { /* BRAKING */
+          { // BRAKING
 
             car.BrakeFlag = TRUE;
           }
@@ -360,7 +343,7 @@ GetPlayerInput(void)
   }
 
   if (TimeOutFlag)
-  { /* TIME OUT: KILL ENGINE. */
+  { // TIME OUT: KILL ENGINE.
 
     car.throttle = 0;
     EnginePitch = 0;
@@ -370,11 +353,6 @@ GetPlayerInput(void)
 static int
 ReadShapeFiles(void)
 {
-  extern unsigned char MntLength[];
-  extern int MntPositions[];
-  extern s_BitImage Mountain[], FlagYellow,
-    FlagRed, Cup, ChampLogo,
-    Explosion[];
   s_BitImage* mo;
   int i, x, h, *p;
   int ok;
@@ -382,40 +360,40 @@ ReadShapeFiles(void)
   mo = Mountain;
   ok = TRUE;
 
-  ok &= ReadBlockFile(mo, "Files\\mnt01.SHA");
-  ok &= ReadBlockFile(mo + 1, "Files\\mnt02.SHA");
-  ok &= ReadBlockFile(mo + 2, "Files\\mnt03.SHA");
-  ok &= ReadBlockFile(mo + 3, "Files\\mnt04.SHA");
-  ok &= ReadBlockFile(mo + 4, "Files\\mnt05.SHA");
-  ok &= ReadBlockFile(mo + 5, "Files\\mnt06.SHA");
-  ok &= ReadBlockFile(mo + 6, "Files\\mnt07.SHA");
-  ok &= ReadBlockFile(mo + 7, "Files\\mnt08.SHA");
+  ok &= ReadBlockFile(mo, "data/mnt01.sha");
+  ok &= ReadBlockFile(mo + 1, "data/mnt02.sha");
+  ok &= ReadBlockFile(mo + 2, "data/mnt03.sha");
+  ok &= ReadBlockFile(mo + 3, "data/mnt04.sha");
+  ok &= ReadBlockFile(mo + 4, "data/mnt05.sha");
+  ok &= ReadBlockFile(mo + 5, "data/mnt06.sha");
+  ok &= ReadBlockFile(mo + 6, "data/mnt07.sha");
+  ok &= ReadBlockFile(mo + 7, "data/mnt08.sha");
   /*	! UNUSED !
-  ok &= ReadBlockFile( mo+8, "Files\\mnt09.SHA");
+  ok &= ReadBlockFile( mo+8, "data/mnt09.sha");
   */
-  ok &= ReadBlockFile(mo + 9, "Files\\mnt10.SHA");
+  ok &= ReadBlockFile(mo + 9, "data/mnt10.sha");
 
   mo = Mountain;
   for (i = 0; i < 10; i++)
   {
-    if (*mo)
+    if (mo)
     {
-      Convert3(*mo);
-      PreShifter(*mo);
+      Convert3(mo);
+      PreShifter(mo);
     }
     mo++;
   }
 
-  ok &= ReadShapeFile(&FlagYellow, "Files\\YelFlag.SHA");
-  ok &= ReadShapeFile(&FlagRed, "Files\\RedFlag.SHA");
-  ok &= ReadShapeFile(&Cup, "Files\\Cup.SHA");
-  ok &= ReadShapeFile(&ChampLogo, "Files\\Logo.SHA");
-  ok &= ReadShapeFile(&Explosion[0], "Files\\Expl1.SHA");
-  ok &= ReadShapeFile(&Explosion[1], "Files\\Expl2.SHA");
-  ok &= ReadShapeFile(&Explosion[2], "Files\\Expl3.SHA");
-  ok &= ReadShapeFile(&Explosion[3], "Files\\Expl4.SHA");
-  ok &= ReadShapeFile(&Explosion[4], "Files\\Expl5.SHA");
-  ok &= ReadShapeFile(&Explosion[5], "Files\\Expl6.SHA");
+  ok &= ReadShapeFile(&FlagYellow, "data/yelflag.sha");
+  ok &= ReadShapeFile(&FlagRed, "data/redflag.sha");
+  ok &= ReadShapeFile(&Cup, "data/cup.sha");
+  ok &= ReadShapeFile(&ChampLogo, "data/logo.sha");
+  ok &= ReadShapeFile(&Explosion[0], "data/expl1.sha");
+  ok &= ReadShapeFile(&Explosion[1], "data/expl2.sha");
+  ok &= ReadShapeFile(&Explosion[2], "data/expl3.sha");
+  ok &= ReadShapeFile(&Explosion[3], "data/expl4.sha");
+  ok &= ReadShapeFile(&Explosion[4], "data/expl5.sha");
+  ok &= ReadShapeFile(&Explosion[5], "data/expl6.sha");
 
   Convert2(FlagYellow);
   Convert2(FlagRed);
@@ -431,7 +409,7 @@ ReadShapeFiles(void)
   p = MntPositions;
   x = -(4 * MaxXres) / 2;
 
-  /* SET X-COORDINATES OF THE MOUNTAIN ELEMENTS */
+  // SET X-COORDINATES OF THE MOUNTAIN ELEMENTS
 
   for (i = 0; i < 13 + 1; i++)
   {
@@ -452,25 +430,18 @@ ReadShapeFiles(void)
 static void
 ReadGameFile(void)
 {
-  extern char PhantomLane, DirtyFlag;
-  extern int BestLength;
-  extern void* AuxBuffer;
-  extern long BestLapTime;
-  extern s_score HiScoreList[10];
-  extern s_frame* OldChampLap;
-  extern char BestTime[10], BestName[30];
   long DefaultBestTime;
 
 #define size ((int)(sizeof(HiScoreList) + sizeof(BestName) + sizeof(BestTime) + MaxSample * sizeof(s_frame) + sizeof(int) + sizeof(long)))
 
-  register char* p;
-  register int i;
+  char* p;
+  int i;
 
   DirtyFlag = !FileRead(ScoreName, AuxBuffer);
   p = AuxBuffer;
 
   if (DirtyFlag)
-  { /* CLEAR BUFFER */
+  { // CLEAR BUFFER
 
     for (i = size + 1; --i;)
       *p++ = ' ';
@@ -499,7 +470,7 @@ ReadGameFile(void)
 #endif
 
   if (DirtyFlag)
-  { /* CLEAR HISCORE LIST. */
+  { // CLEAR HISCORE LIST.
 
     for (i = 0; i < 10; i++)
       HiScoreList[i].score = 0;
@@ -519,13 +490,7 @@ ReadGameFile(void)
 void
 SaveGameFile(void)
 {
-  extern char PhantomLane;
-  extern void* AuxBuffer;
-  extern s_score HiScoreList[10];
-  extern s_frame* OldChampLap;
-  extern long BestLapTime;
-  extern char BestTime[10], BestName[30];
-  register char* p;
+  char* p;
 
   p = AuxBuffer;
 
@@ -557,22 +522,6 @@ SaveGameFile(void)
 static int
 ReadTrackFile(void)
 {
-  extern int TrackData[];
-  extern int NumOfFields, NumOfObjects, Streets1;
-  extern int NumOfBarriers, NumOfVehicles, Streets2;
-  extern int NumOfT1controls, NumOfT2controls;
-  extern int StartSegment, StartLane, StartRow;
-  extern int FinishSegment, *Barriers;
-  extern int CheckP1_segment, CheckP2_segment;
-  extern int BonusCheckpoint, BonusFinish;
-  extern int LapViewX, LapViewY, LapViewZ;
-  extern int FinishX, FinishY, FinishZ;
-  extern long TimeToQualify, BestLapTime, Duration;
-  extern s_object *field, *object;
-  extern s_track *track1, *track2, *Junct1, *Junct2;
-  extern s_track *End1, *End2;
-  extern s_vehicle* vehicle;
-  extern s_control *T1ContPoints, *T2ContPoints;
   int ok, *p;
 
   ok = FileRead(TrackName, (void*)TrackData);
@@ -632,17 +581,11 @@ ReadTrackFile(void)
 static void
 ReadAllFiles(void)
 {
-  extern char MapName[], SelectName[], LoadName[], PanelName[];
-  extern char TuneSpeed;
-  extern void *Buffer2, *ScreenBuffer, *AuxScreen;
-  extern void *MapScreen, *SelectScreen, *Tim;
-  extern void* SoundModule;
-  extern int *ObjDataBase, ScreenX, ScreenY, button;
   int filesOK;
 
   filesOK = TRUE;
 
-  /* LOAD AND DISPLAY TITLE SCREEN, START SOUND. */
+  // LOAD AND DISPLAY TITLE SCREEN, START SOUND.
 
   FixedRead(LoadName, Tim, ScreenSize);
   Uncomp(AuxScreen);
@@ -674,7 +617,7 @@ ReadAllFiles(void)
     SystemExit("One or more files are missing !");
   }
 
-  /* PLAY MUSIC, WAIT FOR MOUSE OR KEY. */
+  // PLAY MUSIC, WAIT FOR MOUSE OR KEY.
 
   InitTune(TuneSpeed, 1);
   ClearButtons();
@@ -702,12 +645,10 @@ ReadAllFiles(void)
 void
 ReadScoreList(void)
 {
-  extern char ScoreList[];
-  extern s_score HiScoreList[];
-  register char c, *p;
-  register s_score* h;
-  register int i, j;
-  register long score;
+  char c, *p;
+  s_score* h;
+  int i, j;
+  long score;
 
   p = ScoreList;
   h = HiScoreList;
@@ -746,19 +687,9 @@ ReadScoreList(void)
 void
 HardDrivingInit(void)
 {
-  extern char GameMode, DemoMode, UK_Flag;
-  extern char BestTime[], NewScreens;
-  extern char SteerSelect, GearSelect, MouseFlag;
-  extern char Difficulty, SoundEnabled;
-  extern int MinVBL, button, NumOfObjects;
-  extern s_track *StreetUnderCar, *track1;
-  extern s_control *NextCtr1, *NextCtr2;
-  extern s_control *T1ContPoints, *T1ContPoints;
-  extern s_car car;
-
   MinVBL = 2;
 
-  /* DEFAULT INPUT: MOUSE, KEYBOARD. */
+  // DEFAULT INPUT: MOUSE, KEYBOARD.
 
   SteerSelect = 4;
   MouseFlag = FALSE;
@@ -798,16 +729,6 @@ HardDrivingInit(void)
 void
 GameInit(void)
 {
-  extern char TimeOutFlag, QualifyFlag, GameMode;
-  extern char OpaqueFlag, ReturnFlag, DemoMode;
-  extern char SloMoFlag, TimeFlag, SpinFlag;
-  extern char AccidentFlag, BonusFlag, StartFlag;
-  extern char StartMessage, MessageTime, EngineOn;
-  extern char RaceIsOn, EngineKilled;
-  extern int button, OffRoadOut;
-  extern long TimeOut, Time, Duration;
-  extern long LastLapTime, Score;
-  extern s_object *RedLight, *YellowLight, *GreenLight;
 
   InitRecord();
   InitControlPoints();
@@ -851,8 +772,7 @@ GameInit(void)
 void
 FramePoly(int n)
 {
-  extern int PolyVertex[];
-  register int i, *p;
+  int i, *p;
 
   if (n < 3)
     NewColor(2);
@@ -874,10 +794,8 @@ FramePoly(int n)
 void
 Insert(int distance, s_object* obj)
 {
-  extern int VisibleObjects;
-  extern s_priority PrioList[];
-  register int i;
-  register s_priority* p;
+  int i;
+  s_priority* p;
 
   p = PrioList;
 
@@ -900,9 +818,8 @@ Insert(int distance, s_object* obj)
 void
 InitRecord(void)
 {
-  extern s_playback SlowMotion[], *FramePos;
-  register s_playback* fr;
-  register int i;
+  s_playback* fr;
+  int i;
 
   fr = FramePos = SlowMotion;
 
@@ -918,7 +835,6 @@ InitRecord(void)
 void
 RewindRecord(void)
 {
-  extern s_playback SlowMotion[], *FramePos;
 
   if (--FramePos < SlowMotion)
   {
@@ -929,15 +845,10 @@ RewindRecord(void)
 void
 RecordCar(void)
 {
-  extern char SpinFlag;
-  extern int EnginePitch, NumOfVehicles;
-  extern s_car car;
-  extern s_playback SlowMotion[], *FramePos;
-  extern s_vehicle* vehicle;
-  register int i, *p;
-  register s_object* obj;
-  register s_playback* fr;
-  register s_vehicle* vh;
+  int i, *p;
+  s_object* obj;
+  s_playback* fr;
+  s_vehicle* vh;
 
   fr = FramePos;
 
@@ -976,10 +887,7 @@ RecordCar(void)
 void
 RecordRedCar(void)
 {
-  extern char RedSample, StartFlag;
-  extern s_car car;
-  extern s_frame *RedPointer, *NewChampLap;
-  register s_frame* fr;
+  s_frame* fr;
 
   if (!StartFlag)
     return;
@@ -1006,13 +914,10 @@ RecordRedCar(void)
 void
 ReadRedCar(void)
 {
-  extern char RedSample, StartFlag, TimeOutFlag;
-  extern s_object* RedCar;
-  extern s_frame *RedPointer, *NewChampLap;
-  register s_object* rc;
-  register s_frame *f1, *f2;
+  s_object* rc;
+  s_frame *f1, *f2;
   int yaw;
-  ulong h1, h2;
+  unsigned long h1, h2;
 
   if (!StartFlag)
     return;
@@ -1024,9 +929,9 @@ ReadRedCar(void)
 
   rc = RedCar;
 
-  rc->worldX = (uint)((h1 * (ulong)f1->x + h2 * (ulong)f2->x) / SamplePeriod);
+  rc->worldX = (unsigned int)((h1 * (unsigned long)f1->x + h2 * (unsigned long)f2->x) / SamplePeriod);
   rc->worldY = multdiv((int)h1, f1->y, SamplePeriod) + multdiv((int)h2, f2->y, SamplePeriod);
-  rc->worldZ = (uint)((h1 * (ulong)f1->z + h2 * (ulong)f2->z) / SamplePeriod);
+  rc->worldZ = (unsigned int)((h1 * (unsigned long)f1->z + h2 * (unsigned long)f2->z) / SamplePeriod);
 
   yaw = f1->yaw;
 
@@ -1052,17 +957,10 @@ ReadRedCar(void)
 void
 ReadBlueCar(void)
 {
-  extern char BlueSample, StartFlag, TimeOutFlag;
-  extern char MessageCode, MessageTime;
-  extern char NewPhantomPhoton, TimeFlag;
-  extern char LapFinished;
-  extern int FinishX, FinishY, FinishZ;
-  extern s_object* BlueCar;
-  extern s_frame *BluePointer, *OldChampLap;
-  register s_object* bc;
-  register s_frame *f1, *f2;
+  s_object* bc;
+  s_frame *f1, *f2;
   int yaw;
-  ulong h1, h2;
+  unsigned long h1, h2;
 
   if (!StartFlag)
     return;
@@ -1074,9 +972,9 @@ ReadBlueCar(void)
 
   bc = BlueCar;
 
-  bc->worldX = (uint)((h1 * (ulong)f1->x + h2 * (ulong)f2->x) / SamplePeriod);
+  bc->worldX = (unsigned int)((h1 * (unsigned long)f1->x + h2 * (unsigned long)f2->x) / SamplePeriod);
   bc->worldY = multdiv((int)h1, f1->y, SamplePeriod) + multdiv((int)h2, f2->y, SamplePeriod);
-  bc->worldZ = (uint)((h1 * (ulong)f1->z + h2 * (ulong)f2->z) / SamplePeriod);
+  bc->worldZ = (unsigned int)((h1 * (unsigned long)f1->z + h2 * (unsigned long)f2->z) / SamplePeriod);
 
   yaw = f1->yaw;
 
@@ -1116,7 +1014,7 @@ ReadBlueCar(void)
 void
 TimeString(char* p, long time)
 {
-  register char c, i;
+  char c, i;
 
   p += 9;
   *p-- = '.';
@@ -1137,12 +1035,9 @@ TimeString(char* p, long time)
 void
 SetCar(int segment, int lane, int row, int side)
 {
-  extern char UK_Flag;
-  extern s_car car;
-  extern s_track* track1;
-  register s_track *st1, *st2;
-  uint mx1, my1, mz1, mx2, my2, mz2;
-  uint h1, h2;
+  s_track *st1, *st2;
+  unsigned int mx1, my1, mz1, mx2, my2, mz2;
+  unsigned int h1, h2;
   int dx, dy, dz, h;
 
   st1 = track1 + segment;
@@ -1164,23 +1059,23 @@ SetCar(int segment, int lane, int row, int side)
 
   if (side)
   {
-    mx1 = (uint)((h2 * (ulong)st1->x1 + h1 * (ulong)st1->x2) >> 3);
-    my1 = (uint)((h2 * (ulong)st1->y1 + h1 * (ulong)st1->y2) >> 3);
-    mz1 = (uint)((h2 * (ulong)st1->z1 + h1 * (ulong)st1->z2) >> 3);
+    mx1 = (unsigned int)((h2 * (unsigned long)st1->x1 + h1 * (unsigned long)st1->x2) >> 3);
+    my1 = (unsigned int)((h2 * (unsigned long)st1->y1 + h1 * (unsigned long)st1->y2) >> 3);
+    mz1 = (unsigned int)((h2 * (unsigned long)st1->z1 + h1 * (unsigned long)st1->z2) >> 3);
 
-    mx2 = (uint)((h2 * (ulong)st2->x1 + h1 * (ulong)st2->x2) >> 3);
-    my2 = (uint)((h2 * (ulong)st2->y1 + h1 * (ulong)st2->y2) >> 3);
-    mz2 = (uint)((h2 * (ulong)st2->z1 + h1 * (ulong)st2->z2) >> 3);
+    mx2 = (unsigned int)((h2 * (unsigned long)st2->x1 + h1 * (unsigned long)st2->x2) >> 3);
+    my2 = (unsigned int)((h2 * (unsigned long)st2->y1 + h1 * (unsigned long)st2->y2) >> 3);
+    mz2 = (unsigned int)((h2 * (unsigned long)st2->z1 + h1 * (unsigned long)st2->z2) >> 3);
   }
   else
   {
-    mx1 = (uint)((h2 * (ulong)st1->x2 + h1 * (ulong)st1->x1) >> 3);
-    my1 = (uint)((h2 * (ulong)st1->y2 + h1 * (ulong)st1->y1) >> 3);
-    mz1 = (uint)((h2 * (ulong)st1->z2 + h1 * (ulong)st1->z1) >> 3);
+    mx1 = (unsigned int)((h2 * (unsigned long)st1->x2 + h1 * (unsigned long)st1->x1) >> 3);
+    my1 = (unsigned int)((h2 * (unsigned long)st1->y2 + h1 * (unsigned long)st1->y1) >> 3);
+    mz1 = (unsigned int)((h2 * (unsigned long)st1->z2 + h1 * (unsigned long)st1->z1) >> 3);
 
-    mx2 = (uint)((h2 * (ulong)st2->x2 + h1 * (ulong)st2->x1) >> 3);
-    my2 = (uint)((h2 * (ulong)st2->y2 + h1 * (ulong)st2->y1) >> 3);
-    mz2 = (uint)((h2 * (ulong)st2->z2 + h1 * (ulong)st2->z1) >> 3);
+    mx2 = (unsigned int)((h2 * (unsigned long)st2->x2 + h1 * (unsigned long)st2->x1) >> 3);
+    my2 = (unsigned int)((h2 * (unsigned long)st2->y2 + h1 * (unsigned long)st2->y1) >> 3);
+    mz2 = (unsigned int)((h2 * (unsigned long)st2->z2 + h1 * (unsigned long)st2->z1) >> 3);
   }
 
   dx = mx2 - mx1;
@@ -1202,12 +1097,11 @@ SetCar(int segment, int lane, int row, int side)
   car.roll = car.newRoll = st1->roll;
 }
 
-uchar
+unsigned char
 SetObjClass(s_object* obj)
 {
-  extern int* ObjDataBase;
-  register int vectors, h, *p;
-  uchar class;
+  int vectors, h, *p;
+  unsigned char class;
 
   h = ObjDataBase[obj->type];
 
@@ -1217,15 +1111,15 @@ SetObjClass(s_object* obj)
   {
     p = &ObjDataBase[h];
 
-    obj->vertices = (uint)*p++;
-    obj->normals = (uchar)*p++;
-    obj->polygons = (uchar)*p++;
-    obj->type = (uchar)*p++;
-    class = (uchar)*p++;
+    obj->vertices = (unsigned int)*p++;
+    obj->normals = (unsigned char)*p++;
+    obj->polygons = (unsigned char)*p++;
+    obj->type = (unsigned char)*p++;
+    class = (unsigned char)*p++;
     obj->model = ++p;
 
     vectors = obj->vertices + obj->normals;
-    obj->faces = (uchar*)&p[vectors + vectors + vectors];
+    obj->faces = (unsigned char*)&p[vectors + vectors + vectors];
 
     if (class && !obj->class)
       obj->class = class;
@@ -1237,10 +1131,8 @@ SetObjClass(s_object* obj)
 s_object*
 SearchObject(int type)
 {
-  extern int NumOfObjects;
-  extern s_object* object;
-  register int i;
-  register s_object* obj;
+  int i;
+  s_object* obj;
 
   obj = object;
 
@@ -1261,12 +1153,10 @@ SearchObject(int type)
 }
 
 void
-SetArrows(uchar status)
+SetArrows(unsigned char status)
 {
-  extern int NumOfObjects;
-  extern s_object* object;
-  register int i;
-  register s_object* obj;
+  int i;
+  s_object* obj;
 
   obj = object;
 
@@ -1281,7 +1171,6 @@ SetArrows(uchar status)
 void
 CopyCarPosition(s_object* obj)
 {
-  extern s_car car;
 
   obj->worldX = car.mx;
   obj->worldY = car.my;
@@ -1295,11 +1184,6 @@ CopyCarPosition(s_object* obj)
 void
 PassCheckpoint(void)
 {
-  extern char BonusFlag, MessageTime, MessageCode;
-  extern char TimeOutFlag, WrongDirection, Difficulty;
-  extern char LapMode, TimeFlag;
-  extern int BonusCheckpoint;
-  extern long TimeOut;
   long bonus;
 
   if (BonusFlag || WrongDirection)
@@ -1315,11 +1199,11 @@ PassCheckpoint(void)
   BonusFlag = TRUE;
   TimeOutFlag = FALSE;
 
-  /* MAKE BONUS TIME SOUND EFFECT. */
+  // MAKE BONUS TIME SOUND EFFECT.
 
   MakeSound(s_extratime);
 
-  /* ADD BONUS TIME. */
+  // ADD BONUS TIME.
 
   bonus = BonusCheckpoint;
 
@@ -1338,7 +1222,7 @@ PassCheckpoint(void)
 
   AddTime(bonus, &TimeOut);
 
-  /* DISPLAY MESSAGE. */
+  // DISPLAY MESSAGE.
 
   MessageTime = msg_duration;
   MessageCode = msg_extra;
@@ -1347,13 +1231,6 @@ PassCheckpoint(void)
 void
 PassFinish(void)
 {
-  extern char BonusFlag, QualifyFlag, TimeOutFlag;
-  extern char MessageTime, MessageCode, WrongDirection;
-  extern char Difficulty, LapMode, NewPhantomPhoton;
-  extern char TimeFlag, LapFinished;
-  extern int BonusFinish;
-  extern long TimeOut, TimeToQualify, QualifyTime;
-  extern long Time, LastLapTime;
   char msg;
   long bonus;
 
@@ -1361,13 +1238,13 @@ PassFinish(void)
     return;
 
   if (LapMode)
-  { /* CHAMPIONSHIP LAP: */
+  { // CHAMPIONSHIP LAP:
 
     TimeFlag = FALSE;
     BonusFlag = FALSE;
 
     if (!TimeOutFlag)
-    { /* YOU MADE IT ! */
+    { // YOU MADE IT !
 
       TimeOutFlag = TRUE;
       LapFinished = TRUE;
@@ -1383,30 +1260,30 @@ PassFinish(void)
   BonusFlag = FALSE;
   msg = msg_extended;
 
-  /* CHECK CHAMPIONSHIP TIME TO QUALIFY. */
+  // CHECK CHAMPIONSHIP TIME TO QUALIFY.
 
   if (Time < TimeToQualify)
   {
     QualifyTime = Time;
 
     if (!QualifyFlag)
-    { /* QUALIFIED */
+    { // QUALIFIED
 
       QualifyFlag = TRUE;
       msg = msg_qualified;
     }
     else
-    { /* ANOTHER GREAT LAP ! */
+    { // ANOTHER GREAT LAP !
 
       msg = msg_great;
     }
   }
 
-  /* FINISH SOUND EFFECT. */
+  // FINISH SOUND EFFECT.
 
   MakeSound(s_finish);
 
-  /* ADD TIME BONUS. */
+  // ADD TIME BONUS.
 
   bonus = BonusFinish;
 
@@ -1425,18 +1302,18 @@ PassFinish(void)
 
   AddTime(bonus, &TimeOut);
 
-  /* RESET ALL RETURNPOINTS. */
+  // RESET ALL RETURNPOINTS.
 
   ClearControlPoints();
 
-  /* START NEW LAP TIMING. */
+  // START NEW LAP TIMING.
 
   LastLapTime = Time;
   Time = 0x0000L;
   TimeOutFlag = FALSE;
   TimeFlag = TRUE;
 
-  /* DISPLAY MESSAGE. */
+  // DISPLAY MESSAGE.
 
   MessageTime = msg_duration;
   MessageCode = msg;
@@ -1445,7 +1322,7 @@ PassFinish(void)
 int
 StringLength(char* string)
 {
-  register int count;
+  int count;
 
   for (count = 0; (*string != '.') && (count < 39);)
   {
@@ -1459,8 +1336,6 @@ StringLength(char* string)
 void
 UpdateTime(void)
 {
-  extern char TimeFlag;
-  extern int OffRoadOut;
 
   if (TimeFlag)
   {
@@ -1488,7 +1363,7 @@ PrintValue(int x, int y, int value)
 
   for (p = string, h = 10000; h > 0; h /= 10)
   {
-    num = (uint)value / (uint)h;
+    num = (unsigned int)value / (unsigned int)h;
     value %= h;
 
     if (flag && !num && (h > 1))
@@ -1504,16 +1379,18 @@ PrintValue(int x, int y, int value)
 }
 
 /*
-void	FramePoly( int n)
-{	extern	int	PolyVertex[];
-                int	i, *p;
+void
+FramePoly(int n)
+{
+  int i, *p;
 
-        p = PolyVertex;
-        MoveTo(p[2*n-2],p[2*n-1]);
+  p = PolyVertex;
+  MoveTo(p[2 * n - 2], p[2 * n - 1]);
 
-        for (i = 0; i < n; i++)
-        {	DrawTo(p[0],p[1]);
-                p += 2;
-        }
+  for (i = 0; i < n; i++)
+  {
+    DrawTo(p[0], p[1]);
+    p += 2;
+  }
 }
 */

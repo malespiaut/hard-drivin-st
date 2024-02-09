@@ -1,5 +1,4 @@
-
-
+#include "main.h"
 #include "proto.h"
 
 /*
@@ -21,19 +20,16 @@
 
 */
 
-#define NewVersion 0 /* OLD VERSION: looks at near segments. \
-                        NEW VERSION: looks at all segments.  \
-                     */
+#define NewVersion 0 // OLD VERSION: looks at near segments.
+                     // NEW VERSION: looks at all segments.
 
-/*		VARIABLES :
-                ===========
-*/
+//		VARIABLES :
+//              ===========
 
-char NoReturnCheck; /* Flag indicates no checking for next returnpoint. */
+char NoReturnCheck; // Flag indicates no checking for next returnpoint.
 
-/*		FUNCTIONS :
-                ===========
-*/
+//		FUNCTIONS :
+//              ===========
 
 static void CheckReturnPoints(s_track* segment);
 static int CheckFirstTrack(int link);
@@ -42,9 +38,6 @@ static int CheckSecondTrack(int link);
 static void
 CheckReturnPoints(s_track* segment)
 {
-  extern uchar OnTrack;
-  extern s_control *NextCtr1, *NextCtr2;
-  extern s_track *track1, *track2;
 
   if (NoReturnCheck)
     return;
@@ -76,25 +69,18 @@ CheckReturnPoints(s_track* segment)
 static int
 CheckFirstTrack(int link)
 {
-  extern uchar WrongDirection, VisiStr1, OnTrack;
-  extern int Street1Vertex[], *First1, *Flags1;
-  extern int yawSIN, yawCOS, pitchSIN, pitchCOS, rollSIN, rollCOS;
-  extern int nearestStreet, Streets1;
-  extern s_track *track1, *Junct1, *Junct2;
-  extern s_track *End1, *NextStreet;
-  extern s_car car;
 
-  register int i, count;
-  register int *d, *flag;
-  register s_track* p;
-  register uint dz;
+  int i, count;
+  int *d, *flag;
+  s_track* p;
+  unsigned int dz;
   char FirstTime;
   int junction, pos, n, nearest, NearFlags;
   s_track *NearestElement, *first;
 
   static int VisiFlags[MaxSegments];
 
-  /* START WITH AN SEGMENT OUTSIDE THE QUADRANT. */
+  // START WITH AN SEGMENT OUTSIDE THE QUADRANT.
 
   for (p = track1, i = 0; i < Streets1; i++)
   {
@@ -104,7 +90,7 @@ CheckFirstTrack(int link)
       break;
   }
 
-  /* NOW FIND ALL SEGMENTS INSIDE THE QUADRANT. */
+  // NOW FIND ALL SEGMENTS INSIDE THE QUADRANT.
 
   junction = 0;
   count = 0;
@@ -117,7 +103,7 @@ CheckFirstTrack(int link)
     if (p >= End1)
       p = track1;
 
-    /* VISIBILITY TEST: */
+    // VISIBILITY TEST:
 
     if ((abs(p->x1 - car.x) < MaxDistance) &&
         (abs(p->z1 - car.z) < MaxDistance))
@@ -150,7 +136,7 @@ CheckFirstTrack(int link)
     p++;
   }
 
-  /* ROTATE ALL STREET ELEMENTS INTO POSITION. */
+  // ROTATE ALL STREET ELEMENTS INTO POSITION.
 
   n = count << 1;
 
@@ -171,10 +157,10 @@ CheckFirstTrack(int link)
     if (p >= End1)
       p = track1;
 
-    /* FIND NEAREST STREET ELEMENT. */
+    // FIND NEAREST STREET ELEMENT.
 
     if ((d[1] < 0) || (d[4] < 0))
-    { /* RETURNPOINT PASSED ? */
+    { // RETURNPOINT PASSED ?
 
       if (*flag & f_returnpoint)
       {
@@ -182,7 +168,7 @@ CheckFirstTrack(int link)
 
         y = d[1] + d[4];
 
-        /* RETURNPOINT MUST BE CLOSE. */
+        // RETURNPOINT MUST BE CLOSE.
 
         if ((y <= 0) && (y > -100))
         {
@@ -235,7 +221,7 @@ CheckFirstTrack(int link)
       PassFinish();
   }
 
-  /* CHECK CAR'S DIRECTION. */
+  // CHECK CAR'S DIRECTION.
 
   if (!link)
   {
@@ -244,7 +230,7 @@ CheckFirstTrack(int link)
     WrongDirection = (d[2] > d[2 + 2 * 3]);
   }
 
-  /* FIND FIRST AND LAST VISIBLE STREET ELEMENT. */
+  // FIND FIRST AND LAST VISIBLE STREET ELEMENT.
 
   d = First1 = Street1Vertex;
   flag = VisiFlags;
@@ -277,24 +263,18 @@ CheckFirstTrack(int link)
 static int
 CheckSecondTrack(int link)
 {
-  extern uchar WrongDirection, VisiStr2, OnTrack;
-  extern int Street2Vertex[], Streets2;
-  extern int yawSIN, yawCOS, pitchSIN, pitchCOS, rollSIN, rollCOS;
-  extern int *First2, *Flags2, nearestStreet;
-  extern s_track *track2, *End2, *NextStreet;
-  extern s_car car;
 
-  register int i, count;
-  register int *d, *flag;
-  register uint dz, nearest;
-  register s_track* p;
+  int i, count;
+  int *d, *flag;
+  unsigned int dz, nearest;
+  s_track* p;
   int junction, pos, n, NearFlags;
   s_track *NearestElement, *first;
-  uchar FirstTime;
+  unsigned char FirstTime;
 
   static int VisiFlags[MaxSegments];
 
-  /* NOW FIND ALL SEGMENTS INSIDE THE QUADRANT. */
+  // NOW FIND ALL SEGMENTS INSIDE THE QUADRANT.
 
   junction = 0;
   count = 0;
@@ -305,7 +285,7 @@ CheckSecondTrack(int link)
 
   for (i = 0; i < Streets2; i++)
   {
-    /* VISIBILITY TEST: */
+    // VISIBILITY TEST:
 
     if ((abs(p->x1 - car.x) < MaxDistance) &&
         (abs(p->z1 - car.z) < MaxDistance))
@@ -338,7 +318,7 @@ CheckSecondTrack(int link)
     p++;
   }
 
-  /* ROTATE ALL STREET ELEMENTS INTO POSITION. */
+  // ROTATE ALL STREET ELEMENTS INTO POSITION.
 
   n = count << 1;
 
@@ -359,10 +339,10 @@ CheckSecondTrack(int link)
     if (p >= End2)
       break;
 
-    /* FIND NEAREST STREET ELEMENT. */
+    // FIND NEAREST STREET ELEMENT.
 
     if ((d[1] < 0) || (d[4] < 0))
-    { /* RETURNPOINT PASSED ? */
+    { // RETURNPOINT PASSED ?
 
       if (*flag & f_returnpoint)
       {
@@ -370,7 +350,7 @@ CheckSecondTrack(int link)
 
         y = d[1] + d[4];
 
-        /* RETURNPOINT MUST BE CLOSE. */
+        // RETURNPOINT MUST BE CLOSE.
 
         if ((y <= 0) && (y > -100))
         {
@@ -423,7 +403,7 @@ CheckSecondTrack(int link)
       PassFinish();
   }
 
-  /* CHECK CAR'S DIRECTION. */
+  // CHECK CAR'S DIRECTION.
 
   if (!link)
   {
@@ -435,7 +415,7 @@ CheckSecondTrack(int link)
     }
   }
 
-  /* FIND FIRST AND LAST VISIBLE STREET ELEMENT. */
+  // FIND FIRST AND LAST VISIBLE STREET ELEMENT.
 
   d = First2 = Street2Vertex;
   flag = VisiFlags;
@@ -473,23 +453,16 @@ CheckSecondTrack(int link)
 static int
 CheckFirstTrack(int link)
 {
-  extern uchar WrongDirection, VisiStr1, OnTrack, CarInLoop;
-  extern int Street1Vertex[], *First1, *Flags1;
-  extern int yawSIN, yawCOS, pitchSIN, pitchCOS, rollSIN, rollCOS;
-  extern int nearestStreet;
-  extern s_track *track1, *Junct1, *Junct2;
-  extern s_track *End1, *NextStreet;
-  extern s_car car;
-  register uchar i, count;
-  register int *d, *flag;
-  register s_track* p;
-  register uint dz;
+  unsigned char i, count;
+  int *d, *flag;
+  s_track* p;
+  unsigned int dz;
   int junction, pos, n, nearest, NearFlags, dist;
   s_track *NearestElement, *first;
   static int VisiFlags[MaxSegments];
 
   junction = 0;
-  count = 2 * lookahead + 1; /* TOTAL NUMBER OF STREET SEGMENTS TO LOOK AT. */
+  count = 2 * lookahead + 1; // TOTAL NUMBER OF STREET SEGMENTS TO LOOK AT.
 
   if (link)
   {
@@ -522,7 +495,7 @@ CheckFirstTrack(int link)
     *d++ = (p->z2 - car.z);
 
     if (p->flags & f_invisible)
-    { /* DON'T COUNT INVISIBLE SEGMENTS. */
+    { // DON'T COUNT INVISIBLE SEGMENTS.
 
       if (++count >= MaxSegments)
         break;
@@ -534,7 +507,7 @@ CheckFirstTrack(int link)
     p++;
   }
 
-  /* ROTATE ALL STREET ELEMENTS INTO POSITION. */
+  // ROTATE ALL STREET ELEMENTS INTO POSITION.
 
   n = count << 1;
 
@@ -555,10 +528,10 @@ CheckFirstTrack(int link)
     if (p >= End1)
       p = track1;
 
-    /* FIND NEAREST STREET ELEMENT. */
+    // FIND NEAREST STREET ELEMENT.
 
     if ((d[1] < 0) || (d[4] < 0))
-    { /* RETURNPOINT PASSED ? */
+    { // RETURNPOINT PASSED ?
 
       if (*flag & f_returnpoint)
       {
@@ -568,7 +541,7 @@ CheckFirstTrack(int link)
         {
           y = d[1] + d[4];
 
-          /* RETURNPOINT MUST BE CLOSE. */
+          // RETURNPOINT MUST BE CLOSE.
 
           if ((y <= 0) && (y > -100))
           {
@@ -622,7 +595,7 @@ CheckFirstTrack(int link)
       PassFinish();
   }
 
-  /* CHECK CAR'S DIRECTION. */
+  // CHECK CAR'S DIRECTION.
 
   if (!link)
   {
@@ -631,7 +604,7 @@ CheckFirstTrack(int link)
     WrongDirection = (d[2] > d[2 + 2 * 3]);
   }
 
-  /* FIND FIRST AND LAST VISIBLE STREET ELEMENT. */
+  // FIND FIRST AND LAST VISIBLE STREET ELEMENT.
 
   d = First1 = Street1Vertex;
   flag = VisiFlags;
@@ -666,22 +639,16 @@ CheckFirstTrack(int link)
 static int
 CheckSecondTrack(int link)
 {
-  extern uchar WrongDirection, VisiStr2, OnTrack, CarInLoop;
-  extern int Street2Vertex[];
-  extern int yawSIN, yawCOS, pitchSIN, pitchCOS, rollSIN, rollCOS;
-  extern int *First2, *Flags2, nearestStreet;
-  extern s_track *track2, *End2, *NextStreet;
-  extern s_car car;
-  register uchar i, count;
-  register int *d, *flag;
-  register uint dz, nearest;
-  register s_track* p;
+  unsigned char i, count;
+  int *d, *flag;
+  unsigned int dz, nearest;
+  s_track* p;
   int junction, pos, n, NearFlags, dist;
   s_track *NearestElement, *first;
   static int VisiFlags[MaxSegments];
 
   junction = 0;
-  count = 2 * lookahead + 1; /* TOTAL NUMBER OF STREET SEGMENTS TO LOOK AT. */
+  count = 2 * lookahead + 1; // TOTAL NUMBER OF STREET SEGMENTS TO LOOK AT.
 
   if (link)
   {
@@ -724,7 +691,7 @@ CheckSecondTrack(int link)
     *flag++ = p->flags;
 
     if (p->flags & f_invisible)
-    { /* DON'T COUNT INVISIBLE SEGMENTS. */
+    { // DON'T COUNT INVISIBLE SEGMENTS.
 
       if (++count >= MaxSegments)
         break;
@@ -733,7 +700,7 @@ CheckSecondTrack(int link)
     p++;
   }
 
-  /* ROTATE ALL STREET ELEMENTS INTO POSITION. */
+  // ROTATE ALL STREET ELEMENTS INTO POSITION.
 
   n = count << 1;
 
@@ -754,22 +721,22 @@ CheckSecondTrack(int link)
     if (p >= End2)
       break;
 
-    /* FIND NEAREST STREET ELEMENT. */
+    // FIND NEAREST STREET ELEMENT.
 
     if ((d[1] < 0) || (d[4] < 0))
-    { /* RETURNPOINT PASSED ? */
+    { // RETURNPOINT PASSED ?
 
       if (*flag & f_returnpoint)
       {
         int y;
 
-        /* NO RETURNPOINT INSIDE THE LOOP. */
+        // NO RETURNPOINT INSIDE THE LOOP.
 
         if (!CarInLoop)
         {
           y = d[1] + d[4];
 
-          /* RETURNPOINT MUST BE CLOSE. */
+          // RETURNPOINT MUST BE CLOSE.
 
           if ((y <= 0) && (y > -100))
           {
@@ -823,7 +790,7 @@ CheckSecondTrack(int link)
       PassFinish();
   }
 
-  /* CHECK CAR'S DIRECTION. */
+  // CHECK CAR'S DIRECTION.
 
   if (!link)
   {
@@ -835,7 +802,7 @@ CheckSecondTrack(int link)
     }
   }
 
-  /* FIND FIRST AND LAST VISIBLE STREET ELEMENT. */
+  // FIND FIRST AND LAST VISIBLE STREET ELEMENT.
 
   d = First2 = Street2Vertex;
   flag = VisiFlags;
@@ -877,10 +844,7 @@ CheckSecondTrack(int link)
 void
 FindStreets(void)
 {
-  extern uchar VisiStr1, VisiStr2, OnTrack;
-  extern s_track *NextStreet, *track1, *track2;
-  extern s_track *End1, *End2;
-  register int code;
+  int code;
 
   VisiStr1 = VisiStr2 = 0;
 

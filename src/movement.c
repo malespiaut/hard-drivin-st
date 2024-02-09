@@ -1,5 +1,5 @@
-
-
+#include "main.h"
+#include "newfind.h"
 #include "proto.h"
 
 /*
@@ -21,13 +21,11 @@
 
 */
 
-/*		LOCAL VARIABLES :
-                =================
-*/
+//		LOCAL VARIABLES :
+//              =================
 
-/*		FUNCTIONS :
-                ===========
-*/
+//		FUNCTIONS :
+//              ===========
 
 static void CarDemoDrive(void);
 static void FindFields(void);
@@ -35,25 +33,21 @@ static void FindFields(void);
 static void
 CarDemoDrive(void)
 {
-  extern char UK_Flag;
-  extern s_track *track1, *track2;
-  extern s_track *End1, *End2, *Junct1, *Junct2;
-  extern s_car car;
-  register char sub, h1, h2;
-  register s_track *st1, *st2;
+  char sub, h1, h2;
+  s_track *st1, *st2;
   int sinY, cosY, sinP, cosP, sinR, cosR;
   int angle1, angle2, h;
 
   static int dx, dy, dz, hx, hy, hz;
-  static uint mx1, my1, mz1, mx2, my2, mz2;
+  static unsigned int mx1, my1, mz1, mx2, my2, mz2;
   static char SubPosition, OnStreet;
   static char TrackUsed, Choose;
   static s_track *NextSegment, *SegmentUnderCar;
 
-#define MaxPos 11 /* STEPS PER STREET SEGMENT */
-#define swing 7   /* TRANSITION TO NEXT PITCH ANGLE */
+#define MaxPos 11 // STEPS PER STREET SEGMENT
+#define swing 7   // TRANSITION TO NEXT PITCH ANGLE
 
-  /* MAKE SURE NEXTSTREET IS NOT NIL ! */
+  // MAKE SURE NEXTSTREET IS NOT NIL !
 
   if (!SegmentUnderCar)
     SegmentUnderCar = track1;
@@ -64,7 +58,7 @@ CarDemoDrive(void)
   st2 = NextSegment;
   sub = SubPosition;
 
-  /* TAKE CARE OF JUNCTIONS AND TRACK ENDS. */
+  // TAKE CARE OF JUNCTIONS AND TRACK ENDS.
 
   if (TrackUsed == 0)
   {
@@ -92,29 +86,29 @@ CarDemoDrive(void)
     TrackUsed = 0;
   }
 
-  /* SET VARIABLES WHEN REACHING NEW STREET SEGMENT. */
+  // SET VARIABLES WHEN REACHING NEW STREET SEGMENT.
 
   if (!OnStreet)
   {
     if (UK_Flag)
     {
-      mx1 = (uint)((3 * (ulong)st1->x1 + (ulong)st1->x2) >> 2);
-      my1 = (uint)((3 * (ulong)st1->y1 + (ulong)st1->y2) >> 2);
-      mz1 = (uint)((3 * (ulong)st1->z1 + (ulong)st1->z2) >> 2);
+      mx1 = (unsigned int)((3 * (unsigned long)st1->x1 + (unsigned long)st1->x2) >> 2);
+      my1 = (unsigned int)((3 * (unsigned long)st1->y1 + (unsigned long)st1->y2) >> 2);
+      mz1 = (unsigned int)((3 * (unsigned long)st1->z1 + (unsigned long)st1->z2) >> 2);
 
-      mx2 = (uint)((3 * (ulong)st2->x1 + (ulong)st2->x2) >> 2);
-      my2 = (uint)((3 * (ulong)st2->y1 + (ulong)st2->y2) >> 2);
-      mz2 = (uint)((3 * (ulong)st2->z1 + (ulong)st2->z2) >> 2);
+      mx2 = (unsigned int)((3 * (unsigned long)st2->x1 + (unsigned long)st2->x2) >> 2);
+      my2 = (unsigned int)((3 * (unsigned long)st2->y1 + (unsigned long)st2->y2) >> 2);
+      mz2 = (unsigned int)((3 * (unsigned long)st2->z1 + (unsigned long)st2->z2) >> 2);
     }
     else
     {
-      mx1 = (uint)((3 * (ulong)st1->x2 + (ulong)st1->x1) >> 2);
-      my1 = (uint)((3 * (ulong)st1->y2 + (ulong)st1->y1) >> 2);
-      mz1 = (uint)((3 * (ulong)st1->z2 + (ulong)st1->z1) >> 2);
+      mx1 = (unsigned int)((3 * (unsigned long)st1->x2 + (unsigned long)st1->x1) >> 2);
+      my1 = (unsigned int)((3 * (unsigned long)st1->y2 + (unsigned long)st1->y1) >> 2);
+      mz1 = (unsigned int)((3 * (unsigned long)st1->z2 + (unsigned long)st1->z1) >> 2);
 
-      mx2 = (uint)((3 * (ulong)st2->x2 + (ulong)st2->x1) >> 2);
-      my2 = (uint)((3 * (ulong)st2->y2 + (ulong)st2->y1) >> 2);
-      mz2 = (uint)((3 * (ulong)st2->z2 + (ulong)st2->z1) >> 2);
+      mx2 = (unsigned int)((3 * (unsigned long)st2->x2 + (unsigned long)st2->x1) >> 2);
+      my2 = (unsigned int)((3 * (unsigned long)st2->y2 + (unsigned long)st2->y1) >> 2);
+      mz2 = (unsigned int)((3 * (unsigned long)st2->z2 + (unsigned long)st2->z1) >> 2);
     }
 
     dx = mx2 - mx1;
@@ -184,20 +178,14 @@ CarDemoDrive(void)
 void
 MoveCar(void)
 {
-  extern char DemoMode, ExtendedClip, SloMoFlag, EngineOn;
-  extern char StartFlag, LapMode, GameMode;
-  extern int rollSIN, rollCOS, pitchSIN, pitchCOS;
-  extern int yawSIN, yawCOS, OffRoadOut;
-  extern long Score;
-  extern s_car car;
   int h, hx, hy, hz;
 
   if (DemoMode)
-  { /* READ NEXT POSITION FROM TRACK DATA */
+  { // READ NEXT POSITION FROM TRACK DATA
 
     CarDemoDrive();
 
-    /* SET TRIG. VALUES ACCORDING TO NEW POSITION ANGLES. */
+    // SET TRIG. VALUES ACCORDING TO NEW POSITION ANGLES.
 
     yawSIN = sinus(car.yaw);
     yawCOS = cosinus(car.yaw);
@@ -207,8 +195,8 @@ MoveCar(void)
     rollCOS = cosinus(car.roll);
   }
   else
-  { /* USE NEW POSITION COMPUTED BY THE CAR SIMULATION
-       MODEL. */
+  { // USE NEW POSITION COMPUTED BY THE CAR SIMULATION
+    // MODEL.
 
     car.mx = car.newX;
     car.yaw = car.newYaw;
@@ -217,7 +205,7 @@ MoveCar(void)
     car.mz = car.newZ;
     car.roll = car.newRoll;
 
-    /* SET TRIG. VALUES ACCORDING TO NEW POSITION ANGLES. */
+    // SET TRIG. VALUES ACCORDING TO NEW POSITION ANGLES.
 
     yawSIN = sinus(car.yaw);
     yawCOS = cosinus(car.yaw);
@@ -226,7 +214,7 @@ MoveCar(void)
     rollSIN = sinus(car.roll);
     rollCOS = cosinus(car.roll);
 
-    /* COMPUTE OFFSET TO VIEWPOINT. */
+    // COMPUTE OFFSET TO VIEWPOINT.
 
     h = rotate(CarHeight, rollCOS);
     hx = rotate(CarHeight, rollSIN);
@@ -240,7 +228,7 @@ MoveCar(void)
     car.y = car.my + hy;
     car.z = car.mz + hz;
 
-    /* STORE NEW VIEWPOINT POSITION. */
+    // STORE NEW VIEWPOINT POSITION.
 
     if (!SloMoFlag && (StartFlag > 5))
     {
@@ -265,12 +253,9 @@ MoveCar(void)
 static void
 FindFields(void)
 {
-  extern int NumOfFields;
-  extern s_object* field;
-  extern s_car car;
-  register s_object* obj;
-  register int i, r, x, y, z;
-  uint x_min, x_max, z_min, z_max;
+  s_object* obj;
+  int i, r, x, y, z;
+  unsigned int x_min, x_max, z_min, z_max;
 
 #define border (int)(32000L / ScaleFactor)
 
@@ -286,10 +271,10 @@ FindFields(void)
     obj->visible = FALSE;
 
     x = obj->worldX;
-    if (x_min > (uint)x || (uint)x > x_max)
+    if (x_min > (unsigned int)x || (unsigned int)x > x_max)
       continue;
     z = obj->worldZ;
-    if (z_min > (uint)z || (uint)z > z_max)
+    if (z_min > (unsigned int)z || (unsigned int)z > z_max)
       continue;
 
     obj->clip3D = FALSE;
@@ -328,15 +313,9 @@ FindFields(void)
 void
 FindAllVisibleObjects(void)
 {
-  extern char CarInLoop, DemoMode, SloMoFlag, AccidentFlag;
-  extern uchar WrongDirection, NoReturnCheck;
-  extern int pitchSIN, pitchCOS, yawSIN, yawCOS;
-  extern int VisibleObjects, NumOfObjects, OffRoadOut;
-  extern s_object* object;
-  extern s_car car;
-  register s_object* obj;
-  register int i, r, x, y, z;
-  uint x_min, x_max, z_min, z_max;
+  s_object* obj;
+  int i, r, x, y, z;
+  unsigned int x_min, x_max, z_min, z_max;
 
   NoReturnCheck = (DemoMode | SloMoFlag | WrongDirection | AccidentFlag);
 
@@ -362,10 +341,10 @@ FindAllVisibleObjects(void)
     obj->visible = FALSE;
 
     x = obj->worldX;
-    if (x_min > (uint)x || (uint)x > x_max)
+    if (x_min > (unsigned int)x || (unsigned int)x > x_max)
       continue;
     z = obj->worldZ;
-    if (z_min > (uint)z || (uint)z > z_max)
+    if (z_min > (unsigned int)z || (unsigned int)z > z_max)
       continue;
 
     obj->clip3D = FALSE;
@@ -408,9 +387,9 @@ FindAllVisibleObjects(void)
 
           if (obj->class & (c_building + c_hill))
             z += obj->radius;
-          else if (obj->large == 111 /* BANKED CURVE */)
+          else if (obj->large == 111) // BANKED CURVE
             z += obj->radius;
-          else if (obj->large == 28 /* LOOP */)
+          else if (obj->large == 28) // LOOP
           {
             z += obj->radius;
             if (obj->clip3D)
