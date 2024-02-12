@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "ibm.h"
+#include "missing.h"
 #include "proto.h"
 
 /*

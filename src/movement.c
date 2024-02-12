@@ -1,4 +1,5 @@
 #include "main.h"
+#include "missing.h"
 #include "newfind.h"
 #include "proto.h"
 

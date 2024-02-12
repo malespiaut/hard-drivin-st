@@ -1,6 +1,7 @@
 #include "data.h"
 #include "ibm.h"
 #include "main.h"
+#include "missing.h"
 #include "proto.h"
 
 /*

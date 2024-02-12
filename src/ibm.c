@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 
 #include "main.h"
+#include "missing.h"
 #include "proto.h"
 
 /*
@@ -40,7 +41,7 @@
 #define verbose FALSE
 
 int GamePalette[] = // Game color palette
-  // RGB // Range: 0..7 for each color
+                    // RGB // Range: 0..7 for each color
   {
     0x0000, // Black
     0x0020, // Dark Green
@@ -61,7 +62,7 @@ int GamePalette[] = // Game color palette
 };
 
 int LoadPalette[] = // Game color palette
-  // RGB
+                    // RGB
   {
     0x0000,
     0x0666,
