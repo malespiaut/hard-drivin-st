@@ -891,7 +891,10 @@ PrintHillRoads(int type)
       h = *p++;
       d = (long*)PolyVertex;
       for (j = (unsigned char)h + 1; --j;)
-        *d++ = *((long*)p)++;
+      {
+        // FIXME: Fix this pre-ANSI line of C code!
+        //*d++ = *((long*)p)++;
+      }
       Polygon(h);
 
       // DISPLAY LANE MARKER
@@ -902,7 +905,10 @@ PrintHillRoads(int type)
         h = *l++;
         d = (long*)PolyVertex;
         for (j = (unsigned char)h + 1; --j;)
-          *d++ = *((long*)l)++;
+        {
+          // FIXME: Fix this pre-ANSI line of C code!
+          //*d++ = *((long*)l)++;
+        }
         Polygon(h);
       }
     }
@@ -927,7 +933,10 @@ PrintHillRoads(int type)
       h = *p++;
       d = (long*)PolyVertex;
       for (j = (unsigned char)h + 1; --j;)
-        *d++ = *((long*)p)++;
+      {
+        // FIXME: Fix this pre-ANSI line of C code!
+        //*d++ = *((long*)p)++;
+      }
       Polygon(h);
 
       // DISPLAY LANE MARKER
@@ -938,7 +947,10 @@ PrintHillRoads(int type)
         h = *l++;
         d = (long*)PolyVertex;
         for (j = (unsigned char)h + 1; --j;)
-          *d++ = *((long*)l)++;
+        {
+          // FIXME: Fix this pre-ANSI line of C code!
+          //*d++ = *((long*)l)++;
+        }
         Polygon(h);
       }
     }
@@ -985,7 +997,10 @@ PrintLowStreets(void)
       h = *p++;
       d = (long*)PolyVertex;
       for (j = (unsigned char)h + 1; --j;)
-        *d++ = *((long*)p)++;
+      {
+        // FIXME: Fix this pre-ANSI line of C code!
+        //*d++ = *((long*)p)++;
+      }
 #if (wire)
       FramePoly(h);
 #else
@@ -1000,7 +1015,10 @@ PrintLowStreets(void)
         h = *l++;
         d = (long*)PolyVertex;
         for (j = (unsigned char)h + 1; --j;)
-          *d++ = *((long*)l)++;
+        {
+          // FIXME: Fix this pre-ANSI line of C code!
+          //*d++ = *((long*)l)++;
+        }
 #if (wire)
         FramePoly(h);
 #else
@@ -1029,7 +1047,10 @@ PrintLowStreets(void)
       h = *p++;
       d = (long*)PolyVertex;
       for (j = (unsigned char)h + 1; --j;)
-        *d++ = *((long*)p)++;
+      {
+        // FIXME: Fix this pre-ANSI line of C code!
+        //*d++ = *((long*)p)++;
+      }
 #if (wire)
       FramePoly(h);
 #else
@@ -1044,7 +1065,10 @@ PrintLowStreets(void)
         h = *l++;
         d = (long*)PolyVertex;
         for (j = (unsigned char)h + 1; --j;)
-          *d++ = *((long*)l)++;
+        {
+          // FIXME: Fix this pre-ANSI line of C code!
+          //*d++ = *((long*)l)++;
+        }
 #if (wire)
         FramePoly(h);
 #else
